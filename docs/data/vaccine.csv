@@ -1,0 +1,76 @@
+,location,date,vaccine,source_url,total_vaccinations,people_vaccinated,people_fully_vaccinated
+1,Malaysia,23/02/2021,Pfizer/BioNTech,https://asia.nikkei.com/Spotlight/Coronavirus/Malaysia-starts-COVID-vaccines-in-crucial-week-for-Asian-jabs,0,0,0
+2,Malaysia,27/02/2021,Pfizer/BioNTech,https://www.bernama.com/en/general/news_immunisation.php?id=1935731,3580,3580,0
+3,Malaysia,01/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1366291020179144705,25252,25252,0
+4,Malaysia,02/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1367021818188423169?s=20,53287,53287,0
+5,Malaysia,03/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1367281989733126145?s=20,80336,80336,0
+6,Malaysia,04/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1367637112615399424,99616,99616,0
+7,Malaysia,05/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1368013689345904645,112914,112914,0
+8,Malaysia,06/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1368374710157725707,127608,127608,0
+9,Malaysia,07/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1368810731857010692,139720,139720,0
+10,Malaysia,08/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1369105120160407554,166363,166363,0
+11,Malaysia,09/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1369463720280199174,195923,195923,0
+12,Malaysia,10/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1369855054912618497,223923,223923,0
+13,Malaysia,11/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1369105120160407554,249909,249909,0
+14,Malaysia,12/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1370608736092442625,275851,275851,0
+15,Malaysia,13/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1370980661759143936,292104,292104,0
+16,Malaysia,14/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1371291411782438917,301699,301699,0
+17,Malaysia,15/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1371630029973643273,321331,321331,0
+18,Malaysia,16/03/2021,Pfizer/BioNTech,https://twitter.com/JKJAVMY/status/1372013567705182211,346508,346508,0
+19,Malaysia,17/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1372400486360432644,367213,367213,0
+20,Malaysia,18/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1372836235891384324,385126,384334,792
+21,Malaysia,19/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1373169588813377539,399525,395006,4519
+22,Malaysia,20/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1373511667548577792,413254,402650,10604
+23,Malaysia,21/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1373826614539210755,428710,412342,16368
+24,Malaysia,22/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1374225593617776640,452919,422058,30861
+25,Malaysia,23/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1374556630554193921,481989,429868,52121
+26,Malaysia,24/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1374936891116621829,510976,436687,74289
+27,Malaysia,25/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1375291017457401857,536681,443124,93557
+28,Malaysia,26/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1375748535245737986,551548,446617,104931
+29,Malaysia,27/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1375998703304114180,566200,448187,118013
+30,Malaysia,28/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1376369612946804737/photo/1,580765,451655,129110
+31,Malaysia,29/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1376919781316657160,621417,461907,159510
+32,Malaysia,30/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1377082586720264197,661661,473276,188385
+33,Malaysia,31/03/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1377457901757956107,698203,482808,215395
+34,Malaysia,01/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1377813976160083968,740226,498468,241758
+35,Malaysia,02/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1378170624972095488,770653,506069,264584
+36,Malaysia,03/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1378529285301006340,787504,508481,279023
+37,Malaysia,04/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1378895006442881032,801773,514036,287737
+38,Malaysia,05/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1379257805568376837,830036,523233,306803
+39,Malaysia,06/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1379630758474743808,862445,534191,328254
+40,Malaysia,07/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1380017812836601856,893032,546762,346270
+41,Malaysia,08/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1380350649322369025,919721,558750,360971
+42,Malaysia,09/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1380716586865152000,941200,565940,375260
+43,Malaysia,10/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1381069025602641926,956723,571472,385251
+44,Malaysia,11/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1381436328768909313,979794,583903,395891
+45,Malaysia,12/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1381803079146823687,1018937,609153,409784
+46,Malaysia,13/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1382165809380884484,1050138,632668,417470
+47,Malaysia,14/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1382518960067854336,1078695,653531,425164
+48,Malaysia,15/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1382876420821635072,1105890,671589,434301
+49,Malaysia,16/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1383273817053618178,1125396,687176,438220
+50,Malaysia,17/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1383624140498694151,1135015,695729,439286
+51,Malaysia,18/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1383973122320203776,1144841,701812,443029
+52,Malaysia,19/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1384335240857112595,1177648,726411,451237
+53,Malaysia,20/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1384698793979891712,1210779,748444,462335
+54,Malaysia,21/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1385130216083894274,1231760,757547,474213
+55,Malaysia,22/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1385518722987737090,1260937,771829,489108
+56,Malaysia,23/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1385802753025400835,1279737,783987,495750
+57,Malaysia,24/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1386163634561110017,1290414,791910,498504
+58,Malaysia,25/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1386504500437950464,1305161,800996,504165
+59,Malaysia,26/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1386951680781000704,1335245,822201,513044
+60,Malaysia,27/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1387284126701547523,1369749,844906,524843
+61,Malaysia,28/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1387662034926374912,1409215,871219,537996
+62,Malaysia,29/04/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1388035322320093189,1421664,877646,544018
+63,Malaysia,01/05/2021,"Pfizer/BioNTech, Sinovac",https://www.vaksincovid.gov.my/statistik/,1434537,883661,550876
+64,Malaysia,02/05/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1389094340144734220,1469033,905683,563350
+65,Malaysia,03/05/2021,"Pfizer/BioNTech, Sinovac",https://www.vaksincovid.gov.my/statistik/,1500202,914663,585539
+66,Malaysia,04/05/2021,"Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1389874935544299525,1569609,960070,609539
+67,Malaysia,05/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1390211930694979590,1624272,991906,632366
+68,Malaysia,06/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://twitter.com/JKJAVMY/status/1390618862127775744/photo/1,1679765,1028693,651072
+69,Malaysia,07/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/149161150508773,1727268,1060773,666495
+70,Malaysia,08/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/149903327101222,1754156,1079294,674862
+71,Malaysia,09/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/151193296972225,1786459,1105033,681426
+72,Malaysia,10/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/151193290305559,1847659,1141502,706157
+73,Malaysia,11/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/151644526927102,1896399,1171882,724517
+74,Malaysia,12/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/pcb.152285653529656/152284063529815/,1914438,1182133,732305
+75,Malaysia,13/05/2021,"Oxford/AstraZeneca, Pfizer/BioNTech, Sinovac",https://www.facebook.com/jkjavmy/photos/pcb.152749686816586/152749243483297/,1914554,1182244,732310
