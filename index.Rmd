@@ -173,7 +173,7 @@ source('summary/squareplot.R')
 
 
 
-Cases {.storyboard data-icon="fa-vial"}
+Cases {.storyboard data-icon="fa-vial" fig_mobile=TRUE}
 =========================================
 
 
