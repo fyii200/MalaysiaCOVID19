@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     navbar:
-        - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+       - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
 ---
 
 ```{r setup, include=FALSE}
@@ -496,3 +496,5 @@ _____________________
 
 _____________________
 *Last updated on `r format(Sys.Date(), '%d %b %Y')`*
+
+
