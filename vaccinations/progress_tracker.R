@@ -1,3 +1,4 @@
+
 # source function to plot cumulative number of doses
 source('functions/plot_vac.R')
 
@@ -19,10 +20,10 @@ y2 <- round( (d$people_fully_vaccinated/32.7e6)*100, 2)
 
 # plot!
 plot_vac(x, y1, y2, col=col,
-         title=paste('Is the vaccination programme on track?'),
+         title='',
          xlim=xlim, ylim=c(1,100), tailor.xaxis=F, xaxis.lab, xaxis.lab.at, 
          tailor.yaxis=T, yaxt='n', yaxis.lab.at, yaxis.lab, 
-         refline=F, xaxt='n')
+         refline=F, xaxt='n', leg_ypos=min(ylim)-20)
 
 # function to add H + V reference lines for each phase
 # 'txt.move' determines how much to the left the txt should be moved by

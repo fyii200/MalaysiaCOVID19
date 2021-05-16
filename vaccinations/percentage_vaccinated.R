@@ -22,10 +22,9 @@ xaxis.lab <- format(seq(min(x), max(x), length.out=6), '%d %b %Y')
 xlim <- c(min(x), max(x))
 
 # plot percentage of pop vaccinated
-plot_vac(x, y1, y2, col=col, title=paste(
-  'What share of the population has been vaccinated?'), xlim=xlim, 
+plot_vac(x, y1, y2, col=col, title='', xlim=xlim, 
   ylim=ylim, tailor.xaxis=T, xaxis.lab, xaxis.lab.at, tailor.yaxis=T,
-  yaxt='n', yaxis.lab.at, yaxis.lab, refline=F)
+  yaxt='n', yaxis.lab.at, yaxis.lab, refline=F, leg_ypos=min(ylim)-2)
 
 # add lines for 1st
 lines(x, y1, lwd=5, col=col[3])
@@ -33,4 +32,13 @@ lines(x, y1, lwd=5, col=col[3])
 # compute increase in pop vaccinated in % terms
 inc1 <- round( max(y1) - y1[length(y1)-1], 2)
 inc2 <- round( max(y2) - y2[length(y2)-1], 2)
+
+
+
+
+
+
+
+
+
 

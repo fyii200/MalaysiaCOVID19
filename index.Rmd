@@ -4,8 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     navbar:
-        - {icon: "fa-github", href: "https://github.com/fyii200", align:  right}
-        - { icon: "fa-linkedin", href: "https://www.linkedin.com/in/fabian-yii-15413016a/", align: right}
+        - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
 ---
 
 ```{r setup, include=FALSE}
@@ -39,8 +38,44 @@ d$date <- as.Date(d$date, '%d/%m/%Y')
 Daily summary {data-icon="fa-table"}
 =========================================
 
+Row {data-height=300}
+-----------------------------------------
 
-Row {data-height=420, .tabset}
+### Vaccinations - Daily Total & Cumulative Total
+```{r include=FALSE}
+source('vaccinations/daily_new_doses.R')
+col <- brewer.pal(9,'Blues')[c(5,8)]   
+```
+<span style="font-size:1.5em;"> **People vaccinated ** </span>
+<span style="color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span> 
+
+<span style="font-size:1em;"> New 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
+<span style="font-size:2.5em; color:`r col[1]`;"> **+`r new.y1`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(d$people_vaccinated [length(d$people_vaccinated)], scientific=F, big.mark=',')`** </span>
+ 
+ 
+<span style="font-size:1em;"> New 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **+`r new.y2`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(d$people_fully_vaccinated [length(d$people_fully_vaccinated)], scientific=F, big.mark=',')`** </span>
+  
+
+
+### Percentage of minimum target Population (23.2m) already vaccinated
+```{r echo=FALSE}
+source('summary/squareplot.R')
+```
+
+<span style="font-size:1em;"> 1st dose </span>  
+<span style="font-size:1.5em; color:`r col[1]`; text-decoration:underline"> **`r target_y1`%** </span>
+
+<span style="font-size:1em;"> 2nd dose </span>  
+<span style="font-size:1.5em; color:`r col[2]`; text-decoration:underline"> **`r target_y2`%** </span>
+
+
+
+
+
+Row {data-height=450}
 -----------------------------------------
 ### Cases
 ```{r include=FALSE}
@@ -51,23 +86,25 @@ label <- paste(format(weekchange*7, scientific=F, big.mark=','),
 
 <span style="font-size:1.5em;"> **People tested positive** </span>
 
-Daily <span style="font-size:1em; color:grey;"> *`r format(max(x, na.rm=T), '%d %b %Y')`*</span>  
-<span style="font-size:2.5em"> **+`r dailynew`** </span>
+Daily <span style="font-size:0.9em; color:grey;"> *`r format(max(x, na.rm=T), '%d %b %Y')`*</span>  
+<span style="font-size:1.5em"> **+`r dailynew`** </span>
 
-7-day total <span style="font-size:1em; color:grey;"> *(week ending `r lastlastdate`)*</span>  
-<span style="font-size:1.5em"> **`r format(sum(lastlast7cases), scientific=F, big.mark=',')`** </span>
+7-day total <span style="font-size:0.8em; color:grey;"> *(week ending `r lastlastdate`)*</span>  
+<span style="font-size:1.3em"> **`r format(sum(lastlast7cases), scientific=F, big.mark=',')`** </span>
 
-7-day total <span style="font-size:1em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
-<span style="font-size:1.5em"> **`r format(sum(last7cases), scientific=F, big.mark=',')`** </span> &nbsp;
-<span style="font-size:1.1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+7-day total <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
+<span style="font-size:1.3em"> **`r format(sum(last7cases), scientific=F, big.mark=',')`** </span> &nbsp;
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
-```{r echo=FALSE, fig.width=7.5, fig.height=4}
+#### 
+```{r echo=FALSE, fig.width=3.5, fig.height=1}
 # make empty plot then add smoothed line
-plot(x, y, xaxt='n', yaxt='n', bty='n', type='n', xlab='', ylab='')
-par(las=0)
-axis(side=1, labels=format(xtlab, '%b %Y'), at=xtlab, 
-    tick=F, col.axis='gray56', cex.axis=0.9)
-lines(x, mys$new_cases_smoothed, col=col[2], lwd=4)
+par(mar=c(1,0.3,0,0.3), las=0)
+plot(x, y, bty='n', xaxt='n', yaxt='n', type='n', xlab='', 
+     ylab='', ylim=c(0, max(mys$new_cases_smoothed, na.rm=T)) )
+axis(side=1, labels=format(xtlab, '%b'), at=xtlab, 
+     tick=F, col.axis='gray56', cex.axis=0.6, padj=-3)
+lines(x, mys$new_cases_smoothed, col=col[2], lwd=2)
 ```
 
 
@@ -79,23 +116,25 @@ source('cases/daily_tests.R')
 
 <span style="font-size:1.5em;"> **COVID-19 tests conducted** </span>
 
-Daily <span style="font-size:1em; color:grey;"> *`r format(latest_date, '%d %b %Y')`*</span>  
-<span style="font-size:2.5em"> **`r latest_tests`** </span>
+Daily <span style="font-size:0.9em; color:grey;"> *`r format(latest_date, '%d %b %Y')`*</span>  
+<span style="font-size:1.5em"> **`r latest_tests`** </span>
 
-7-day average <span style="font-size:1em; color:grey;"> *(week ending `r format(max(lastlast7$date), '%d %b')`)*</span>  
-<span style="font-size:1.5em"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span>
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(lastlast7$date), '%d %b')`)*</span>  
+<span style="font-size:1.3em"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span>
 
-7-day average <span style="font-size:1em; color:grey;"> *(week ending `r format(latest_date, '%d %b')`)*</span>  
-<span style="font-size:1.5em"> **`r format(last7avg, scientific=F, big.mark=',')`** </span>
-<span style="font-size:1.1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(latest_date, '%d %b')`)*</span>  
+<span style="font-size:1.3em"> **`r format(last7avg, scientific=F, big.mark=',')`** </span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
-```{r echo=FALSE, fig.width=7.5, fig.height=4}
+#### 
+```{r echo=FALSE, fig.width=3.5, fig.height=1}
 # make empty plot then add smoothed line
-plot(test.s$x, test.s$y, xaxt='n', yaxt='n', bty='n', type='n', xlab='', ylab='')
-par(las=0)
-axis(side=1, labels=format(xtlab, '%b %Y'), at=xtlab, 
-    tick=F, col.axis='gray56', cex.axis=0.9)
-lines(test.s$x, test.s$y, lwd=4, col=col[2])
+x <- test.s$x; y <- test.s$y
+par(mar=c(1,0.3,0,0.3), las=0)
+plot(x, y, xaxt='n', yaxt='n', bty='n', type='n', xlab='', ylab='', ylim=c(0, max(y, na.rm=T)) )
+axis(side=1, labels=format(xtlab, '%b'), at=xtlab, 
+     tick=F, col.axis='gray56', cex.axis=0.6, padj=-3)
+lines(x, y, lwd=2, col=col[2])
 ```
 
 
@@ -107,64 +146,23 @@ source('deaths/daily_deaths.R')
 
 <span style="font-size:1.5em;"> **Reported deaths** </span>
 
-Daily <span style="font-size:1em; color:grey;"> *`r format(max(x, na.rm=T), '%d %b %Y')`*</span>  
-<span style="font-size:2.5em"> **`r y[length(y)]`** </span>
+Daily <span style="font-size:0.9em; color:grey;"> *`r format(max(x, na.rm=T), '%d %b %Y')`*</span>  
+<span style="font-size:1.5em"> **`r y[length(y)]`** </span>
 
-7-day average <span style="font-size:1em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
-<span style="font-size:1.5em"> **`r format(death7avg, scientific=F, big.mark=',')`** </span>
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r lastdeath7avg_date`)*</span>  
+<span style="font-size:1.3em"> **`r format(lastdeath7avg, scientific=F, big.mark=',')`** </span>
 
-7-day average <span style="font-size:1em; color:grey;"> *(week ending `r lastdeath7avg_date`)*</span>  
-<span style="font-size:1.5em"> **`r format(lastdeath7avg, scientific=F, big.mark=',')`** </span>
-<span style="font-size:1.1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
+<span style="font-size:1.3em"> **`r format(death7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
-```{r echo=FALSE, fig.width=7.5, fig.height=4}
+#### 
+```{r echo=FALSE, fig.width=3.5, fig.height=1}
 # make empty plot then add smoothed line
-plot(x, y.s, xaxt='n', yaxt='n', bty='n', type='n', xlab='', ylab='')
-par(las=0)
-axis(side=1, labels=format(xtlab, '%b %Y'), at=xtlab, 
-    tick=F, col.axis='gray56', cex.axis=0.9)
-lines(x, y.s, lwd=4, col=col[2])
-```
-
-
-
-
-Row {data-height=350}
------------------------------------------
-
-### Vaccinations - Daily
-```{r include=FALSE}
-source('vaccinations/daily_new_doses.R')
-col <- brewer.pal(9,'Blues')[c(5,8)]   
-```
-<span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="color:grey;"> *`r format(max(x), '%d %b %Y')`*</span> 
-
-<span style="font-size:1em;">New 1st dose </span> </span>  
-<span style="font-size:2.5em; color:`r col[1]`;"> **+`r new.y1`** </span>
- 
- 
-<span style="font-size:1em;">New 2nd dose </span> </span>  
-<span style="font-size:2.5em; color:`r col[2]`;"> **+`r new.y2`** </span>
-  
-   
-### Vaccinations - Cumulative total
-```{r include=FALSE}
-source('vaccinations/cumulative_doses.R')
-```
-<span style="font-size:1.5em;"> **Total ** </span>
-<span style="color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span>
-
-<span style="font-size:1em;"> 1st dose </span> </span>  
-<span style="font-size:2.5em; color:`r col[3]`;"> **`r format(max(y1, na.rm=T), scientific=F, big.mark=',')`** </span>
-
-<span style="font-size:1em;"> 2nd dose </span> </span>  
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r format(max(y2, na.rm=T), scientific=F, big.mark=',')`** </span>
-
-
-### % minimum target Population (23.2m) vaccinated
-```{r echo=FALSE}
-source('summary/squareplot.R')
+par(mar=c(1,0.3,0,0.3), las=0)
+plot(x, y.s, xaxt='n', yaxt='n', bty='n', type='n', xlab='', ylab='', ylim=c(0, max(y.s, na.rm=T)) )
+axis(side=1, labels=format(xtlab, '%b'), at=xtlab, 
+     tick=F, cex.axis=0.6, col.axis='gray56', padj=-3)
+lines(x, y.s, lwd=2, col=col[2])
 ```
 
 
@@ -173,11 +171,11 @@ source('summary/squareplot.R')
 
 
 
-Cases {.storyboard data-icon="fa-vial" fig_mobile=TRUE}
+Cases {.storyboard data-icon="fa-vial"}
 =========================================
 
 
-### <span style="font-size:1em;"> **Daily New Cases** </span>
+### <span style="font-size:1.3em;"> **Daily New Cases |** </span> <br> <span style="font-size:0.9em;"> How many new cases are being confirmed each day? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('cases/daily_new_cases.R')
@@ -188,28 +186,26 @@ source('cases/daily_new_cases.R')
 
 _____________________
 
-<span style="font-size:4.5em; color:`r col[1]`;"> **+`r dailynew`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **+`r dailynew`** </span>  
 <span style="color:grey;"> *new cases in the past 24 hours.* </span>
 
 _____________________
-
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r weeknew`** </span> <span style="font-size:1.1em; color:grey;"> **cases / day** </span> 
- 
-<span style="color:grey;"> *7-day average for the week ending `r format(max(x, na.rm=T), '%d %b')`.* </span>
-
-
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r lastweeknew`** </span> <span style="font-size:1.1em; color:grey;"> **cases / day** </span> 
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r lastweeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span> 
  
 <span style="color:grey;"> *7-day average for the week ending `r lastlastdate`.* </span>
 
-<span style="font-size:1.5em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r weeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span> 
+ 
+<span style="color:grey;"> *7-day average for the week ending `r format(max(x, na.rm=T), '%d %b')`.* </span>
+
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
 _____________________
 *Last updated on `r format(Sys.Date(), '%d %b %Y')`*
 
 
 
-### <span style="font-size:1em;"> **Daily COVID-19 Tests** </span>
+### <span style="font-size:1.3em;"> **Daily Tests |** </span> <br> <span style="font-size:0.9em;"> Are we doing enough of COVID-19 testing? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('cases/daily_tests.R')
@@ -220,30 +216,30 @@ source('cases/daily_tests.R')
 
 _____________________
 
-<span style="font-size:4em; color:`r col[2]`;"> **`r latest_tests`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r latest_tests`** </span>  
 <span style="color:grey;"> *tests were done in a day.* </span>   
 
-<span style="font-size:3em; color:red;"> **`r pos_case`** </span>  
+<span style="font-size:1.5em; color:red;"> **`r pos_case`** </span>  
 <span style="color:grey;"> *positive cases were reported on the same day.* </span>
 
 _____________________
 
-<span style="font-size:2em; color:`r col[2]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
 
 <span style="color:grey;"> *7-day average for the week ending `r format(max(last7$date, na.rm=T), '%d %b')`.* </span> 
 
-<span style="font-size:2em; color:`r col[2]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
 
 <span style="color:grey;"> *7-day average for the week ending `r format(max(lastlast7$date, na.rm=T), '%d %b')`.* </span>
 
-<span style="font-size:1.5em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
 _____________________
 *Last updated on `r format(Sys.Date(), '%d %b %Y')`*
 
 
 
-### <span style="font-size:1em;"> **Positivity Rate** </span>
+### <span style="font-size:1.3em;"> **Positivity Rate |** </span> <br> <span style="font-size:0.9em;"> What share of tests comes back positive each day? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('cases/positivity_rate.R')
@@ -254,10 +250,10 @@ source('cases/positivity_rate.R')
 
 _____________________
 
-<span style="font-size:5em; color:red;"> **`r latest_pr`%** </span>  
+<span style="font-size:2.5em; color:red;"> **`r latest_pr`%** </span>  
 <span style="color:grey;"> *Daily positivity rate.* </span>   
 
-<span style="font-size:3em; color:red;"> **`r pos7avg`%** </span>  
+<span style="font-size:1.5em; color:red;"> **`r pos7avg`%** </span>  
 <span style="color:grey;"> *7-day moving average of positivity rate.* </span>
 
 _____________________
@@ -270,7 +266,7 @@ _____________________
 
 
 
-### <span style="font-size:1em;"> **Cumulative Cases** </span>
+### <span style="font-size:1.3em;"> **Cumulative Cases |** </span> <br> <span style="font-size:0.9em;"> How many cases have been confirmed so far? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('cases/cumulative_cases.R')
@@ -281,7 +277,7 @@ source('cases/cumulative_cases.R')
 
 _____________________
 
-<span style="font-size:3.5em; color:`r col[2]`;"> **`r format(max(y, na.rm=T), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r format(max(y, na.rm=T), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *Cumulative number of cases.* </span>
 
 _____________________
@@ -301,7 +297,7 @@ _____________________
 Deaths {.storyboard data-icon="fa-skull"}
 =========================================
 
-### <span style="font-size:1em;"> **Daily Deaths** </span>
+### <span style="font-size:1.3em;"> **Daily Deaths |** </span> <br> <span style="font-size:0.9em;"> What is the daily number of reported deaths? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 source('deaths/daily_deaths.R')
 ```
@@ -311,28 +307,28 @@ source('deaths/daily_deaths.R')
 
 _____________________
 
-<span style="font-size:5em; color:`r col[2]`;"> **+`r death7avg`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **+`r death7avg`** </span>  
 <span style="color:grey;"> *deaths were reported.* </span>
 
 _____________________
 
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r death7avg`** </span> <span style="font-size:1.1em; color:grey;"> **deaths / day** </span> 
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r death7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span> 
  
 <span style="color:grey;"> *7-day average for the week ending `r format(max(x, na.rm=T), '%d %b')`.* </span>
 
 
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r lastdeath7avg`** </span> <span style="font-size:1.1em; color:grey;"> **deaths / day** </span> 
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r lastdeath7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span> 
  
 <span style="color:grey;"> *7-day average for the week ending `r lastdeath7avg_date`.* </span>
 
-<span style="font-size:1.5em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
 
 _____________________
 *Last updated on `r format(Sys.Date(), '%d %b %Y')`*
 
 
 
-### <span style="font-size:1em;"> **Case Fatality Ratio** </span>
+### <span style="font-size:1.3em;"> **Case Fatality Ratio |** </span> <br> <span style="font-size:0.9em;"> What is the ratio between confirmed deaths and confirmed cases? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 source('deaths/case_fatality_rate.R')
 ```
@@ -342,7 +338,7 @@ source('deaths/case_fatality_rate.R')
 
 _____________________
 
-<span style="font-size:5em; color:`r col[2]`;"> **`r cfr`%** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r cfr`%** </span>  
 <span style="color:grey;"> *Case Fatality Ratio (CFR) or more commonly known as Case Fatality Rate.* </span>
 
 _____________________
@@ -354,7 +350,7 @@ _____________________
 
 
 
-### <span style="font-size:1em;"> **Cumulative Deaths** </span>
+### <span style="font-size:1.3em;"> **Cumulative Deaths |** </span> <br> <span style="font-size:0.9em;"> How many deaths have been reported so far? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 source('deaths/cumulative_deaths.R')
 ```
@@ -364,7 +360,7 @@ source('deaths/cumulative_deaths.R')
 
 _____________________
 
-<span style="color:`r col[2]`; font-size:4.5em;">**`r cum_deaths`**</span> 
+<span style="color:`r col[2]`; font-size:2.5em;">**`r cum_deaths`**</span> 
 
 _____________________
 *Last updated on `r format(Sys.Date(), '%d %b %Y')`*
@@ -379,7 +375,7 @@ Vaccinations {.storyboard data-icon="fa-syringe"}
 =========================================
 
 
-### <span style="font-size:1em;"> **Percentage Vaccinated** </span>
+### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the population has been vaccinated? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('vaccinations/percentage_vaccinated.R')
@@ -390,18 +386,18 @@ source('vaccinations/percentage_vaccinated.R')
 
 _____________________
 
-<span style="font-size:4.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
+<span style="font-size:2.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
 <span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>
 
-<span style="font-size:1.2em; color:`r col[3]`;"> **+ `r inc1`%** </span>  
+<span style="font-size:1.5em; color:`r col[3]`;"> **+ `r inc1`%** </span>  
 <span style="color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
 
 _____________________  
 
-<span style="font-size:4.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
 <span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span>  
 
-<span style="font-size:1.2em; color:`r col[2]`;"> **+ `r inc2`%** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **+ `r inc2`%** </span>  
 <span style="color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
 
 _____________________
@@ -413,7 +409,7 @@ _____________________
 
 
 
-### <span style="font-size:1em;"> **Cumulative Doses** </span>
+### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('vaccinations/cumulative_doses.R')
@@ -424,12 +420,12 @@ source('vaccinations/cumulative_doses.R')
 
 _____________________
 
-<span style="font-size:3.5em; color:`r col[3]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2.5em; color:`r col[3]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *first doses have been administered.* </span>
 
 _____________________  
 
-<span style="font-size:3.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *second doses have been administered.* </span>  
 
 _____________________
@@ -441,7 +437,7 @@ _____________________
 
 
 
-### <span style="font-size:1em;"> **Daily New Doses** </span> 
+### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('vaccinations/daily_new_doses.R')
@@ -452,21 +448,21 @@ source('vaccinations/daily_new_doses.R')
 
 _____________________
 
-<span style="font-size:4em; color:`r col[1]`;"> **+ `r new.y1`** </span>  
+<span style="font-size:2.5em; color:`r col[1]`;"> **+ `r new.y1`** </span>  
 <span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
 
-<span style="font-size:4em; color:`r col[2]`;"> **+ `r new.y2`** </span>  
+<span style="font-size:2.5em; color:`r col[2]`;"> **+ `r new.y2`** </span>  
 <span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
 
 _____________________
 
-<span style="font-size:2.5em; color:`r col[1]`;"> **+`r format(week.y1, scientific=F, big.mark=',')`**</span>
-<span style="color:`r arrowcol_y1`;"> **`r ifelse(weekchange_y1>=0, print('⬆'), print('⬇'))`  `r label_y1`**</span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **+`r format(week.y1, scientific=F, big.mark=',')`**</span>
+<span style="font-size:1em; color:`r arrowcol_y1`;"> &nbsp; **`r ifelse(weekchange_y1>=0, print('⬆'), print('⬇'))`  `r label_y1`**</span>  
 
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
-<span style="font-size:2.5em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
-<span style="color:`r arrowcol_y2`;"> **`r ifelse(weekchange_y2>=0, print('⬆'), print('⬇'))`  `r label_y2`**</span> 
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
+<span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('⬆'), print('⬇'))`  `r label_y2`**</span> 
 
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
@@ -475,7 +471,7 @@ _____________________
 
 
 
-### <span style="font-size:1em;"> **Progress Tracker** </span>
+### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
 ```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
 # source code file for the plot
 source('vaccinations/progress_tracker.R')
@@ -486,10 +482,10 @@ source('vaccinations/progress_tracker.R')
 
 _____________________
 
-<span style="font-size:4em; color:`r col[3]`;"> **`r dailydose1`** </span>
+<span style="font-size:2.5em; color:`r col[3]`;"> **`r dailydose1`** </span>
 <span style="color:grey;"> *first doses* </span>  
 
-<span style="font-size:4em; color:`r col[2]`;"> **`r dailydose2`** </span>
+<span style="font-size:2.5em; color:`r col[2]`;"> **`r dailydose2`** </span>
 <span style="color:grey;"> *second doses* </span>  
 
 <span style="color:grey;"> *required **each day on average** over the next **`r dayleft`** days to achieve Phase 2 target.* </span>  

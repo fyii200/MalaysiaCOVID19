@@ -13,7 +13,7 @@ plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=T,
           ylim=c(0,max(ytlab)), col[1], xtlab_format,
           xtlab.at=xtlab,  ticksize=0.8, formatC(ytlab,'d',big.mark=','), 
           ytlab.at=ytlab, 
-          main=paste('What is the cumulative number of deaths?') )
+          main='')
 
 # add H ref lines
 abline(h=ytlab, lwd=0.5, col='gray88')

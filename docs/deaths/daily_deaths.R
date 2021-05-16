@@ -14,7 +14,7 @@ xtlab <- seq(min(x), max(x), length.out = 6)
 plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=F,
           ylim=c(0,max(ytlab)), col[1], xtlab_format,
           xtlab.at=xtlab,  ticksize=0.8, ytlab, ytlab.at=ytlab, 
-          main=paste('How many deaths are being reported each day?') )
+          main='')
 
 # add H ref lines
 abline(h=ytlab, col='gray88', lwd=0.5)

@@ -7,7 +7,7 @@ plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=F,
           ylim=c(0,20), 'red', format(xtlab, '%d %b %Y'),
           xtlab.at=xtlab,  ticksize=0.8, lwd=4,
           paste(formatC(ytlab,'d',big.mark=','),'%', sep=''), 
-          ytlab.at=ytlab, main=paste('What is the daily positivity rate?') )
+          ytlab.at=ytlab, main='')
 
 # add H ref lines
 abline(h=ytlab, col='gray88', lwd=0.5)

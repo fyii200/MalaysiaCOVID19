@@ -1,3 +1,4 @@
+
 # source function to plot cumulative number of doses
 source('functions/plot_vac.R')
 
@@ -27,10 +28,9 @@ y1 <- d$people_vaccinated
 y2 <- d$people_fully_vaccinated  
 
 # plot cumulative number of doses given
-plot_vac(x, y1, y2, refline=F,
-         title=paste('How many doses have been given so far?'),
-         xlim, ylim, tailor.xaxis=T, xaxis.lab, xaxis.lab.at, col,
-         tailor.yaxis=T, yaxt='n', yaxis.lab.at, yaxis.lab)
+plot_vac(x, y1, y2, refline=F, title='', xlim, ylim, tailor.xaxis=T, 
+         xaxis.lab, xaxis.lab.at, col, tailor.yaxis=T, yaxt='n', 
+         yaxis.lab.at, yaxis.lab, leg_ypos=min(ylim)-0.35e6)
 
 # add lines for 1st dose
 lines(x, y1, lwd=5, col=col[3])

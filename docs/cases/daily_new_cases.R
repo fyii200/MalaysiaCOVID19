@@ -14,7 +14,7 @@ plot_case(x, y, '', '', xlim=c(min(x),max(x)),
           ylim=c(0,7000), col[1], xtlab_format, 
           xtlab.at=xtlab,  ticksize=0.8, 
           format(ytlab, scientific=F, big.mark = ','), 
-          ytlab.at=ytlab, main=paste('How many new cases are being confirmed each day?') )
+          ytlab.at=ytlab, main='')
 
 # add H ref lines
 abline(h=ytlab, col='gray88', lwd=0.5)

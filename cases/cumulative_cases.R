@@ -14,7 +14,7 @@ plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=T,
           xtlab.at=xtlab,  ticksize=0.8, 
           paste(formatC(ytlab,'d',big.mark=','), sep=''), 
           ytlab.at=ytlab, 
-          main=paste('How many cases have been confirmed so far?') )
+          main='')
 
 # add H ref lines
 abline(h=ytlab, col='gray88', lwd=0.5)                                  

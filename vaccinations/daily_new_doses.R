@@ -1,3 +1,4 @@
+
 # call function to plot daily doses administered
 source('functions/plot_dailyvac.R')
 
@@ -38,8 +39,13 @@ y2 <- full_date$daily2
 xaxis.lab.at <- seq(min(x), max(x), length.out=6)
 xaxis.lab <- format(seq(min(x), max(x), length.out=6), '%d %b %Y')
 
+# cofigure y axis
+ylim <- c(0, (max(y1, y2)+1e4))
+yaxis.lab <- seq(0, ylim[2], 1e4)
+
 # plot!
-plot_dailyvac(x, y1, y2, ylim = c(0,8e4), xaxis.lab, xaxis.lab.at)
+plot_dailyvac(x, y1, y2, ylim, xaxis.lab, xaxis.lab.at, 
+              yaxis.lab ,leg_ypos= -max(yaxis.lab)/4 )
 
 # latest 1st dose
 new.y1 <- format(y1[length(y1)], scientific=F, big.mark=',')
@@ -73,6 +79,11 @@ label_y1 <- paste(format( abs(weekchange_y1), scientific=F, big.mark=','),
 
 label_y2 <- paste(format( abs(weekchange_y2), scientific=F, big.mark=','), 
                   ' (', abs(weekchange_perc_y2), '%)', sep='')
+
+
+
+
+
 
 
 

@@ -7,20 +7,25 @@ test <- test[-which(test$x == as.Date('2020-05-15')),]
 col<-brewer.pal(9, 'Blues')[c(2,9)]
 
 xtlab <- seq(min(test$x), max(test$x), length.out=6)
-ytlab <- seq(0,max(test$y)+2e4,1e4)
+ytlab <- seq(0, max(test$y)+2e4,1e4)
+
+# define margin on b, l, t & r (leave more space at the bottom)
+par(mar=c(8,5,4,2) )
 
 # Plot unsmotthed data
 plot_case(test$x, test$y, '', '', xlim=c(min(test$x),max(test$x)),
           ylim=c(0,1e5), col[1], format(xtlab, '%d %b %Y'), 
           xtlab.at=xtlab,  ticksize=0.8, formatC(ytlab,'d',big.mark=','), 
-          ytlab.at=ytlab, main=paste('Are we doing enough of COVID-19 testing?') )
+          ytlab.at=ytlab, main='')
 
 # add H ref lines
 abline(h=ytlab, col='gray88', lwd=0.5)
 
 # legend describes what each coloured line represents
-legend('topleft', bty='n', lty=1, col=c(col[2],'red'), text.col=c(col[2],'red'), 
-       c('Tests taken', 'Total positive cases'), lwd=6, cex=1.5)
+par(xpd = TRUE)                 # set xpd to true so legend is not 
+                                # constrained within the plot
+legend(min(test$x), 0-2e4, bty='n', lty=1, col=c(col[2],'red'), text.col=c(col[2],'red'), 
+       horiz=T, c('Tests taken', 'Total positive cases'), lwd=6, cex=1.2)
 
 # 'test.s' stores smoothed data
 test.s <- data.frame(x=mys$date, y=mys$new_tests_smoothed)
