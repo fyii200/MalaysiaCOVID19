@@ -2,9 +2,10 @@
 title: "COVID-19 in Malaysia"
 output: 
   flexdashboard::flex_dashboard:
+    social: [ "twitter", "facebook", "linkedin" ]
     orientation: rows
     navbar:
-          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: left}
     fig_mobile: FALSE
 ---
 
@@ -280,13 +281,13 @@ col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
 <span style="font-size:1.5em; color:`r col[1]`;"> **`r latest_tests`** </span>  
 <span style="color:grey;"> *tests were done in a day.* </span>   
 
-<span style="font-size:1em; color:`r col[2]`;"> **`r pos_case`** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r pos_case`** </span>  
 <span style="color:grey;"> *positive cases were reported on the same day.* </span>  
 
-<span style="font-size:1.3em; color:`r col[1]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r format(max(last7$date, na.rm=T), '%d %b')`.* </span> 
 
-<span style="font-size:1.3em; color:`r col[1]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r format(max(lastlast7$date, na.rm=T), '%d %b')`.* </span>
 
 <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
@@ -325,7 +326,7 @@ col<-brewer.pal(9 ,'Reds')[8]
 <span style="font-size:1.5em; color:`r col`;"> **`r latest_pr`%** </span>  
 <span style="color:grey;"> *Daily positivity rate.* </span>   
 
-<span style="font-size:1.3em; color:`r col`;"> **`r pos7avg`%** </span>  
+<span style="font-size:1.5em; color:`r col`;"> **`r pos7avg`%** </span>  
 <span style="color:grey;"> *7-day moving average of positivity rate.* </span>
 
 &nbsp;  
@@ -364,7 +365,7 @@ col<-brewer.pal(9 ,'Oranges')[4]
 <span style="font-size:1.5em; color:`r col`;"> **`r format(max(y, na.rm=T), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *Cumulative number of cases.* </span>
 
-<span style="font-size:1.3em; color:`r col`;"> **`r format(round(max(mys$total_cases_per_million), 0), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:1.5em; color:`r col`;"> **`r format(round(max(mys$total_cases_per_million), 0), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *reported cases per million population.* </span>
 
 
@@ -405,10 +406,10 @@ col <- brewer.pal(9,'Reds')[c(3,9)]
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r death7avg`** </span>  
 <span style="color:grey;"> *deaths were reported.* </span>
 
-<span style="font-size:1.3em; color:`r col[2]`;"> **`r death7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r death7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r format(max(x, na.rm=T), '%d %b')`.* </span>
 
-<span style="font-size:1.3em; color:`r col[2]`;"> **`r lastdeath7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r lastdeath7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r lastdeath7avg_date`.* </span>
 
 <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
@@ -431,10 +432,12 @@ data$casefatal <- round( (data$total_deaths / data$total_cases)*100, 2)
 data <- subset(data, select=c(date, casefatal))
 
 # convert data frame into xts format
-data <- xts(data[,2], order.by = data$date)         
+data <- xts(data[,2], order.by = data$date) 
+
+col <- brewer.pal(8,'Dark2')[7]
 
 # Plot!
-dygraph.plot(data, col[2], legend.width=140, display='onmouseover', 
+dygraph.plot(data, col, legend.width=140, display='onmouseover', 
              vr=c(0, max(data[,1], na.rm=T)+0.5) )                      %>%
   dySeries("V1", label = "Case fatality ratio (%)") %>%
     dyLegend('follow', labelsSeparateLines = T, width=140)
@@ -443,7 +446,7 @@ dygraph.plot(data, col[2], legend.width=140, display='onmouseover',
 ***
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r cfr`%** </span>  
+<span style="font-size:1.5em; color:`r col`;"> **`r cfr`%** </span>  
 <span style="color:grey;"> *Case Fatality Ratio (CFR) or more commonly known as Case Fatality Rate.* </span>  
 &nbsp;  
 
@@ -595,8 +598,8 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
              legend.width=120, display='always',
              vr=c(0, max(data[,1], na.rm=T)+2e4 )) %>%
   dyHighlight(highlightCircleSize = 5, 
-              highlightSeriesBackgroundAlpha = 0.1,
-              hideOnMouseOut = FALSE)
+              highlightSeriesBackgroundAlpha = 0.2,
+              hideOnMouseOut = TRUE)
 ```
 
 *** 
@@ -609,11 +612,11 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
 <span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
 
 
-<span style="font-size:1.3em; color:`r col[1]`;"> **+`r format(week.y1, scientific=F, big.mark=',')`**</span>
+<span style="font-size:1.5em; color:`r col[1]`;"> **+`r format(week.y1, scientific=F, big.mark=',')`**</span>
 <span style="font-size:1em; color:`r arrowcol_y1`;"> &nbsp; **`r ifelse(weekchange_y1>=0, print('⬆'), print('⬇'))`  `r label_y1`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
-<span style="font-size:1.3em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
 <span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('⬆'), print('⬇'))`  `r label_y2`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
@@ -644,14 +647,14 @@ data <- xts(data[,2:3], order.by = data$date)
 col<- brewer.pal(9 ,'Greens')[c(5,9)]
 phase <- brewer.pal(9 ,'Purples')[c(1,2,3)]
 lim <- brewer.pal(9 ,'PuRd')[c(5,7,9)]
-event <- brewer.pal(3, 'Greys')[3]
+event <- brewer.pal(3, 'Greys')[2]
 
 # Plot!
 dygraph.plot(data, col, 
              dates=c(min(d$date), 
                      as.Date('2022-05-31') ), 
              legend.width=120, 
-             display='onmouseover', vr=c(0, 100) )    %>%
+             display='always', vr=c(0, 100) )    %>%
   dyLimit(72.2, color = lim[3], 
           label='Phase 3 (72.2%)', 
           labelLoc='left')                            %>%
@@ -672,13 +675,14 @@ dygraph.plot(data, col,
             to=as.POSIXlt.character('2022-02-28'), 
             color=phase[1]) %>%
   
-  dyEvent("2021-04-30", "Phase 1", 
+  dyEvent("2021-04-30", "1", 
           labelLoc = "top", 
           color=event, 'dotted')                      %>%
-dyEvent("2021-08-31", "Phase 2", 
+dyEvent("2021-08-31", "2", 
         labelLoc = "top", 
         color=event, 'dotted')                        %>%
-dyEvent("2022-02-28", "Phase 3", 
+dyEvent("2022-02-28", "                                                     
+               3", 
         labelLoc = "bottom", 
         color=event, 'dotted')
 
