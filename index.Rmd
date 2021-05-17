@@ -1,5 +1,5 @@
 ---
-title: "**COVID-19 in Malaysia**"
+title: "COVID-19 in Malaysia"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -7,7 +7,7 @@ output:
           - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: left}
     social: menu
     fig_mobile: FALSE
-date: <span style="font-size:0.8em;"> updated on&nbsp;`r format(Sys.Date(), '%d %b %Y')` </span>
+date: <span style="font-size:0.7em;"> updated on&nbsp; </span> <span style="font-size:0.9em;">`r format(Sys.Date(), '%d %b %Y')` </span>
 ---
 
 ```{r setup, include=FALSE}
@@ -132,7 +132,7 @@ Daily <span style="font-size:0.9em; color:grey;"> *`r format(max(x, na.rm=T), '%
 
 7-day total <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
 <span style="font-size:1.3em"> **`r format(sum(last7cases), scientific=F, big.mark=',')`** </span> &nbsp;
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('▲'), print('▲'))`  `r label`**</span>
 
 #### 
 ```{r echo=FALSE, fig.width=3.5, fig.height=1}
@@ -161,7 +161,7 @@ Daily <span style="font-size:0.9em; color:grey;"> *`r format(latest_date, '%d %b
 
 7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(latest_date, '%d %b')`)*</span>  
 <span style="font-size:1.3em"> **`r format(last7avg, scientific=F, big.mark=',')`** </span>
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 #### 
 ```{r echo=FALSE, fig.width=3.5, fig.height=1}
@@ -189,7 +189,7 @@ Daily <span style="font-size:0.9em; color:grey;"> *`r format(max(x, na.rm=T), '%
 <span style="font-size:1.3em"> **`r format(lastdeath7avg, scientific=F, big.mark=',')`** </span>
 
 7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
-<span style="font-size:1.3em"> **`r format(death7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1.3em"> **`r format(death7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 #### 
 ```{r echo=FALSE, fig.width=3.5, fig.height=1}
@@ -242,13 +242,13 @@ col<-brewer.pal(9 ,'Oranges')[c(4,7)]
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r dailynew`** </span>  
 <span style="color:grey;"> *new cases in the past 24 hours.* </span>
 
-<span style="font-size:1em; color:`r col[2]`;"> **`r lastweeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span>  
+<span style="font-size:1.3em; color:`r col[2]`;"> **`r lastweeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r lastlastdate`.* </span>
 
-<span style="font-size:1em; color:`r col[2]`;"> **`r weeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span>   
+<span style="font-size:1.3em; color:`r col[2]`;"> **`r weeknew`** </span> <span style="font-size:1em; color:grey;"> **cases / day** </span>   
 <span style="color:grey;"> *7-day average for the week ending `r format(max(x, na.rm=T), '%d %b')`.* </span>
 
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 
 
@@ -291,7 +291,7 @@ col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
 <span style="font-size:1.5em; color:`r col[1]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r format(max(lastlast7$date, na.rm=T), '%d %b')`.* </span>
 
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 
 
@@ -413,7 +413,7 @@ col <- brewer.pal(9,'Reds')[c(3,9)]
 <span style="font-size:1.5em; color:`r col[2]`;"> **`r lastdeath7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
 <span style="color:grey;"> *7-day average for the week ending `r lastdeath7avg_date`.* </span>
 
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 
 
@@ -612,11 +612,11 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
 
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **+`r format(week.y1, scientific=F, big.mark=',')`**</span>
-<span style="font-size:1em; color:`r arrowcol_y1`;"> &nbsp; **`r ifelse(weekchange_y1>=0, print('⬆'), print('⬇'))`  `r label_y1`**</span>  
+<span style="font-size:1em; color:`r arrowcol_y1`;"> &nbsp; **`r ifelse(weekchange_y1>=0, print('↑'), print('↓'))`  `r label_y1`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
-<span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('⬆'), print('⬇'))`  `r label_y2`**</span>  
+<span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('↑'), print('↓'))`  `r label_y2`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
 
