@@ -66,7 +66,7 @@ col <- brewer.pal(9,'Blues')[c(5,8)]
 <span style="font-size:1.5em; color:`r col[2]`;"> **`r format(d$people_fully_vaccinated [length(d$people_fully_vaccinated)], scientific=F, big.mark=',')`** </span>
   
 
-### Percentage of minimum target population (23.2m) already vaccinated {.no-mobile}
+### Percentage of minimum target population (23.2m) vaccinated {.no-mobile}
 ```{r echo=FALSE}
 source('summary/squareplot.R')
 p(leg.position='')
@@ -99,7 +99,7 @@ col <- brewer.pal(9,'Blues')[c(5,8)]
 <span style="font-size:1.2em; color:`r col[2]`;"> **`r format(d$people_fully_vaccinated [length(d$people_fully_vaccinated)], scientific=F, big.mark=',')`** </span>
 
 
-### Percentage of minimum target population (23.2m) already vaccinated {.mobile}
+### Percentage of minimum target population (23.2m) vaccinated {.mobile}
 ```{r echo=FALSE}
 source('summary/squareplot.R')
 p(leg.position='bottom')
@@ -728,7 +728,7 @@ source('vaccinations/progress_tracker.R')
 
 <span style="color:grey;"> *required **each day on average** over the next **`r dayleft`** days to achieve Phase 2 target.* </span>  
 &nbsp;  
-<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to vaccinate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Dates shown denote the end of each of the 3 vaccination phases.* </span>
+<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to vaccinate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to when each phase is expected to complete.* </span>
 
 
 
