@@ -57,7 +57,7 @@ If you're interested in my work and wish to connect with me, or if you have any 
 
 ________________________
 
-#### <span style="font-size:1.5em;"> Data sources </span>
+#### <span style="font-size:1em;"> Data sources </span>
 All data pertinent to vaccinations: *The Special Committee for Ensuring Access to COVID-19 Vaccine Supply [(JKJAV)](https://www.vaksincovid.gov.my/en/about-jkjav/)* 
 
 Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
