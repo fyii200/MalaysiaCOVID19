@@ -39,7 +39,7 @@ dygraph.plot <- function(data, col, lwd=2,
     dyRangeSelector(dateWindow = 
                       c(min(dates), 
                         max(dates) ),
-                    height = 8 )
+                    height = 5 )
   
 }
 

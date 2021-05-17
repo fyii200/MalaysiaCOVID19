@@ -7,7 +7,7 @@ output:
           - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: left}
     social: menu
     fig_mobile: FALSE
-date: <span style="font-size:0.7em;"> updated:&nbsp; </span> <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
+date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
 ---
 
 ```{r setup, include=FALSE}
@@ -40,6 +40,33 @@ data <- 'data/vaccine.csv'
 d <- read.csv(data); d<-d[,-1]
 d$date <- as.Date(d$date, '%d/%m/%Y')
 ```
+
+How to {data-icon="fa-question-circle"}
+=========================================
+
+Row {data-height=100}
+-----------------------------------------
+### <span style="font-size:2.5em;"> Interact with the graphs! </span>
+Data are updated daily whenever they become available (date printed on the navigation bar shows when the data were last updated). All graphs (except the few trend lines on the 'Daily Summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of thse graphs.
+
+<span style="color:Navy; font-size:1.2em;"> ***First*** </span>, view the graphs on your computer screen whenever possible. You will be able to <span style="color:Navy; font-size:1.2em;"> **hover your cursor over each graph** </span> to see the y-value (e.g., number of vaccinations each day) corresponding to a specific date. You will still be able to do this **if you are using a smartphone**, except that it's no longer 'mouseover' that you're using. Instead, you do this by <span style="color:Navy; font-size:1.2em;"> **tapping** </span> the part of curve/ line of the graph where you want the corresponding y-value to be shown. if the value is not displayed, and you're sure that you're tapping within the plot margins, applying just a little more pressure on your touchscreen might do the trick.
+
+<span style="color:Navy; font-size:1.2em;"> ***Second***,</span> you'll a notice a <span style="color:Navy; font-size:1.2em;"> **horizontal slider** </span> just beneath the x-axis of each graph. Use it to specify the <span style="color:Navy; font-size:1.2em;"> **date range** </span> if you want to zoom in on a particular period of the pandemic. More functions and plots may be added in the near future so keep checking back.
+
+If you're interested in my work and wish to connect with me, or if you have any queries or suggestions, you can contact me through several means (go to my GitHub page via *About me*; contact details are listed there). Happy exploring!  
+
+________________________
+
+#### <span style="font-size:1.5em;"> Data sources </span>
+All data pertinent to vaccinations: *The Special Committee for Ensuring Access to COVID-19 Vaccine Supply [(JKJAV)](https://www.vaksincovid.gov.my/en/about-jkjav/)* 
+
+Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
+
+________________________
+
+
+
+
 
 Daily summary {data-icon="fa-table"}
 =========================================
@@ -702,6 +729,16 @@ source('vaccinations/progress_tracker.R')
 <span style="color:grey;"> *required **each day on average** over the next **`r dayleft`** days to achieve Phase 2 target.* </span>  
 &nbsp;  
 <span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to vaccinate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Dates shown denote the end of each of the 3 vaccination phases.* </span>
+
+
+
+
+
+
+
+
+
+
 
 
 
