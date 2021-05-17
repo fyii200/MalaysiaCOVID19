@@ -12,7 +12,7 @@ ytlab <- seq(0,max(mys$total_cases)+2e5,1e5)
 plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=T,
           ylim=c(0,max(ytlab)), col[1], xtlab_format, lwd=4,
           xtlab.at=xtlab,  ticksize=0.8, 
-          paste(formatC(ytlab,'d',big.mark=','), sep=''), 
+          paste(format(ytlab, scientific=F, big.mark=','), sep=''), 
           ytlab.at=ytlab, 
           main='')
 

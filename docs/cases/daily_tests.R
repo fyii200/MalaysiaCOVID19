@@ -15,7 +15,7 @@ par(mar=c(8,5,4,2) )
 # Plot unsmotthed data
 plot_case(test$x, test$y, '', '', xlim=c(min(test$x),max(test$x)),
           ylim=c(0,1e5), col[1], format(xtlab, '%d %b %Y'), 
-          xtlab.at=xtlab,  ticksize=0.8, formatC(ytlab,'d',big.mark=','), 
+          xtlab.at=xtlab,  ticksize=0.8, format(ytlab, scientific=F, big.mark=','), 
           ytlab.at=ytlab, main='')
 
 # add H ref lines

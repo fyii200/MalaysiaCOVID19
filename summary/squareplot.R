@@ -9,10 +9,12 @@ y2 <- d$people_fully_vaccinated
 
 
 # what % of total population (32.7 mil) has received 1st dose?
-target_y1 <- round(((max(y1)/23.6e6)*100),0)
+raw_target_y1 <- (max(y1)/23.6e6)*100
+target_y1 <- round(raw_target_y1,0)
 
 # what % of total population (32.7 mil) has received 2nd dose?
-target_y2 <- round(((max(y2)/23.6e6)*100),0)
+raw_target_y2 <- (max(y2)/23.6e6)*100
+target_y2 <- round(raw_target_y2,0)
 
 # what % havs not received a dose yet?
 rem_target <- 100 - target_y1

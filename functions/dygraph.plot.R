@@ -18,11 +18,11 @@ dygraph.plot <- function(data, col, lwd=2,
               labelsKMB='M',
               gridLineColor = gray[2],
               disableZoom = T,
-              animatedZooms = T,
               fillGraph = fill,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
-              rightGap = rightgap)               %>%
+              rightGap = rightgap,
+              mobileDisableYTouch = T)               %>%
     dyAxis('x', 
            drawGrid = F, 
            axisLabelColor = gray[5], 

@@ -1,12 +1,13 @@
 ---
-title: "COVID-19 in Malaysia"
+title: "**COVID-19 in Malaysia**"
 output: 
   flexdashboard::flex_dashboard:
-    social: [ "twitter", "facebook", "linkedin" ]
     orientation: rows
     navbar:
           - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: left}
+    social: menu
     fig_mobile: FALSE
+date: <span style="font-size:0.8em;"> updated on&nbsp;`r format(Sys.Date(), '%d %b %Y')` </span>
 ---
 
 ```{r setup, include=FALSE}
@@ -71,10 +72,10 @@ p(leg.position='')
 ```
 
 <span style="font-size:1em;"> 1st dose </span>  
-<span style="font-size:1.5em; color:`r col[1]`; text-decoration:underline"> **`r target_y1`%** </span>
+<span style="font-size:1.5em; color:`r col[1]`; text-decoration:underline"> **`r round(raw_target_y1, 1)`%** </span>
 
 <span style="font-size:1em;"> 2nd dose </span>  
-<span style="font-size:1.5em; color:`r col[2]`; text-decoration:underline"> **`r target_y2`%** </span>
+<span style="font-size:1.5em; color:`r col[2]`; text-decoration:underline"> **`r round(raw_target_y2, 1)`%** </span>
 
 
 
@@ -105,8 +106,8 @@ p(leg.position='bottom')
 
 <span style="font-size:1em;"> &nbsp; 1st </span> &nbsp; | &nbsp; <span style="font-size:1em;"> 2nd dose </span>
 
-<span style="font-size:1.3em; color:`r col[1]`; text-decoration:underline"> &nbsp; **`r target_y1`%** </span> &nbsp; | &nbsp;
-<span style="font-size:1.3em; color:`r col[2]`; text-decoration:underline"> **`r target_y2`%** </span>
+<span style="font-size:1.3em; color:`r col[1]`; text-decoration:underline"> &nbsp; **`r round(raw_target_y1, 1)`%** </span> &nbsp; | &nbsp;
+<span style="font-size:1.3em; color:`r col[2]`; text-decoration:underline"> **`r round(raw_target_y2, 1)`%** </span>
 
 
 
@@ -131,7 +132,7 @@ Daily <span style="font-size:0.9em; color:grey;"> *`r format(max(x, na.rm=T), '%
 
 7-day total <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(x), '%d %b')`)*</span>  
 <span style="font-size:1.3em"> **`r format(sum(last7cases), scientific=F, big.mark=',')`** </span> &nbsp;
-<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('⬆'), print('⬇'))`  `r label`**</span>
+<span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('↑'), print('↓'))`  `r label`**</span>
 
 #### 
 ```{r echo=FALSE, fig.width=3.5, fig.height=1}
@@ -214,7 +215,7 @@ Cases {.storyboard data-icon="fa-vial"}
 
 
 ### <span style="font-size:1.3em;"> **Daily New Cases |** </span> <br> <span style="font-size:0.9em;"> How many new cases are being confirmed each day? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, new_cases, new_cases_smoothed) )
 names(data)[c(2,3)] <- c("Daily cases", "7-day avg")
@@ -254,7 +255,7 @@ col<-brewer.pal(9 ,'Oranges')[c(4,7)]
 
 
 ### <span style="font-size:1.3em;"> **Daily Tests |** </span> <br> <span style="font-size:0.9em;"> Are we doing enough of COVID-19 testing? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, new_tests_smoothed, new_cases_smoothed) )
 names(data)[c(2,3)] <- c("All tests", "Positive")
@@ -298,7 +299,7 @@ col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
 
 
 ### <span style="font-size:1.3em;"> **Positivity Rate |** </span> <br> <span style="font-size:0.9em;"> What share of tests comes back positive each day? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, positive_rate) )
 names(data)[2] <- c("Positivity rate")
@@ -337,7 +338,7 @@ col<-brewer.pal(9 ,'Reds')[8]
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Cases |** </span> <br> <span style="font-size:0.9em;"> How many cases have been confirmed so far? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, total_cases) )
 names(data)[2] <- c("Total cases")
@@ -379,7 +380,7 @@ Deaths {.storyboard data-icon="fa-skull"}
 =========================================
 
 ### <span style="font-size:1.3em;"> **Daily Deaths |** </span> <br> <span style="font-size:0.9em;"> What is the daily number of reported deaths? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, new_deaths, new_deaths_smoothed) )
 data$date <- as.Date(data$date)
@@ -424,7 +425,7 @@ col <- brewer.pal(9,'Reds')[c(3,9)]
 source('deaths/case_fatality_rate.R')
 ```
 
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data$date <- as.Date(data$date)
 # compute CFR
@@ -457,7 +458,7 @@ dygraph.plot(data, col, legend.width=140, display='onmouseover',
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Deaths |** </span> <br> <span style="font-size:0.9em;"> How many deaths have been reported so far? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 data <- subset(mys, select=c(date, total_deaths) )
 data$date <- as.Date(data$date)
 # convert data frame into xts format
@@ -495,7 +496,7 @@ Vaccinations {.storyboard data-icon="fa-syringe"}
 
 
 ### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
 data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
@@ -521,17 +522,15 @@ source('vaccinations/percentage_vaccinated.R')
 *** 
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
 
-<span style="font-size:1.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>
-<span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>
+<span style="font-size:1.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
+<span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>  
+<span style="font-size:1.2em; color:`r col[3]`;"> **+`r inc1`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>  
 
-<span style="font-size:1.2em; color:`r col[3]`;"> **+ `r inc1`%** </span>
-<span style="color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>  
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
 <span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span>  
-
-<span style="font-size:1.2em; color:`r col[2]`;"> **+ `r inc2`%** </span>
-<span style="color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
+<span style="font-size:1.2em; color:`r col[2]`;"> **+`r inc2`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
 
  
 
@@ -541,7 +540,7 @@ source('vaccinations/percentage_vaccinated.R')
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
 names(data)[c(2,3)] <- c("1st dose", "2nd dose")
@@ -583,7 +582,7 @@ col<-brewer.pal(9 ,'Blues')[c(5,9)]
 source('vaccinations/daily_new_doses.R')
 ```
 
-```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(full_date, select=c(date, daily1, daily2) )
 names(data)[c(2,3)] <- c("1st dose", "2nd dose")
@@ -605,10 +604,10 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
 *** 
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
 
-<span style="font-size:1.5em; color:`r col[1]`;"> **+ `r new.y1`** </span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **+`r new.y1`** </span>  
 <span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **+ `r new.y2`** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r new.y2`** </span>  
 <span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
 
 

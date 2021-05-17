@@ -11,7 +11,7 @@ ytlab <- seq(0, max(y, na.rm=T)+500, 500)
 # plot cumulative deeaths (shade area under the curve)
 plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=T,
           ylim=c(0,max(ytlab)), col[1], xtlab_format,
-          xtlab.at=xtlab,  ticksize=0.8, formatC(ytlab,'d',big.mark=','), 
+          xtlab.at=xtlab,  ticksize=0.8, format(ytlab, scientific=F, big.mark=','), 
           ytlab.at=ytlab, 
           main='')
 
