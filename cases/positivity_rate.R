@@ -16,7 +16,7 @@ abline(h=ytlab, col='gray88', lwd=0.5)
 pos <- mys$positive_rate*100
 
 # pos7avg (7-day average) pos rate
-pos7avg <- round(mean(pos[(length(pos)-7):length(pos)], na.rm=T),2)
+pos7avg <- round(mean(pos[(length(pos)-6):length(pos)], na.rm=T),2)
 
 # latest positivity rate
 latest_pr <- pos[length(pos)]

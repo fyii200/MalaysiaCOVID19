@@ -3,7 +3,7 @@
 source('functions/plot_vac.R')
 
 # col[1] and col[2] for 1 & 2nd dose respectively
-col <- brewer.pal(9,'Blues')[c(3,8,5)]                    
+col <- brewer.pal(9,'Blues')[c(3,9,5)]                    
 
 # express y-val in terms of million
 mil <- round(d$people_vaccinated/1e6, digits=2)

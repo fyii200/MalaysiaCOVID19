@@ -19,22 +19,24 @@ rem_target <- 100 - target_y1
 
 # what % of target population (23.2 mil) has received 1st & 2nd dose, respectively?
 target <- data.frame(
-  dose = c("2nd dose","1st dose", "remaining target pop"),
+  dose = c("2nd dose","1st dose", "Remaining target pop."),
   percentage = c( target_y2, target_y1-target_y2, rem_target ) 
 )
 
 # plot square chart (called 'p' so ggplot can be forced to be printed later)
-p <- ggplot(data = target, 
-             aes(fill = dose, values = percentage)) +
+p <- function(leg.position)
+    ggplot(data = target, 
+           aes(fill = dose, values = percentage)) +
            geom_waffle(n_rows = 10, size = 0.5, colour = "#ffffff",  flip = TRUE) +
            scale_fill_manual(values = c(col, 'gray92') ) +
            coord_equal() +
            theme_minimal() +
            theme_enhance_waffle() +
            theme(legend.title=element_blank()) +
-           theme(legend.position="none")
+           theme(legend.position=leg.position)
+           
+           
 
-print(p)
 
 
 

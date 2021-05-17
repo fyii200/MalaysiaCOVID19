@@ -1,22 +1,26 @@
 ---
-title: "COVID-19 in Malaysia — Data Visualisations"
+title: "COVID-19 in Malaysia"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
     navbar:
-       - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+    fig_mobile: FALSE
 ---
 
 ```{r setup, include=FALSE}
 ## load relevant functions, packages ##
 # install.packages("waffle", repos = "https://cinc.rud.is")
-# install.packages("plotly")
-# install.packages('dplyr')
+# install.packages('dygraph')
+# install.packages('dplyr)
 
 library(RColorBrewer)
 library(waffle)
 library(dplyr)
+library(dygraphs)
+library(xts)
 source('functions/data_update.R')
+source('functions/dygraph.plot.R')
 
 ### DAILY CASES, TESTS, DEATHS, etc. ###
 ## read raw data (worldwide) and configure data frame named 'mys'
@@ -60,9 +64,10 @@ col <- brewer.pal(9,'Blues')[c(5,8)]
   
 
 
-### Percentage of minimum target Population (23.2m) already vaccinated
+### Percentage of minimum target population (23.2m) already vaccinated
 ```{r echo=FALSE}
 source('summary/squareplot.R')
+p(leg.position='')
 ```
 
 <span style="font-size:1em;"> 1st dose </span>  
@@ -176,9 +181,25 @@ Cases {.storyboard data-icon="fa-vial"}
 
 
 ### <span style="font-size:1.3em;"> **Daily New Cases |** </span> <br> <span style="font-size:0.9em;"> How many new cases are being confirmed each day? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(mys, select=c(date, new_cases, new_cases_smoothed) )
+names(data)[c(2,3)] <- c("Daily cases", "7-day avg")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Oranges')[c(4,7)]
+# Plot!
+dygraph.plot(data, col, dates=mys$date, legend.width=130,
+             vr=c(0, max(data[,1], na.rm=T)+2e3), display='always')
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('cases/daily_new_cases.R')
+col<-brewer.pal(9 ,'Oranges')[c(4,7)]
 ```
 
 *** 
@@ -206,9 +227,25 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Daily Tests |** </span> <br> <span style="font-size:0.9em;"> Are we doing enough of COVID-19 testing? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(mys, select=c(date, new_tests_smoothed, new_cases_smoothed) )
+names(data)[c(2,3)] <- c("Tests", "Positive")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
+# Plot!
+dygraph.plot(data, col, dates=mys$date, legend.width=100, display='always',
+             vr=c(0, max(data[,1], na.rm=T)+2e4))
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('cases/daily_tests.R')
+col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
 ```
 
 *** 
@@ -216,19 +253,19 @@ source('cases/daily_tests.R')
 
 _____________________
 
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r latest_tests`** </span>  
+<span style="font-size:2.5em; color:`r col[1]`;"> **`r latest_tests`** </span>  
 <span style="color:grey;"> *tests were done in a day.* </span>   
 
-<span style="font-size:1.5em; color:red;"> **`r pos_case`** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r pos_case`** </span>  
 <span style="color:grey;"> *positive cases were reported on the same day.* </span>
 
 _____________________
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>
 
 <span style="color:grey;"> *7-day average for the week ending `r format(max(last7$date, na.rm=T), '%d %b')`.* </span> 
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[2]`;"> **tests / day** </span>
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>
 
 <span style="color:grey;"> *7-day average for the week ending `r format(max(lastlast7$date, na.rm=T), '%d %b')`.* </span>
 
@@ -240,9 +277,27 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Positivity Rate |** </span> <br> <span style="font-size:0.9em;"> What share of tests comes back positive each day? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(mys, select=c(date, positive_rate) )
+names(data)[2] <- c("Positivity rate")
+data$date <- as.Date(data$date)
+data[,2] <- data[,2]*100
+# convert data frame into xts format
+data <- xts(data[,2], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Reds')[8]
+# Plot!
+dygraph.plot(data, col, dates=mys$date, legend.width=100, vr=c(0, max(data[,1], na.rm=T)+5)) %>%
+  dySeries("V1", label = "% Positive") %>%
+  dyLegend('always', labelsSeparateLines = T, width=100)
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('cases/positivity_rate.R')
+col<-brewer.pal(9 ,'Reds')[8]
 ```
 
 *** 
@@ -250,10 +305,10 @@ source('cases/positivity_rate.R')
 
 _____________________
 
-<span style="font-size:2.5em; color:red;"> **`r latest_pr`%** </span>  
+<span style="font-size:2.5em; color:`r col`;"> **`r latest_pr`%** </span>  
 <span style="color:grey;"> *Daily positivity rate.* </span>   
 
-<span style="font-size:1.5em; color:red;"> **`r pos7avg`%** </span>  
+<span style="font-size:1.5em; color:`r col`;"> **`r pos7avg`%** </span>  
 <span style="color:grey;"> *7-day moving average of positivity rate.* </span>
 
 _____________________
@@ -267,9 +322,27 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Cases |** </span> <br> <span style="font-size:0.9em;"> How many cases have been confirmed so far? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(mys, select=c(date, total_cases) )
+names(data)[2] <- c("Total cases")
+data$date <- as.Date(data$date)
+data[,2] <- data[,2]
+# convert data frame into xts format
+data <- xts(data[,2], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Oranges')[4]
+# Plot!
+dygraph.plot(data, col, dates=mys$date, legend.width=100, vr=c(0, max(data[,1], na.rm=T)+1e5) ) %>%
+  dySeries("V1", label = "Total") %>%
+  dyLegend('follow', labelsSeparateLines = T, width=100)
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('cases/cumulative_cases.R')
+col<-brewer.pal(9 ,'Oranges')[4]
 ```
 
 ***
@@ -277,12 +350,12 @@ source('cases/cumulative_cases.R')
 
 _____________________
 
-<span style="font-size:2.5em; color:`r col[2]`;"> **`r format(max(y, na.rm=T), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2.5em; color:`r col`;"> **`r format(max(y, na.rm=T), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *Cumulative number of cases.* </span>
 
 _____________________
 
-<span style="font-size:2em; color:`r col[2]`;"> **`r format(round(max(mys$total_cases_per_million), 0), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2em; color:`r col`;"> **`r format(round(max(mys$total_cases_per_million), 0), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *reported cases per million population.* </span>
 
 _____________________
@@ -298,8 +371,25 @@ Deaths {.storyboard data-icon="fa-skull"}
 =========================================
 
 ### <span style="font-size:1.3em;"> **Daily Deaths |** </span> <br> <span style="font-size:0.9em;"> What is the daily number of reported deaths? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(mys, select=c(date, new_deaths, new_deaths_smoothed) )
+data$date <- as.Date(data$date)
+names(data)[c(2,3)] <- c('Daily deaths', '7-day avg')
+# convert data frame into xts format
+data <- xts(data[,c(2,3)], order.by = data$date)         
+
+col <- brewer.pal(9,'Reds')[c(3,9)]
+
+# Plot!
+dygraph.plot(data, col, dates=mys$date, legend.width=130, 
+             display='onmouseover',
+             vr=c(0, max(data[,1], na.rm=T)+15) )     
+```
+
+```{r include=FALSE}
 source('deaths/daily_deaths.R')
+col <- brewer.pal(9,'Reds')[c(3,9)]
 ```
 
 ***
@@ -329,8 +419,25 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Case Fatality Ratio |** </span> <br> <span style="font-size:0.9em;"> What is the ratio between confirmed deaths and confirmed cases? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r include=FALSE}
 source('deaths/case_fatality_rate.R')
+```
+
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data$date <- as.Date(data$date)
+# compute CFR
+data$casefatal <- round( (data$total_deaths / data$total_cases)*100, 2)
+data <- subset(data, select=c(date, casefatal))
+
+# convert data frame into xts format
+data <- xts(data[,2], order.by = data$date)         
+
+# Plot!
+dygraph.plot(data, col[2], legend.width=140, display='onmouseover', 
+             vr=c(0, max(data[,1], na.rm=T)+0.5) )                      %>%
+  dySeries("V1", label = "Case fatality ratio (%)") %>%
+    dyLegend('follow', labelsSeparateLines = T, width=140)
 ```
 
 ***
@@ -351,7 +458,22 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Deaths |** </span> <br> <span style="font-size:0.9em;"> How many deaths have been reported so far? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+data <- subset(mys, select=c(date, total_deaths) )
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2], order.by = data$date)         
+
+col <- brewer.pal(9,'Greys')[7]
+
+# Plot!
+dygraph.plot(data, col, legend.width=120, display='onmouseover',
+             vr=c(0, max(data[,1], na.rm=T)+2e3) )                    %>%
+  dySeries("V1", label = "Cumulative deaths") %>%
+    dyLegend('follow', labelsSeparateLines = T, width=120)
+```
+
+```{r include=FALSE}
 source('deaths/cumulative_deaths.R')
 ```
 
@@ -376,7 +498,25 @@ Vaccinations {.storyboard data-icon="fa-syringe"}
 
 
 ### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the population has been vaccinated? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
+data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6)*100, 2)
+
+names(data)[c(2,3)] <- c("1st dose (%)", "2nd dose (%)")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Greens')[c(5,9)]
+# Plot!
+dygraph.plot(data, col, dates=d$date, legend.width=120, 
+             display='always', vr=c(0, max(data[,1], na.rm=T)+2) )
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('vaccinations/percentage_vaccinated.R')
 ```
@@ -410,9 +550,25 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+names(data)[c(2,3)] <- c("1st dose", "2nd dose")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Blues')[c(3,9)]
+# Plot!
+dygraph.plot(data, col, dates=d$date, legend.width=120, display='always',
+             vr=c(0, max(data[,1], na.rm=T)+5e5) )
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('vaccinations/cumulative_doses.R')
+col<-brewer.pal(9 ,'Blues')[c(3,9)]
 ```
 
 *** 
@@ -420,7 +576,7 @@ source('vaccinations/cumulative_doses.R')
 
 _____________________
 
-<span style="font-size:2.5em; color:`r col[3]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
+<span style="font-size:2.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
 <span style="color:grey;"> *first doses have been administered.* </span>
 
 _____________________  
@@ -438,9 +594,24 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r include=FALSE}
 # source code file for the plot
 source('vaccinations/daily_new_doses.R')
+```
+
+```{r echo=FALSE, fig.height=3, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(full_date, select=c(date, daily1, daily2) )
+names(data)[c(2,3)] <- c("1st dose", "2nd dose")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col <- brewer.pal(9,'Greens')[c(4,9)]
+# Plot!
+dygraph.plot(data, col, fill=FALSE, dates=d$date, legend.width=120, display='always',
+             vr=c(0, max(data[,1], na.rm=T)+2e4 ))
 ```
 
 *** 
@@ -472,7 +643,37 @@ _____________________
 
 
 ### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
-```{r echo=FALSE, fig.height=8, fig.width=12, warning=FALSE}
+```{r}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
+data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6)*100, 2)
+
+# add future dates and '0' to each row
+names(data)[c(2,3)] <- c("1st dose (%)", "2nd dose (%)")
+future <- data.frame(date=seq(max(data$date)+1, as.Date('2022-02-28'), 1), '1st' =0, '2nd' =0 )
+names(future)[c(2,3)] <- names(data)[c(2,3)]
+data <- rbind(data, future)
+data$date <- as.Date(data$date)
+
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<- brewer.pal(9 ,'Greens')[c(5,9)]
+phase <- brewer.pal(9 ,'Blues')[c(4,6,8)]
+# Plot!
+dygraph.plot(data, col, 
+             dates=c(min(d$date), 
+                     as.Date('2022-02-28') ), 
+             legend.width=120, 
+             display='always', vr=c(0, 100) )    %>%
+  dyLimit(72.2, color = phase[3], label='Phase 3', labelLoc='right')                   %>%
+  dyLimit(30.3, color = phase[2], label='Phase 2', labelLoc='right')                   %>%
+  dyLimit(1.5, color = phase[1], label='Phase 1', labelLoc='right') 
+```
+
+```{r include=FALSE}
 # source code file for the plot
 source('vaccinations/progress_tracker.R')
 ```

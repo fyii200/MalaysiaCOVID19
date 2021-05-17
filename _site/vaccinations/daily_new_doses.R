@@ -2,7 +2,7 @@
 # call function to plot daily doses administered
 source('functions/plot_dailyvac.R')
 
-col <- brewer.pal(9,'Greens')[c(5,9)]
+col <- brewer.pal(9,'Greens')[c(4,9)]
 
 # data frame to list dates sequentially (without breaks)
 dat <- data.frame(date=seq(min(d$date), max(d$date), 1)) 
