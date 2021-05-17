@@ -17,11 +17,12 @@ dygraph.plot <- function(data, col, lwd=2,
               axisLabelFontSize = 12, 
               labelsKMB='M',
               gridLineColor = gray[2],
-              disableZoom = T,
+              disableZoom = F,
               fillGraph = fill,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
-              rightGap = rightgap)               %>%
+              rightGap = rightgap,
+              mobileDisableYTouch =T)               %>%
     dyAxis('x', 
            drawGrid = F, 
            axisLabelColor = gray[5], 
@@ -54,7 +55,7 @@ dygraph.plot <- function(data, col, lwd=2,
 
 
 
-# 
+
 # # configure data frame for dygraph
 # data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
 # data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
@@ -68,7 +69,7 @@ dygraph.plot <- function(data, col, lwd=2,
 # data$date <- as.Date(data$date)
 # 
 # # convert data frame into xts format
-# data <- xts(data[,2:3], order.by = data$date)         
+# data <- xts(data[,2:3], order.by = data$date)
 # 
 # # define colours
 # col<- brewer.pal(9 ,'Greens')[c(5,9)]
@@ -77,44 +78,44 @@ dygraph.plot <- function(data, col, lwd=2,
 # event <- brewer.pal(3, 'Greys')[2]
 # 
 # # Plot!
-# dygraph.plot(data, col, 
-#              dates=c(min(d$date), 
-#                      as.Date('2022-04-30') ), 
-#              legend.width=120, 
+# dygraph.plot(data, col,
+#              dates=c(min(d$date),
+#                      as.Date('2022-04-30') ),
+#              legend.width=120,
 #              display='onmouseover', vr=c(0, 100) )    %>%
-#   dyLimit(72.2, color = lim[3], 
-#           label='Phase 3 (72.2%)', 
+#   dyLimit(72.2, color = lim[3],
+#           label='Phase 3 (72.2%)',
 #           labelLoc='left')                            %>%
-#   dyLimit(30.3, color = lim[2], 
-#           label='Phase 2 (30.3%)', 
+#   dyLimit(30.3, color = lim[2],
+#           label='Phase 2 (30.3%)',
 #           labelLoc='left')                            %>%
-#   dyLimit(1.5, color = lim[1], 
-#           label='Phase 1 (1.5%)', 
+#   dyLimit(1.5, color = lim[1],
+#           label='Phase 1 (1.5%)',
 #           labelLoc='right')                           %>%
 # 
-#   dyShading(from=as.POSIXlt.character('2021-02-01'), 
-#           to=as.POSIXlt.character('2021-04-30'), 
+#   dyShading(from=as.POSIXlt.character('2021-02-01'),
+#           to=as.POSIXlt.character('2021-04-30'),
 #           color=phase[3])   %>%
-#   dyShading(from=as.POSIXlt.character('2021-04-30'), 
-#             to=as.POSIXlt.character('2021-08-31'), 
+#   dyShading(from=as.POSIXlt.character('2021-04-30'),
+#             to=as.POSIXlt.character('2021-08-31'),
 #             color=phase[2])   %>%
-#   dyShading(from=as.POSIXlt.character('2021-08-31'), 
-#             to=as.POSIXlt.character('2022-02-28'), 
+#   dyShading(from=as.POSIXlt.character('2021-08-31'),
+#             to=as.POSIXlt.character('2022-02-28'),
 #             color=phase[1]) %>%
-#   
-#   dyEvent("2021-04-30", "Phase 1", 
-#           labelLoc = "top", 
+# 
+#   dyEvent("2021-04-30", "Phase 1",
+#           labelLoc = "top",
 #           color=event, 'dotted')                      %>%
-# dyEvent("2021-08-31", "Phase 2", 
-#         labelLoc = "top", 
+# dyEvent("2021-08-31", "Phase 2",
+#         labelLoc = "top",
 #         color=event, 'dotted')                        %>%
-# dyEvent("2022-02-28", "Phase 3", 
-#         labelLoc = "top", 
+# dyEvent("2022-02-28", "Phase 3",
+#         labelLoc = "top",
 #         color=event, 'dotted')
-
-
-
-
-
-
-
+# 
+# 
+# 
+# 
+# 
+# 
+# 
