@@ -21,7 +21,8 @@ dygraph.plot <- function(data, col, lwd=2,
               fillGraph = fill,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
-              rightGap = rightgap)               %>%
+              rightGap = rightgap,
+              mobileDisableYTouch = F)               %>%
     dyAxis('x', 
            drawGrid = F, 
            axisLabelColor = gray[5], 
