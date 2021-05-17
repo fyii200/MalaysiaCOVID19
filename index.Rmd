@@ -368,7 +368,7 @@ col<-brewer.pal(9 ,'Reds')[8]
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(mys, select=c(date, total_cases) )
-names(data)[2] <- c("Total cases")
+names(data)[2] <- c("Cumulative cases")
 data$date <- as.Date(data$date)
 data[,2] <- data[,2]
 # convert data frame into xts format
@@ -376,9 +376,9 @@ data <- xts(data[,2], order.by = data$date)
 
 col<-brewer.pal(9 ,'Oranges')[4]
 # Plot!
-dygraph.plot(data, col, dates=mys$date, legend.width=100, vr=c(0, max(data[,1], na.rm=T)+1e5) ) %>%
-  dySeries("V1", label = "Total") %>%
-  dyLegend('follow', labelsSeparateLines = T, width=100)
+dygraph.plot(data, col, dates=mys$date, legend.width=140, vr=c(0, max(data[,1], na.rm=T)+1e5) ) %>%
+  dySeries("V1", label = "Cumulative cases") %>%
+  dyLegend('always', labelsSeparateLines = T, width=140)
 ```
 
 ```{r include=FALSE}
@@ -431,7 +431,7 @@ col <- brewer.pal(9,'Reds')[c(3,9)]
 ***
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **+`r death7avg`** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r y[length(y)]`** </span>  
 <span style="color:grey;"> *deaths were reported.* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **`r death7avg`** </span> <span style="font-size:1em; color:grey;"> **deaths / day** </span>  
@@ -465,10 +465,10 @@ data <- xts(data[,2], order.by = data$date)
 col <- brewer.pal(8,'Dark2')[7]
 
 # Plot!
-dygraph.plot(data, col, legend.width=140, display='onmouseover', 
+dygraph.plot(data, col, legend.width=180, display='always', 
              vr=c(0, max(data[,1], na.rm=T)+0.5) )                      %>%
   dySeries("V1", label = "Case fatality ratio (%)") %>%
-    dyLegend('follow', labelsSeparateLines = T, width=140)
+    dyLegend('always', labelsSeparateLines = T, width=180)
 ```
 
 ***
@@ -494,10 +494,10 @@ data <- xts(data[,2], order.by = data$date)
 col <- brewer.pal(9,'Greys')[7]
 
 # Plot!
-dygraph.plot(data, col, legend.width=120, display='onmouseover',
+dygraph.plot(data, col, legend.width=150, display='always',
              vr=c(0, max(data[,1], na.rm=T)+2e3) )                    %>%
   dySeries("V1", label = "Cumulative deaths") %>%
-    dyLegend('follow', labelsSeparateLines = T, width=120)
+    dyLegend('always', labelsSeparateLines = T, width=140)
 ```
 
 ```{r include=FALSE}
@@ -520,6 +520,43 @@ source('deaths/cumulative_deaths.R')
 
 Vaccinations {.storyboard data-icon="fa-syringe"}
 =========================================
+
+
+### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+names(data)[c(2,3)] <- c("1st dose", "2nd dose")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Blues')[c(5,9)]
+# Plot!
+dygraph.plot(data, col, dates=d$date, legend.width=120, display='always',
+             vr=c(0, max(data[,1], na.rm=T)+5e5) )
+```
+
+```{r include=FALSE}
+# source code file for the plot
+source('vaccinations/cumulative_doses.R')
+col<-brewer.pal(9 ,'Blues')[c(5,9)]
+```
+
+*** 
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>  
+
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
+<span style="color:grey;"> *first doses have been administered.* </span>
+
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
+<span style="color:grey;"> *second doses have been administered.* </span>  
+&nbsp;  
+<span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
+
+
+
 
 
 ### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
@@ -563,46 +600,6 @@ source('vaccinations/percentage_vaccinated.R')
 
 
 
-
-
-
-### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
-```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
-# configure data frame for dygraph
-data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
-names(data)[c(2,3)] <- c("1st dose", "2nd dose")
-data$date <- as.Date(data$date)
-# convert data frame into xts format
-data <- xts(data[,2:3], order.by = data$date)         
-
-# col [1] for 2 doses [2] for 1 dose
-col<-brewer.pal(9 ,'Blues')[c(5,9)]
-# Plot!
-dygraph.plot(data, col, dates=d$date, legend.width=120, display='always',
-             vr=c(0, max(data[,1], na.rm=T)+5e5) )
-```
-
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/cumulative_doses.R')
-col<-brewer.pal(9 ,'Blues')[c(5,9)]
-```
-
-*** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>  
-
-<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
-<span style="color:grey;"> *first doses have been administered.* </span>
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
-<span style="color:grey;"> *second doses have been administered.* </span>  
-&nbsp;  
-<span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
-
-
-
-
-
 ### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
 ```{r include=FALSE}
 # source code file for the plot
@@ -620,7 +617,8 @@ data <- xts(data[,2:3], order.by = data$date)
 # col [1] for 2 doses [2] for 1 dose
 col <- brewer.pal(9,'Greens')[c(5,9)]
 # Plot!
-dygraph.plot(data, col, fill=FALSE, dates=d$date, 
+dygraph.plot(data, col, fill=FALSE, 
+             dates=c(max(d$date)-14, max(d$date)), 
              legend.width=120, display='always',
              vr=c(0, max(data[,1], na.rm=T)+2e4 )) %>%
   dyHighlight(highlightCircleSize = 5, 
@@ -646,6 +644,8 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
 <span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('▲'), print('▼'))`  `r label_y2`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
+<span style="font-size=0.8em; color:grey;"> Reminder: adjust the slider to specify date range (only last 14 days are shown by default). </span>
+
 
 
 
@@ -653,7 +653,6 @@ dygraph.plot(data, col, fill=FALSE, dates=d$date,
 
 ### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
 ```{r}
-
 # configure data frame for dygraph
 data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
 data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
@@ -671,9 +670,8 @@ data <- xts(data[,2:3], order.by = data$date)
 
 # define colours
 col<- brewer.pal(9 ,'Greens')[c(5,9)]
-phase <- brewer.pal(9 ,'Purples')[c(1,2,3)]
-lim <- brewer.pal(9 ,'PuRd')[c(5,7,9)]
-event <- brewer.pal(3, 'Greys')[2]
+phase <- brewer.pal(9 ,'Purples')[c(2,4,6)]
+lim <- brewer.pal(9 ,'PuRd')[c(6,7,9)]
 
 # Plot!
 dygraph.plot(data, col, 
@@ -689,29 +687,17 @@ dygraph.plot(data, col,
           labelLoc='left')                            %>%
   dyLimit(1.5, color = lim[1], 
           label='Phase 1 (1.5%)', 
-          labelLoc='right')                           %>%
-
-  dyShading(from=as.POSIXlt.character('2021-02-01'), 
-          to=as.POSIXlt.character('2021-04-30'), 
-          color=phase[3])   %>%
-  dyShading(from=as.POSIXlt.character('2021-04-30'), 
+          labelLoc='left')                           %>%
+  
+  dyShading(from=as.POSIXlt.character('2021-04-01'), 
+            to=as.POSIXlt.character('2021-04-30'), 
+            color=phase[1])   %>%
+  dyShading(from=as.POSIXlt.character('2021-08-01'), 
             to=as.POSIXlt.character('2021-08-31'), 
             color=phase[2])   %>%
-  dyShading(from=as.POSIXlt.character('2021-08-31'), 
+  dyShading(from=as.POSIXlt.character('2022-02-01'), 
             to=as.POSIXlt.character('2022-02-28'), 
-            color=phase[1]) %>%
-  
-  dyEvent("2021-04-30", "1", 
-          labelLoc = "top", 
-          color=event, 'dotted')                      %>%
-dyEvent("2021-08-31", "2", 
-        labelLoc = "top", 
-        color=event, 'dotted')                        %>%
-dyEvent("2022-02-28", "                                                     
-               3", 
-        labelLoc = "bottom", 
-        color=event, 'dotted')
-
+            color=phase[3])
 ```
 
 ```{r include=FALSE}
@@ -728,7 +714,7 @@ source('vaccinations/progress_tracker.R')
 
 <span style="color:grey;"> *required **each day on average** over the next **`r dayleft`** days to achieve Phase 2 target.* </span>  
 &nbsp;  
-<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to vaccinate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to when each phase is expected to complete.* </span>
+<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to innoculate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to the month within which each phase is targeted to be completed.* </span>
 
 
 
