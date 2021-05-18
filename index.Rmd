@@ -157,10 +157,10 @@ source('cases/daily_tests.R')
 Daily <span style="font-size:0.9em; color:grey;"> *`r format(latest_date, '%d %b %Y')`*</span>  
 <span style="font-size:1.5em"> **`r latest_tests`** </span>
 
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(max(lastlast7$date), '%d %b')`)*</span>  
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r lastlast7avg_date`)*</span>  
 <span style="font-size:1.3em"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span>
 
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r format(latest_date, '%d %b')`)*</span>  
+7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r last7avg_date`)*</span>  
 <span style="font-size:1.3em"> **`r format(last7avg, scientific=F, big.mark=',')`** </span>
 <span style="font-size:1em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('▲'), print('▼'))`  `r label`**</span>
 
@@ -313,10 +313,10 @@ col<-brewer.pal(11 ,'RdYlBu')[c(11,1)]
 <span style="color:grey;"> *positive cases were reported on the same day.* </span>  
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **`r format(last7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
-<span style="color:grey;"> *7-day average for the week ending `r format(max(last7$date, na.rm=T), '%d %b')`.* </span> 
+<span style="color:grey;"> *7-day average for the week ending `r last7avg_date`.* </span> 
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **`r format(lastlast7avg, scientific=F, big.mark=',')`** </span> <span style="font-size:1em; color:`r col[1]`;"> **tests / day** </span>  
-<span style="color:grey;"> *7-day average for the week ending `r format(max(lastlast7$date, na.rm=T), '%d %b')`.* </span>
+<span style="color:grey;"> *7-day average for the week ending `r lastlast7avg_date`.* </span>
 
 <span style="font-size:1.3em; color:`r arrowcol`;"> **`r ifelse(weekchange>=0, print('▲'), print('▼'))`  `r label`**</span>
 
