@@ -49,14 +49,12 @@ latest_date <- test$x[nrow(test)]
 latest_tests <- format(test$y[nrow(test)], scientific=F, big.mark=',')
 
 # data frame for 7 day avg of daily tests (latest week); store dates and tests)
-last7 <- data.frame(date=test[(nrow(test) - 6) : nrow(test),1],
-                    test=test[(nrow(test) - 6) : nrow(test),2])
-last7avg <- round(mean(last7$test),0)
+last7avg <- mys[nrow(mys),]$new_tests_smoothed
+last7avg_date <- format(max(mys$date), '%d %b')
 
 # data frame for 7 day avg of daily tests (the week before latest  week); store dates and tests)
-lastlast7 <- data.frame(date=test[(nrow(test) - 13) : (nrow(test)-7),1],
-                        test=test[(nrow(test) - 13) : (nrow(test)-7),2])
-lastlast7avg <- round(mean(lastlast7$test),0)
+lastlast7avg <- mys[which(mys$date==(max(mys$date)-7) ),]$new_tests_smoothed
+lastlast7avg_date <- format(max(mys$date)-7, '%d %b')
 
 # compute change between two 7 day averages (+ means number has gone up)
 weekchange <- last7avg - lastlast7avg

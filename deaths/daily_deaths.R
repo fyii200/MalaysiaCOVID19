@@ -27,11 +27,11 @@ polygon(c(min(x),x,max(x)), c(0,y.s,0), border=NA, col=col[2])
 lines(x, y.s, lwd=3.5, col=col[3])
 
 # compute 7-day avg (week ending latest date)
-death7avg <-  round(mean(y[(length(y)-6) : length(y)], na.rm=T),0)
+death7avg <-  round(mys[length(y),]$new_deaths_smoothed,0)
 
 # compute 7-day average (for the week before this week)
-lastdeath7avg <- round(mean(y[(length(y)-13) : (length(y)-7)], na.rm=T),0) 
-lastdeath7avg_date <- format(x[length(y)-7], '%d %b')                      
+lastdeath7avg <- round(mys[which(mys$date == as.Date(max(x)) - 7),]$new_deaths_smoothed, 0)
+lastdeath7avg_date <- format(as.Date(max(x))-7, '%d %b')                      
 
 # mean change between last 7 days and last last 7 days (if + cases have gone up, vice versa if -)
 weekchange <- death7avg - lastdeath7avg

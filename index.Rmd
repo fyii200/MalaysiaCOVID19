@@ -26,11 +26,11 @@ source('functions/dygraph.plot.R')
 
 ### DAILY CASES, TESTS, DEATHS, etc. ###
 ## read raw data (worldwide) and configure data frame named 'mys'
-#world<-read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
-# mys <- world[which(world$iso_code=='MYS'),]
-mys <- read.csv('data/mys.csv'); mys <- mys[,-1]
-# update data!
-mys <- data_update(mys)
+# mys <- read.csv('data/mys.csv'); mys <- mys[,-1]
+# # update data!
+# mys <- data_update(mys)
+world<-read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
+mys <- world[which(world$iso_code=='MYS'),]
 mys$date <- as.Date(mys$date)
 
 ### VACCINATION DATA ###
