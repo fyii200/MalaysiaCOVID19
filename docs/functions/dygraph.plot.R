@@ -17,7 +17,7 @@ dygraph.plot <- function(data, col, lwd=2,
               axisLabelFontSize = 12, 
               labelsKMB='M',
               gridLineColor = gray[2],
-              disableZoom = T,
+              disableZoom = F,
               fillGraph = fill,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
@@ -34,24 +34,15 @@ dygraph.plot <- function(data, col, lwd=2,
     dyLegend(display, 
              width = legend.width,
              hideOnMouseOut = T,
-             labelsSeparateLines = T)        %>%
+             labelsSeparateLines = T)         %>%
     
     dyRangeSelector(dateWindow = 
                       c(min(dates), 
                         max(dates) ),
-                    height = 13 )
+                    height = 13 )             %>%
+    
+    dyCrosshair(direction = "vertical")       %>%                      # Add vertical crosshair line over th epont closest to the mouse
   
+    dyUnzoom()
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
