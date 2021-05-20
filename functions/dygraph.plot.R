@@ -49,26 +49,7 @@ dygraph.plot <- function(data, col, lwd=2,
 
 
 
+   
+  
 
-# 
-# # configure data frame for dygraph
-# data <- subset(full_date, select=c(date, daily1, daily2) )
-# names(data)[c(2,3)] <- c("1st dose", "2nd dose")
-# data$date <- as.Date(data$date)
-# # convert data frame into xts format
-# data <- xts(data[,2:3], order.by = data$date)         
-# 
-# # col [1] for 2 doses [2] for 1 dose
-# col <- brewer.pal(9,'Greens')[c(5,9)]
-# # Plot!
-# dygraph.plot(data, col, fill=FALSE, 
-#              dates=c(max(d$date)-14, max(d$date)), 
-#              legend.width=120, display='always',
-#              vr=c(0, max(data[,1], na.rm=T)+2e4 )) %>%
-#   dyHighlight(highlightCircleSize = 5, 
-#               highlightSeriesBackgroundAlpha = 0.2,
-#               hideOnMouseOut = TRUE)              
-# 
-# 
-# 
-# 
+
