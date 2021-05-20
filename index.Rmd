@@ -523,84 +523,6 @@ Vaccinations {.storyboard data-icon="fa-syringe"}
 =========================================
 
 
-### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
-```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
-# configure data frame for dygraph
-data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
-names(data)[c(2,3)] <- c("1st dose", "2nd dose")
-data$date <- as.Date(data$date)
-# convert data frame into xts format
-data <- xts(data[,2:3], order.by = data$date)         
-
-# col [1] for 2 doses [2] for 1 dose
-col<-brewer.pal(9 ,'Blues')[c(5,9)]
-# Plot!
-dygraph.plot(data, col, dates=d$date, legend.width=120, display='always',
-             vr=c(0, max(data[,1], na.rm=T)+5e5) )
-```
-
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/cumulative_doses.R')
-col<-brewer.pal(9 ,'Blues')[c(5,9)]
-```
-
-*** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>  
-
-<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
-<span style="color:grey;"> *first doses have been administered.* </span>
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
-<span style="color:grey;"> *second doses have been administered.* </span>  
-&nbsp;  
-<span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
-
-
-
-
-
-### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
-```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
-# configure data frame for dygraph
-data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
-data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
-data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6)*100, 2)
-
-names(data)[c(2,3)] <- c("1st dose (%)", "2nd dose (%)")
-data$date <- as.Date(data$date)
-# convert data frame into xts format
-data <- xts(data[,2:3], order.by = data$date)         
-
-# col [1] for 2 doses [2] for 1 dose
-col<-brewer.pal(9 ,'Greens')[c(5,9)]
-# Plot!
-dygraph.plot(data, col, dates=d$date, legend.width=120, 
-             display='always', vr=c(0, max(data[,1], na.rm=T)+2) )
-```
-
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/percentage_vaccinated.R')
-```
-
-*** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
-
-<span style="font-size:1.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
-<span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>  
-<span style="font-size:1.2em; color:`r col[3]`;"> **+`r inc1`%** </span>
-<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>  
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
-<span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span>  
-<span style="font-size:1.2em; color:`r col[2]`;"> **+`r inc2`%** </span>
-<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
-
- 
-
-
-
 ### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
 ```{r include=FALSE}
 # source code file for the plot
@@ -646,7 +568,83 @@ dyStackedBarGroup(c('1st dose', '2nd dose'))
 <span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2>=0, print('▲'), print('▼'))`  `r label_y2`**</span>  
 <span style="color:grey;"> *each day on average over the past seven days* </span>
 
-<span style="font-size=0.8em; color:grey;"> Reminder: adjust the slider to specify date range (only last 14 days are shown by default). </span>
+
+
+
+
+### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+data$people_vaccinated <- round( (data$people_vaccinated/32.7e6)*100, 2)
+data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6)*100, 2)
+
+names(data)[c(2,3)] <- c("1st dose (%)", "2nd dose (%)")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Greens')[c(5,9)]
+# Plot!
+dygraph.plot(data, col, dates=d$date, legend.width=120, 
+             display='always', vr=c(0, max(data[,1], na.rm=T)+2) )
+```
+
+```{r include=FALSE}
+# source code file for the plot
+source('vaccinations/percentage_vaccinated.R')
+```
+
+*** 
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>   
+
+<span style="font-size:1.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
+<span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>  
+<span style="font-size:1.2em; color:`r col[3]`;"> **+`r inc1`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>  
+
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
+<span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span>  
+<span style="font-size:1.2em; color:`r col[2]`;"> **+`r inc2`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
+
+
+
+
+
+### <span style="font-size:1.3em;"> **Cumulative Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses have been administered so far? </span>
+```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
+# configure data frame for dygraph
+data <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated) )
+names(data)[c(2,3)] <- c("1st dose", "2nd dose")
+data$date <- as.Date(data$date)
+# convert data frame into xts format
+data <- xts(data[,2:3], order.by = data$date)         
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9 ,'Blues')[c(5,9)]
+# Plot!
+dygraph.plot(data, col, dates=d$date, legend.width=120, display='always',
+             vr=c(0, max(data[,1], na.rm=T)+5e5) )
+```
+
+```{r include=FALSE}
+# source code file for the plot
+source('vaccinations/cumulative_doses.R')
+col<-brewer.pal(9 ,'Blues')[c(5,9)]
+```
+
+*** 
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm=T), '%d %B %Y')`* </span>  
+
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark=',')`** </span>  
+<span style="color:grey;"> *first doses have been administered.* </span>
+
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark=',')`** </span>  
+<span style="color:grey;"> *second doses have been administered.* </span>  
+&nbsp;  
+<span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
 
 
 
