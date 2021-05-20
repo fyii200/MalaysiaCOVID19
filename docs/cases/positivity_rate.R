@@ -3,15 +3,6 @@ x<- mys$date
 y<- mys$positive_rate*100
 ytlab <- seq(0,20,2)
 
-plot_case(x, y, '', '', xlim=c(min(x),max(x)), auc=F,
-          ylim=c(0,20), 'red', format(xtlab, '%d %b %Y'),
-          xtlab.at=xtlab,  ticksize=0.8, lwd=4,
-          paste(format(ytlab, scientific=F, big.mark=','),'%', sep=''), 
-          ytlab.at=ytlab, main='')
-
-# add H ref lines
-abline(h=ytlab, col='gray88', lwd=0.5)
-
 # pos = full data containing positive rate
 pos <- mys$positive_rate*100
 

@@ -5,7 +5,8 @@ dygraph.plot <- function(data, col, lwd=2,
                          vr,                                           # y axis range
                          rightgap = 4,       
                          display = 'always',
-                         dates = mys$date) {                          # must provide a list of dates!
+                         dates = c(mys$date)                           # must provide a list of dates!
+                         ) {                                           
   
   gray <- brewer.pal(9 ,'Greys')
   
@@ -22,26 +23,25 @@ dygraph.plot <- function(data, col, lwd=2,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
               rightGap = rightgap,
-              mobileDisableYTouch = F)               %>%
+              mobileDisableYTouch = F)              %>%
     dyAxis('x', 
            drawGrid = F, 
            axisLabelColor = gray[5], 
-           axisLineColor = gray[1] )           %>%
+           axisLineColor = gray[1] )                %>%
     dyAxis('y', 
            axisLineColor = gray[1], 
            axisLabelColor = gray[5],
-           valueRange = (vr))                 %>%             
+           valueRange = (vr))                       %>%             
     dyLegend(display, 
              width = legend.width,
              hideOnMouseOut = T,
-             labelsSeparateLines = T)         %>%
+             labelsSeparateLines = T)               %>%
     
     dyRangeSelector(dateWindow = 
-                      c(min(dates), 
-                        max(dates) ),
-                    height = 13 )             %>%
+                      c(min(dates) , max(dates) ),
+                   height = 13 )                    %>%
     
-    dyCrosshair(direction = "vertical")       %>%                      # Add vertical crosshair line over th epont closest to the mouse
+    dyCrosshair(direction = "vertical")             %>%                   # Add vertical cross hairs line over th epont closest to the mouse
   
     dyUnzoom()
 }

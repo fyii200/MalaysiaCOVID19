@@ -1,55 +1,52 @@
+# Compute daily new doses and other relevant stats #
 
-# call function to plot daily doses administered
-source('functions/plot_dailyvac.R')
-
-col <- brewer.pal(9,'Greens')[c(4,9)]
+# col[1] for dose 1; col[2] for dose 2
+col <- brewer.pal(9, 'Greens') [c(4, 9)]
 
 # data frame to list dates sequentially (without breaks)
-dat <- data.frame(date=seq(min(d$date), max(d$date), 1)) 
+dat <- data.frame(date = seq (min(d$date), max(d$date), 1) 
+                  ) 
 
-# subset of raw data                  
-sub <- subset(d, select=c(date, people_vaccinated, people_fully_vaccinated))
+# subset of raw vaccination data                  
+sub <- subset(d, select = c(date, people_vaccinated, people_fully_vaccinated)
+              )
 
 # merge two data frames (retain all dates in 'dat')
-full_date <- merge(dat, sub, all.x=TRUE)
+full_date <- merge(dat, sub, all.x = TRUE)
 full_date$daily1 <- 0 ; full_date$daily2 <- 0
 
 # compute daily jabs (1st dose then 2nd dose)
-for(i in 2:nrow(full_date)-1){
-  full_date$daily1[i+1] <- 
-    full_date$people_vaccinated[i+1] - full_date$people_vaccinated[i]
+for(i in 2 : nrow(full_date)-1 ) {
   
-  full_date$daily2[i+1] <- 
-    full_date$people_fully_vaccinated[i+1] - full_date$people_fully_vaccinated[i]
+    full_date$daily1[i + 1] <- 
+    full_date$people_vaccinated[i + 1] - full_date$people_vaccinated[i]
+  
+    full_date$daily2[i + 1] <- 
+    full_date$people_fully_vaccinated[i + 1] - full_date$people_fully_vaccinated[i]
 }
 
+# compute cumulative 1st dose
+cumulative_1st_dose <- max(full_date$people_vaccinated, na.rm = T)
+
+# compute cumulative 2nd dose
+cumulative_2nd_dose <- max(full_date$people_fully_vaccinated, na.rm = T)
+
 # compute daily total
-full_date$total <- apply(full_date[,4:5], 1, sum)
+full_date$total <- apply(full_date[, 4:5], 1, sum)
 
 # remove rows with NAs
 full_date <- full_date[complete.cases(full_date),]
-par(las=0)
 
 # define x, y1 & y2
-x <- full_date$date
+x  <- full_date$date
 y1 <- full_date$daily1
 y2 <- full_date$daily2
 
-# configure x axis
-xaxis.lab.at <- seq(min(x), max(x), length.out=6)
-xaxis.lab <- format(seq(min(x), max(x), length.out=6), '%d %b %Y')
-
-# cofigure y axis
-ylim <- c(0, (max(y1, y2)+1e4))
-yaxis.lab <- seq(0, ylim[2], 1e4)
-
-# plot!
-plot_dailyvac(x, y1, y2, ylim, xaxis.lab, xaxis.lab.at, 
-              yaxis.lab ,leg_ypos= -max(yaxis.lab)/4 )
-
 # latest 1st dose
-new.y1 <- format(y1[length(y1)], scientific=F, big.mark=',')
-new.y2 <- format(y2[length(y2)], scientific=F, big.mark=',')
+new.y1 <- format( y1[length(y1)], 
+                  scientific=F, big.mark=',')
+new.y2 <- format( y2[length(y2)], 
+                  scientific=F, big.mark=',')
 
 # 7 day avg from latest week
 row7day <- (nrow(full_date)-6) : nrow(full_date)                        
@@ -74,11 +71,19 @@ weekchange_perc_y1 <- round((weekchange_y1 / mean(lastweek.y1))*100, 1)
 weekchange_perc_y2 <- round((weekchange_y2 / mean(lastweek.y2))*100, 1)
 
 # print absolute change (weekchange) & percentage change
-label_y1 <- paste(format( abs(weekchange_y1), scientific=F, big.mark=','), 
-               ' (', abs(weekchange_perc_y1), '%)', sep='')
+label_y1 <- paste( format(
+                     abs(weekchange_y1), scientific=F, big.mark=','), 
+                     ' (', 
+                     abs(weekchange_perc_y1), 
+                     '%)', 
+             sep='')
 
-label_y2 <- paste(format( abs(weekchange_y2), scientific=F, big.mark=','), 
-                  ' (', abs(weekchange_perc_y2), '%)', sep='')
+label_y2 <- paste( format(
+                      abs(weekchange_y2), scientific=F, big.mark=','), 
+                      ' (', 
+                      abs(weekchange_perc_y2), 
+                      '%)', 
+             sep='')
 
 
 
