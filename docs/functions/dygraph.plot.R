@@ -2,7 +2,7 @@ dygraph.plot <- function(data, col, lwd=2,
                          fill = TRUE, 
                          fillalpha = 0.2, 
                          legend.width = 250,
-                         vr,                  # y axis range
+                         vr,                                           # y axis range
                          rightgap = 4,       
                          display = 'always',
                          dates = mys$date) {                          # must provide a list of dates!
@@ -17,7 +17,7 @@ dygraph.plot <- function(data, col, lwd=2,
               axisLabelFontSize = 12, 
               labelsKMB='M',
               gridLineColor = gray[2],
-              disableZoom = F,
+              disableZoom = T,
               fillGraph = fill,
               fillAlpha = fillalpha,
               strokeWidth = lwd,
@@ -45,4 +45,14 @@ dygraph.plot <- function(data, col, lwd=2,
   
     dyUnzoom()
 }
+
+
+
+
+
+
+
+
+
+
 

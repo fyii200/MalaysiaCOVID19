@@ -453,7 +453,6 @@ source('deaths/case_fatality_rate.R')
 ```
 
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
-# configure data frame for dygraph
 data$date <- as.Date(data$date)
 # compute CFR
 data$casefatal <- round( (data$total_deaths / data$total_cases)*100, 2)
@@ -467,9 +466,10 @@ col <- brewer.pal(8,'Dark2')[7]
 # Plot!
 dygraph.plot(data, col, fill=FALSE,
              legend.width=180, display='always', 
-             vr=c(0, max(data[,1], na.rm=T)+0.5) )                      %>%
+             vr=c(0, max(data[,1], na.rm=T)+0.5),
+             dates = c(as.Date('2020-05-01'), max(mys$date)) )      %>%
   dySeries("V1", label = "Case fatality ratio (%)") %>%
-    dyLegend('always', labelsSeparateLines = T, width=180)
+  dyLegend('always', labelsSeparateLines = T, width=180)
 ```
 
 ***
