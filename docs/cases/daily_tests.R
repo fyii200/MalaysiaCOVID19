@@ -3,8 +3,8 @@ test <- data.frame(x=mys$date, y=mys$new_tests)
 test <- test[complete.cases(test),]
 test <- test[-which(test$x == as.Date('2020-05-15')),]
 
-# col[1] for unsmoothed data (new tests), col[2] for smoothed data
-col<-brewer.pal(9, 'Blues')[c(2,9)]
+# col[1] for positive tests; col[2] for all tests
+test_col <- brewer.pal(11 ,'RdYlBu')[c(11, 1)]
 
 xtlab <- seq(min(test$x), max(test$x), length.out=6)
 ytlab <- seq(0, max(test$y)+2e4,1e4)
@@ -48,9 +48,6 @@ arrowcol <- ifelse(weekchange >= 0, 'green', 'red')
 # print absolute change (weekchange) & percentage change
 label <- paste(format(weekchange, scientific=F, big.mark=','), 
                       ' (', weekchange_perc, '%)', sep='')
-
-
-
 
 
 
