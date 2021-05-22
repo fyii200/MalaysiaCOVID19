@@ -1,8 +1,5 @@
 #### Plot square plot to show what % of target population has been vaccinated ###
 
-# col[1] and col[2] for 1 & 2nd dose respectively
-col <- brewer.pal(9, 'Blues')[ c(5, 8)] 
-
 # define y1 and y2
 y1 <- d$people_vaccinated
 y2 <- d$people_fully_vaccinated
@@ -29,7 +26,7 @@ p <- function(leg.position)
               ggplot(data = target, 
               aes(fill = dose, values = percentage)) +
               geom_waffle(n_rows = 10, size = 0.5, colour = "#ffffff",  flip = TRUE) +
-              scale_fill_manual(values = c(col, 'gray92') ) +
+              scale_fill_manual(values = c(vac_col, 'gray92') ) +
               coord_equal() +
               theme_minimal() +
               theme_enhance_waffle() +

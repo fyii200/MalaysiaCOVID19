@@ -15,30 +15,26 @@ date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
 # install.packages("waffle", repos = "https://cinc.rud.is")
 # install.packages('dygraph')
 # install.packages('dplyr)
-
 library(RColorBrewer)
 library(waffle)
 library(dplyr)
 library(dygraphs)
 library(xts)
-source('functions/data_update.R')
-source('functions/dygraph.plot.R')
 
 ### DAILY CASES, TESTS, DEATHS, etc. ###
 ## read raw data (worldwide) and configure data frame named 'mys'
-# mys <- read.csv('data/mys.csv'); mys <- mys[,-1]
-# # update data!
-# mys <- data_update(mys)
-world<-read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
-mys <- world[which(world$iso_code=='MYS'),]
-mys$date <- as.Date(mys$date)
+world     <-read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
+mys       <- world[which(world$iso_code == 'MYS'),]
+mys$date  <- as.Date(mys$date)
 
 ### VACCINATION DATA ###
-# data <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
-# d$date <- as.Date(d$date)
-data <- 'data/vaccine.csv'
-d <- read.csv(data); d<-d[,-1]
-d$date <- as.Date(d$date, '%d/%m/%Y')
+# data    <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
+data      <- 'data/vaccine.csv'
+d         <- read.csv(data); d<-d[,-1]
+d$date    <- as.Date(d$date, '%d/%m/%Y')
+
+## source all functions & computations ##
+source('computations.R')
 ```
 
 
@@ -49,79 +45,61 @@ Row {data-height=300}
 -----------------------------------------
 
 ### Vaccinations - Daily Total & Cumulative Total {.no-mobile}
-```{r include=FALSE}
-source('vaccinations/daily_new_doses.R')
-col <- brewer.pal(9,'Blues')[c(5,8)]   
-```
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
 <span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b')`*</span> 
 
 <span style="font-size:1em;"> New 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2.5em; color:`r col[1]`;"> **+`r new.y1`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.5em; color:`r col[1]`;"> **`r format( cumulative_1st_dose, scientific = F, big.mark = ',')`** </span>
+<span style="font-size:2.5em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.5em; color:`r vac_col[1]`;"> **`r cumul_dose1_formatted`** </span>
  
  
 <span style="font-size:1em;"> New 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2.5em; color:`r col[2]`;"> **+`r new.y2`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format( cumulative_2nd_dose, scientific = F, big.mark = ',')`** </span>
+<span style="font-size:2.5em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.5em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
   
 
 ### Percentage of minimum target population (23.2m) vaccinated {.no-mobile}
 ```{r echo=FALSE}
-source('summary/squareplot.R')
 p(leg.position='')
 ```
 
 <span style="font-size:1em;"> 1st dose </span>  
-<span style="font-size:1.5em; color:`r col[1]`; text-decoration:underline"> **`r round(unrounded_target_y1, 1)`%** </span>
+<span style="font-size:1.5em; color:`r vac_col[1]`; text-decoration:underline"> **`r round( unrounded_target_dose1, 1)`%** </span>
 
 <span style="font-size:1em;"> 2nd dose </span>  
-<span style="font-size:1.5em; color:`r col[2]`; text-decoration:underline"> **`r round(unrounded_target_y2, 1)`%** </span>
-
-
+<span style="font-size:1.5em; color:`r vac_col[2]`; text-decoration:underline"> **`r round( unrounded_target_dose2, 1)`%** </span>
 
 
 ### Vaccinations - Daily Total & Cumulative Total {.mobile}
-```{r include=FALSE}
-source('vaccinations/daily_new_doses.R')
-col <- brewer.pal(9,'Blues')[c(5,8)]   
-```
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="font-size:0.9em; color:grey;"> *up to `r format(max(x), '%d %b')`*</span> 
+<span style="font-size:0.9em; color:grey;"> *up to `r latest_dose_date`*</span> 
 
 <span style="font-size:1em;"> New 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r col[1]`;"> **+`r new.y1`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.2em; color:`r col[1]`;"> **`r format( cumulative_1st_dose, scientific = F, big.mark = ',')`** </span>
+<span style="font-size:2em; color:`r vac_col[1]`;"> **+`latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.2em; color:`r vac_col[1]`;"> **`r cumul_dose1_formatted`** </span>
  
  
 <span style="font-size:1em;"> New 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r col[2]`;"> **+`r new.y2`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.2em; color:`r col[2]`;"> **`r format( cumulative_2nd_dose, scientific = F, big.mark = ',')`** </span>
+<span style="font-size:2em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
 ### Percentage of minimum target population (23.2m) vaccinated {.mobile}
 ```{r echo=FALSE}
-source('summary/squareplot.R')
 p(leg.position='bottom')
 ```
 
 <span style="font-size:1em;"> &nbsp; 1st </span> &nbsp; | &nbsp; <span style="font-size:1em;"> 2nd dose </span>
 
-<span style="font-size:1.3em; color:`r col[1]`; text-decoration:underline"> &nbsp; **`r round(unrounded_target_y1, 1)`%** </span> &nbsp; | &nbsp;
-<span style="font-size:1.3em; color:`r col[2]`; text-decoration:underline"> **`r round(unrounded_target_y2, 1)`%** </span>
-
-
+<span style="font-size:1.3em; color:`r vac_col[1]`; text-decoration:underline"> &nbsp; **`r round( unrounded_target_dose1, 1)`%** </span> &nbsp; | &nbsp;
+<span style="font-size:1.3em; color:`r vac_col[2]`; text-decoration:underline"> **`r round( unrounded_target_dose2, 1)`%** </span>
 
 
 
 Row {data-height=450}
 -----------------------------------------
-### Cases
-```{r include=FALSE}
-source('cases/daily_new_cases.R')
-source('functions/plot_line.R')
-```
 
+### Cases
 <span style="font-size:1.5em;"> **People tested positive** </span>
 
 Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>  
@@ -179,10 +157,6 @@ plot_line(mys$date, mys$new_deaths_smoothed, death_col)
 
 
 
-
-
-
-
 How-to {data-icon="fa-question-circle"}
 =========================================
 
@@ -205,10 +179,6 @@ All data pertinent to vaccinations: *The Special Committee for Ensuring Access t
 Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
 
 ________________________
-
-
-
-
 
 
 
@@ -243,9 +213,6 @@ dygraph.plot(data,
 <span style="color:grey;"> *new cases in the past 24 hours.* </span>
 
 
-
-
-
 ### <span style="font-size:1.3em;"> **Daily Tests |** </span> <br> <span style="font-size:0.9em;"> Are we doing enough of COVID-19 testing? </span>
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
@@ -277,9 +244,6 @@ dygraph.plot(data,
 <span style="color:grey;"> *positive cases were reported per day on average over the same week.* </span>  
 
 
-
-
-
 ### <span style="font-size:1.3em;"> **Positivity Rate |** </span> <br> <span style="font-size:0.9em;"> What share of tests comes back positive each day? </span>
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
@@ -303,7 +267,7 @@ dygraph.plot(data,
 ```
 
 *** 
-<span style="text-decoration:underline; font-size:0.9em;">  *Latest data provided on `r tests_last_7day_date_formatted`* </span>   
+<span style="text-decoration:underline; font-size:0.9em;">  *Latest data provided on `r tests_7day_date_formatted`* </span> 
 
 <span style="font-size:1.5em; color:`r pos_rate_col`;"> **`r latest_pos_rate` %** </span>  
 <span style="color:grey;"> *Daily positivity rate.* </span>   
@@ -313,9 +277,6 @@ dygraph.plot(data,
 
 &nbsp;  
 <span style="color: Grey;"> *Positivity rate is equal to the number of positive tests, i.e., tests that come back positive, divided by the total number of tests conducted (PCR & antigen rapid tests) within the past 24 hours. [As a general rule of thumb](https://www.jhsph.edu/covid-19/articles/covid-19-testing-understanding-the-percent-positive.html), positivity rate of **less than 5%** means there's an adequate level of testing relative to the size of the outbreak, or the epidemic is under control in a country.* </span>
-
-
-
 
 
 ### <span style="font-size:1.3em;"> **Cumulative Cases |** </span> <br> <span style="font-size:0.9em;"> How many cases have been confirmed so far? </span>
@@ -351,11 +312,6 @@ dygraph.plot(data,
 
 
 
-
-
-
-
-
 Deaths {.storyboard data-icon="fa-skull"}
 =========================================
 
@@ -386,8 +342,6 @@ dygraph.plot(data,
 
 <span style="font-size:1.5em; color:`r death_col`;"> **+`r new_deaths`** </span>  
 <span style="color:grey;"> *deaths were reported.* </span>
-
-
 
 
 ### <span style="font-size:1.3em;"> **Case Fatality Ratio |** </span> <br> <span style="font-size:0.9em;"> What is the ratio between confirmed deaths and confirmed cases? </span>
@@ -425,9 +379,6 @@ dygraph.plot(data,
 <span style="color: Grey;"> *[CFR](https://www.who.int/news-room/commentaries/detail/estimating-mortality-from-covid-19) is the total number of deaths divided by the total number of confirmed cases. Despite being a commonly used measure of mortality from a disease, it has a number of important limitations and underlying assumptions which call for careful interpretation, especially during a fast-moving pandemic. Read [here](https://ourworldindata.org/covid-mortality-risk) for instance.* </span>
 
 
-
-
-
 ### <span style="font-size:1.3em;"> **Cumulative Deaths |** </span> <br> <span style="font-size:0.9em;"> How many deaths have been reported so far? </span>
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 data <- subset(mys, 
@@ -456,25 +407,15 @@ dygraph.plot(data,
 
 
 
-
-
-
-
-
 Vaccinations {.storyboard data-icon="fa-syringe"}
 =========================================
 
-
 ### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/daily_new_doses.R')
-```
-
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
-data <- subset(full_date, 
-               select = c(date, daily1, daily2) )
+data <- subset(daily_dose, 
+               select = c(date, dose1, dose2) 
+               )
 names(data)[c(2, 3)] <- c("1st dose", "2nd dose")
 data$date <- as.Date(data$date)
 # convert data frame into xts format
@@ -495,24 +436,20 @@ dyStackedBarGroup( c('1st dose', '2nd dose') )
 ```
 
 *** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm = T), '%d %B %Y')`* </span>   
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
-<span style="font-size:1.5em; color:`r col[1]`;"> **+`r new.y1`** </span>  
-<span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
+<span style="font-size:1.5em; color:`r col[1]`;"> **+`r latest_dose1_formatted`** </span>  
+<span style="color:grey;"> *new 1st doses administered in the past 24 hours`.* </span>
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **+`r new.y2`** </span>  
-<span style="color:grey;"> *new doses from `r format(x[length(x)-1], '%d %b')`.* </span>
-
-
-<span style="font-size:1.5em; color:`r col[1]`;"> **+`r format(week.y1, scientific = F, big.mark = ',')`**</span>
-<span style="font-size:1em; color:`r arrowcol_y1`;"> &nbsp; **`r ifelse(weekchange_y1 >= 0, print('▲'), print('▼'))`  `r label_y1`**</span>  
-<span style="color:grey;"> *each day on average over the past seven days* </span>
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **+`r format(week.y2, scientific=F, big.mark=',')`**</span>
-<span style="font-size:1em; color:`r arrowcol_y2`;"> &nbsp; **`r ifelse(weekchange_y2 >= 0, print('▲'), print('▼'))`  `r label_y2`**</span>  
-<span style="color:grey;"> *each day on average over the past seven days* </span>
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose2_formatted`** </span>  
+<span style="color:grey;"> *new 2nd doses administered in the past 24 hours`.* </span>
 
 
+<span style="font-size:1.5em; color:`r col[1]`;"> **+`r dose1_7day_avg_formatted`**</span>  
+<span style="color:grey;"> *new 1st doses administered each day on average over the past seven days* </span>
+
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r dose2_7day_avg_formatted`**</span>  
+<span style="color:grey;"> *new 2nd doses administered each day on average over the past seven days* </span>
 
 
 
@@ -520,7 +457,8 @@ dyStackedBarGroup( c('1st dose', '2nd dose') )
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(d, 
-               select = c(date, people_vaccinated, people_fully_vaccinated) )
+               select = c(date, people_vaccinated, people_fully_vaccinated) 
+               )
 
 data$people_vaccinated <- round( (data$people_vaccinated/32.7e6) * 100, digits = 2)
 
@@ -544,25 +482,18 @@ dygraph.plot(data,
              )
 ```
 
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/percentage_vaccinated.R')
-```
-
 *** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm = T), '%d %B %Y')`* </span>   
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
-<span style="font-size:1.5em; color:`r col[3]`;"> **`r round(max(y1), 1)`%** </span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r perc_cumul_dose1`%** </span>  
 <span style="color:grey;"> *have received at least 1 dose of a vaccine.* </span>  
-<span style="font-size:1.2em; color:`r col[3]`;"> **+`r inc1`%** </span>
-<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>  
+<span style="font-size:1.2em; color:`r col[1]`;"> **+`r perc_daily_dose1`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format( tail(d$date, 1) - 1, '%d %b')`* </span>  
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r round(max(y2), 1)`%** </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r perc_cumul_dose2`%** </span>  
 <span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span>  
-<span style="font-size:1.2em; color:`r col[2]`;"> **+`r inc2`%** </span>
-<span style="font-size:0.9em; color:grey;"> *from `r format(d$date[length(d$date)-1], '%d %b')`* </span>
-
-
+<span style="font-size:1.2em; color:`r col[2]`;"> **+`r perc_daily_dose2`%** </span>
+<span style="font-size:0.9em; color:grey;"> *from `r format( tail(d$date, 1) - 1, '%d %b')`* </span>
 
 
 
@@ -570,7 +501,8 @@ source('vaccinations/percentage_vaccinated.R')
 ```{r echo=FALSE, fig.height=3.5, fig.width=6, warning=FALSE, fig.align='left'}
 # configure data frame for dygraph
 data <- subset(d, 
-               select = c(date, people_vaccinated, people_fully_vaccinated) )
+               select = c(date, people_vaccinated, people_fully_vaccinated) 
+               )
 names(data)[c(2, 3)] <- c("1st dose", "2nd dose")
 data$date <- as.Date(data$date)
 # convert data frame into xts format
@@ -589,32 +521,27 @@ dygraph.plot(data,
 ```
 
 ```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/cumulative_doses.R')
-col<-brewer.pal(9 ,'Blues')[c(5, 9)]
+col<-brewer.pal(9 ,'Blues')[ c(5, 9) ]
 ```
 
 *** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm = T), '%d %B %Y')`* </span>  
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>  
 
-<span style="font-size:1.5em; color:`r col[1]`;"> **`r format(max(y1), scientific=F, big.mark = ',')`** </span>  
-<span style="color:grey;"> *first doses have been administered.* </span>
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r cumul_dose1_formatted`** </span>  
+<span style="color:grey;"> *1st doses have been administered.* </span>
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r format(max(y2), scientific=F, big.mark = ',')`** </span>  
-<span style="color:grey;"> *second doses have been administered.* </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r cumul_dose2_formatted`** </span>  
+<span style="color:grey;"> *2nd doses have been administered.* </span>  
 &nbsp;  
 <span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
-
-
-
-
 
 
 ### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
 ```{r}
 # configure data frame for dygraph
 data <- subset(d, 
-               select = c(date, people_vaccinated, people_fully_vaccinated) )
+               select = c(date, people_vaccinated, people_fully_vaccinated) 
+               )
 data$people_vaccinated <- round( (data$people_vaccinated/32.7e6) * 100, 
                                  2)
 data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6) * 100, 
@@ -668,21 +595,16 @@ dygraph.plot(data,
             color = phase[3])
 ```
 
-```{r include=FALSE}
-# source code file for the plot
-source('vaccinations/progress_tracker.R')
-```
-
 *** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r format(max(x, na.rm = T), '%d %B %Y')`* </span>   
+<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
-<span style="font-size:1.5em; color:`r col[3]`;"> **`r dailydose1`** </span> <span style="color:grey;"> *first doses* </span>  
+<span style="font-size:1.5em; color:`r col[1]`;"> **`r dose1_required`** </span> <span style="color:grey;"> *first doses* </span>  
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **`r dailydose2`** </span> <span style="color:grey;"> *second doses* </span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **`r dose2_required`** </span> <span style="color:grey;"> *second doses* </span>  
 
 <span style="color:grey;"> *required **each day on average** over the next **`r dayleft`** days to achieve Phase 2 target.* </span>  
 &nbsp;  
-<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to innoculate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to the month within which each phase is targeted to be completed.* </span>
+<span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to inoculate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to the month within which each phase is targeted to be completed.* </span>
 
 
 

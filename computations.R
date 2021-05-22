@@ -1,5 +1,74 @@
 ########################### useful functions ###########################
 
+# function to plot line and x-axis only #
+plot_line <- function(x, y, col){
+             par(mar = c(1, 0.3, 0, 0.3), las = 0)
+             plot(x, y, bty = 'n', 
+                  xaxt = 'n', 
+                  yaxt = 'n', 
+                  type = 'n', 
+                  xlab = '', 
+                  ylab = '', 
+                  ylim = c(0, max(y, na.rm = T) ) 
+                 )
+  
+             xtlab <- seq(min(x), max(x), length.out=6)
+             xtlab_format <- format(xtlab, '%d %b %Y')
+  
+             axis(side = 1, 
+                  labels = format(xtlab, '%b'), 
+                  at = xtlab, tick = F, 
+                  col.axis = 'gray56', 
+                  cex.axis = 0.6, padj = -3)
+  
+             lines(x, y, col = col, lwd = 2)
+             }
+
+# function to plot dygraph interactive plot
+dygraph.plot <- function(data, col, lwd=2, 
+                         fill = TRUE, 
+                         fillalpha = 0.2, 
+                         legend.width = 250,
+                         vr,                                           # y axis range
+                         rightgap = 4,       
+                         display = 'always',
+                         dates = c(mys$date)                           # must provide a list of dates!
+                         ) {                                           
+  
+                gray <- brewer.pal(9 ,'Greys')
+                dygraph(data)                   %>%
+                dyOptions(colors=col, 
+                includeZero=T,
+                drawAxesAtZero=T, 
+                axisLabelFontSize = 12, 
+                labelsKMB='M',
+                gridLineColor = gray[2],
+                disableZoom = T,
+                fillGraph = fill,
+                fillAlpha = fillalpha,
+                strokeWidth = lwd,
+                rightGap = rightgap,
+                mobileDisableYTouch = F)        %>%
+                dyAxis('x', 
+                drawGrid = F, 
+                axisLabelColor = gray[5], 
+                axisLineColor = gray[1] )       %>%
+                dyAxis('y', 
+                axisLineColor = gray[1], 
+                axisLabelColor = gray[5],
+                valueRange = (vr))              %>%             
+                dyLegend(display, 
+                width = legend.width,
+                hideOnMouseOut = T,
+                labelsSeparateLines = T)        %>%
+    
+                dyRangeSelector(dateWindow = 
+                   c(min(dates) , max(dates) ),
+                     height = 13 )                    %>%
+                dyCrosshair(direction = "vertical")        %>%           
+                dyUnzoom()
+                }
+
 # function to print label describing abs change between last two weeks & % change
 print_label <- function(abs_change, last_7day_avg){
                # weekly change expressed in %
