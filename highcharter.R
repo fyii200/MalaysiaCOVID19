@@ -64,5 +64,3 @@ highchart(type = "stock") %>%
 
 
 
-
-
