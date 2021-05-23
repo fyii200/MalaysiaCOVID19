@@ -419,17 +419,17 @@ config_hc(series = data$`1st dose`, 'column', '1st dose', col[1], 'k') %>%
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **+`r latest_dose1_formatted`** </span>  
-<span style="color:grey;"> *new 1st doses administered in the past 24 hours`.* </span>
+<span style="color:grey;"> *new 1st doses administered in the past 24 hours.* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose2_formatted`** </span>  
-<span style="color:grey;"> *new 2nd doses administered in the past 24 hours`.* </span>
+<span style="color:grey;"> *new 2nd doses administered in the past 24 hours.* </span>
 
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **+`r dose1_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 1st doses administered each day on average over the past seven days* </span>
+<span style="color:grey;"> *new 1st doses administered each day on average over the past seven days.* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r dose2_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 2nd doses administered each day on average over the past seven days* </span>
+<span style="color:grey;"> *new 2nd doses administered each day on average over the past seven days.* </span>
 
 
 
