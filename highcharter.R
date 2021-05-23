@@ -34,28 +34,26 @@ highchart(type = "stock") %>%
   hc_exporting(enabled = TRUE) %>%
     
   hc_tooltip(
-    useHTML       = TRUE,
-    split         = FALSE,
-    shared        = TRUE,
-    outside       = TRUE,
-    crosshairs    = TRUE,
-    shadow        = FALSE,
-    followPointer = FALSE,
-    followTouchMove = FALSE,
-    borderWidth = 0,
+    useHTML         = TRUE,
+    split           = FALSE,
+    shared          = TRUE,
+    outside         = FALSE,
+    crosshairs      = TRUE,
+    shadow          = FALSE,
+    borderWidth     = 0,
     nullFormat      = 'Null',
     backgroundColor = "transparent",
     hideDelay       = 1000,
     labels = list(format = paste("{value}", unit) ),
     headerFormat    = '<span style="font-size:0.9em;"> {point.x:%d %b %Y}<br> </span>',
-    pointFormat     = paste('<span style="color:{series.color};"> <b>{series.name}: </span> {point.y}', unit, '<br>')
-    # positioner      = JS(
-    #                   "function () {
-    #                   xp =  this.chart.chartWidth / 2 - this.label.width / 2
-    #                   yp =  this.chart.chartHeight / 2
-    #                 
-    #                   return { x: xp, y: yp };
-    #                   }" )
+    pointFormat     = paste('<span style="color:{series.color};"> <b>{series.name}: </span> {point.y}', unit, '<br>'),
+    positioner      = JS(
+                      "function () {
+                      xp =  this.chart.chartWidth / 2 - this.label.width / 2
+                      yp =  this.chart.chartHeight / 5
+
+                      return { x: xp, y: yp };
+                      }" )
               )   %>%
     
   hc_xAxis( labels  = list(format = "{value: %d %b}"),

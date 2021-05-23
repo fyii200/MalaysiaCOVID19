@@ -337,7 +337,7 @@ config_hc(data$`Daily deaths`, 'area', 'Daily deaths', col[1], '') %>%
 <span style="color:grey;"> *deaths were reported.* </span>
 
 
-### <span style="font-size:1.3em;"> **Case Fatality Ratio |** </span> <br> <span style="font-size:0.9em;"> What is the ratio between confirmed deaths and confirmed cases? </span>
+### <span style="font-size:1.3em;"> **Case Fatality Ratio (CFR) |** </span> <br> <span style="font-size:0.9em;"> What is the ratio between confirmed deaths and confirmed cases? </span>
 ```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
 cfr$date <- as.Date(cfr$date)
 # compute CFR
@@ -354,7 +354,7 @@ data <- xts(data[,2],
 col <- brewer.pal(8,'Dark2')[7]
 
 # Plot!
-config_hc(data, 'spline', 'Case fatality ratio', col[1], '%')
+config_hc(data, 'spline', 'CFR', col[1], '%')
 ```
 
 ***
