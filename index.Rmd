@@ -50,7 +50,7 @@ Row {data-height=300}
 
 ### Vaccinations - Daily Total & Cumulative Total {.no-mobile}
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b')`*</span> 
+<span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span> 
 
 <span style="font-size:1em;"> New 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
 <span style="font-size:2.5em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
