@@ -203,7 +203,7 @@ data$`7-day avg` <- round(data$`7-day avg`, 0)
 # convert data frame into xts format
 data <- xts(data[, 2:3], order.by = data$date) 
 
-col<-brewer.pal(9 ,'Oranges')[c(2,8)]
+col<-brewer.pal(9 ,'Oranges')[c(4,8)]
 # Plot!
 config_hc(data$`Daily cases`, 'areaspline', 'Daily new cases', col[1], '') %>%
   hc_add_series(data$`7-day avg`, type = 'line',  name = '7-day avg', color = col[2])

@@ -50,7 +50,7 @@ highchart(type = "stock") %>%
     positioner      = JS(
                       "function () {
                       xp =  this.chart.chartWidth / 2 - this.label.width / 2
-                      yp =  this.chart.chartHeight / 10
+                      yp =  this.chart.chartHeight / 2
                     
                       return { x: xp, y: yp };
                       }" )
