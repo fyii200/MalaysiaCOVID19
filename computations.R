@@ -137,7 +137,7 @@ cases_7day_avg_formatted <- format(cases_7day_avg, scientific = F, big.mark = ',
 # date: 1 week prior to most recent week
 cases_last_7day_date <- max(x) - 7
 
-cases_last_7day_date_formatted <- format(cases_last_7day_date, '%d %b')
+cases_last_7day_date_formatted <- format(cases_last_7day_date, '%d %b %Y')
 
 # 7-day avg of new cases (1 week prior to most recent week)
 cases_last_7day_avg <- round( y.s[ which( x == cases_last_7day_date) ], digits = 0)
@@ -185,7 +185,7 @@ deaths_7day_avg <- round(y.s[ length(y.s) ], digits = 0)
 # date: 1 week prior to most recent week
 deaths_last_7day_date <- max(x) - 7
 
-deaths_last_7day_date_formatted <- format(deaths_last_7day_date, '%d %b')
+deaths_last_7day_date_formatted <- format(deaths_last_7day_date, '%d %b %Y')
 
 # 7-day avg of new cases (1 week prior to most recent week)
 deaths_last_7day_avg <- round( y.s[ which( x == deaths_last_7day_date) ], digits = 0)
