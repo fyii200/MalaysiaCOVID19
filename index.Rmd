@@ -221,16 +221,19 @@ config_hc(data$`Daily cases`, 'areaspline', 'Daily new cases', col[1], '') %>%
 # configure data frame for dygraph
 data <- subset(mys, 
                select = c(date, new_tests_smoothed, new_cases_smoothed) )
-names(data)[c(2, 3)] <- c("All tests", "Positive")
+names(data)[ c(2, 3) ] <- c("All tests", "Positive")
 data$date <- as.Date(data$date)
 
 data$Positive <- round(data$Positive, 0)
+
+# remove rows where testing data are not available
+data <- data[ complete.cases(data), ]
 
 # convert data frame into xts format
 data <- xts(data[, 2:3], order.by = data$date)         
 
 # col [1] for all tests [2] for positive tests
-col <- brewer.pal(11 ,'RdYlBu')[c(9, 1)]
+col <- brewer.pal(11 ,'RdYlBu')[ c(9, 1) ]
 # Plot!
 config_hc(data$`All tests`, 'area', 'All tests', col[1], '') %>%
   hc_add_series(data$Positive, type = 'area',  name = 'Positive tests', color = col[2])
