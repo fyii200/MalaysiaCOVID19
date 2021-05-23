@@ -224,7 +224,7 @@ data <- subset(mys,
 names(data)[c(2, 3)] <- c("All tests", "Positive")
 data$date <- as.Date(data$date)
 
-data$`All tests` <- round(data$`All tests` / 1e3, 0); data$Positive <- round(data$Positive / 1e3, 0)
+data$Positive <- round(data$Positive, 0)
 
 # convert data frame into xts format
 data <- xts(data[, 2:3], order.by = data$date)         
@@ -232,7 +232,7 @@ data <- xts(data[, 2:3], order.by = data$date)
 # col [1] for all tests [2] for positive tests
 col <- brewer.pal(11 ,'RdYlBu')[c(9, 1)]
 # Plot!
-config_hc(data$`All tests`, 'area', 'All tests', col[1], 'k') %>%
+config_hc(data$`All tests`, 'area', 'All tests', col[1], '') %>%
   hc_add_series(data$Positive, type = 'area',  name = 'Positive tests', color = col[2])
 ```
 
@@ -402,16 +402,16 @@ data <- subset(daily_dose,
 names(data)[c(2, 3)] <- c("1st dose", "2nd dose")
 data$date <- as.Date(data$date)
 
-data$`1st dose` <- round(data$`1st dose` / 1e3, 1); data$`2nd dose` <- round(data$`2nd dose` / 1e3, 1)
+# data$`1st dose` <- round(data$`1st dose` / 1e3, 1); data$`2nd dose` <- round(data$`2nd dose` / 1e3, 1)
 
 # convert data frame into xts format
 data <- xts(data[, 2:3], 
             order.by = data$date)         
 
 # col [1] for 2 doses [2] for 1 dose
-col <- brewer.pal(9,'Greens')[c(5,9)]
+col <- brewer.pal(9,'Greens')[ c(5, 9) ]
 # Plot!
-config_hc(series = data$`1st dose`, 'column', '1st dose', col[1], 'k') %>%
+config_hc(series = data$`1st dose`, 'column', '1st dose', col[1], '') %>%
   hc_add_series(data$`2nd dose`, type = "column", name = '2nd dose', color = col[2])
 ```
 

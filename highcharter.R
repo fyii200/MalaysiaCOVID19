@@ -58,7 +58,7 @@ highchart(type = "stock") %>%
     
   hc_xAxis( labels  = list(format = "{value: %d %b}"),
             showFirstLabel = TRUE,
-            showLastLabel = TRUE
+            showLastLabel  = TRUE
           )                                             %>%
     
   hc_yAxis( opposite = FALSE,
