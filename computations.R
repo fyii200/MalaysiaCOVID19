@@ -93,7 +93,7 @@ create_mapdata <- function(map_source, data_column, decimal_place){
                   
                   # 'countries' contains only latest covid 19
                   countries <- subset(world,
-                               date == max(world$date, na.rm = T)
+                               date == max(mys$date, na.rm = T)
                                )
                   
                   # round covid data to what decimal place?
@@ -637,7 +637,7 @@ plot_bubble_cases <- hchart( mapdata,
   
                hc_colors(bubble_cols)                                  %>%
   
-               hc_yAxis(gridLineWidth = 0.3,
+               hc_yAxis(gridLineWidth = 0.2,
                         plotLines = list(
                                        list( color = bubble_cols[3],
                                              width = 1,
@@ -648,7 +648,7 @@ plot_bubble_cases <- hchart( mapdata,
                                                
                          )                                             %>%
   
-                 hc_subtitle( text = paste('Data as of', 
+                 hc_caption( text = paste('Data as of', 
                                         format( as.Date(mapdata$date[1]), '%d %b %Y')
                                         )  
                           )
@@ -710,14 +710,14 @@ a <- subset(world, select = c(
             )
 
 names(a)[1] <- 'name'
-vac_data <- merge(vac, a, by='name')
+vac_data <- merge(vac, a, by = 'name')
 vac_data <- distinct(vac_data)
 
+vac_data <- vac_data[ - which(vac_data$name == 'World'), ]
 vac_data <- add_note(vac_data)
-vac_data[which(vac_data$name == 'World'), ]$note <- 'Global average'
 
-# colours for world, India, Indonesia, mys, other countries, Qatar, Sg, Thai & UK
-bubble_cols <- brewer.pal(12, "Set3")[ c(1:4, 9, 5:8, 10) ]
+# colours for India, Indonesia, mys, other countries, Qatar, Sg, Thai & UK
+bubble_cols <- brewer.pal(12, "Set3")[ c(1:2, 4, 9, 5:8) ]
 
 plot_bubble_vac <- hchart( vac_data,
                            type = "point",
@@ -742,7 +742,7 @@ plot_bubble_vac <- hchart( vac_data,
   
                     hc_colors(bubble_cols)                     %>%
   
-                    hc_yAxis(gridLineWidth = 0.3,
+                    hc_yAxis(gridLineWidth = 0.2,
                              max = 100,
                              plotLines = list(
                                            list( color = bubble_cols[3],
@@ -754,7 +754,7 @@ plot_bubble_vac <- hchart( vac_data,
            
                               )                                 %>%
   
-                              hc_subtitle( text = paste('Data as of', 
+                              hc_caption( text = paste('Data as of', 
                                                          format( as.Date(max(world$date) ), '%d %b %Y')
                                                        )  
                                          ) 

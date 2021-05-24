@@ -6,7 +6,8 @@ output:
       version: 4
     orientation: rows
     navbar:
-          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: left}
+          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+          - {title: "Source code", icon: "fa-file-code", href: "https://github.com/fyii200/www.malaysiacovid.com/blob/main/index.Rmd", align: right}
     social: menu
     fig_mobile: FALSE
 date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
@@ -465,11 +466,11 @@ hc_add_series(data$`2nd dose`,
 
 <span style="font-size:1.5em; color:`r col[1]`;"> **+`r latest_dose1_formatted`** </span> &nbsp; | &nbsp;
 <span style="font-size:1em; color:`r col[1]`;"> **+`r dose1_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 1st doses administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
+<span style="color:grey;"> *new 1st doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose2_formatted`** </span> &nbsp; | &nbsp;
 <span style="font-size:1em; color:`r col[2]`;"> **+`r dose2_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 2nd doses administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
+<span style="color:grey;"> *new 2nd doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
 
 
 ### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
@@ -620,5 +621,5 @@ plot_bubble_vac
 ```
 
 ***
-Certain countries (including Malaysia) and global average are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country. Vaccination data for each country shown are last provided either on the date shown at the top of the plot or the day before it.
+Certain countries (including Malaysia) are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country. Vaccination data for each country shown are last provided either on the date shown at the bottom of the plot or the day before it.
 
