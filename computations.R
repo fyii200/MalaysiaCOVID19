@@ -24,6 +24,66 @@ plot_line <- function(x, y, col){
              lines(x, y, col = col, lwd = 2)
              }
 
+# function to plot Highcharter #
+config_hc <- function(series, type, series_name, series_col, unit){
+  
+             highchart(type = "stock") %>%
+    
+             hc_add_series(series, type = type, name = series_name, color = series_col) %>%
+    
+             hc_exporting(enabled = TRUE) %>%
+    
+             hc_tooltip(
+                        useHTML         = TRUE,
+                        split           = FALSE,
+                        shared          = TRUE,
+                        outside         = FALSE,
+                        crosshairs      = TRUE,
+                        shadow          = FALSE,
+                        borderWidth     = 0,
+                        nullFormat      = 'Null',
+                        backgroundColor = "transparent",
+                        hideDelay       = 1000,
+                        labels = list(format = paste("{value}", unit) ),
+                        headerFormat    = ' <b> <span style="font-size:1.1em;"> {point.x:%d %b %Y} <br>',
+                        pointFormat     = paste('<span style="font-size:1em; color:{series.color};"> {series.name}: </span> {point.y}', unit, '<br>'),
+                        positioner      = JS(
+                                             "function () {
+                                              xp =  this.chart.chartWidth / 2 - this.label.width / 2
+                                              yp =  this.chart.chartHeight / 7
+
+                                              return { x: xp, y: yp };
+                                              }" )
+                        )                                             %>%
+    
+          hc_xAxis( labels  = list(format = "{value: %d %b}"),
+                    showFirstLabel = TRUE,
+                    showLastLabel  = TRUE
+                   )                                                  %>%
+    
+           hc_yAxis( opposite = FALSE,
+                     gridLineWidth = 0.5,
+                     labels = list(format = paste('{value}', unit) )
+                    )                                                 %>%
+    
+           hc_rangeSelector( enabled              = TRUE,
+                             inputEnabled         = FALSE,
+                             buttons = list(
+                                         list(type = 'week', count = 2, text = '2w'),
+                                         list(type = 'month', count = 1, text = '1m'),
+                                         list(type = 'month', count = 6, text = '6m'),
+                                         list(type = 'year', count = 1, text = '1y'),
+                                         list(type = 'all', text = 'All')
+                                         )
+                            )                                         %>%
+    
+            hc_scrollbar(enabled = FALSE)                             %>%
+    
+            hc_legend(enabled = TRUE, 
+                      verticalAlign = 'bottom')
+  
+}
+
 # function to plot dygraph interactive plot
 dygraph.plot <- function(data, col, lwd=2, 
                          fill = TRUE, 
@@ -165,9 +225,9 @@ cumul_cases <- format( max(mys$total_cases),
 
 # cumulative cases per million population
 cumul_cases_per_mil <- format( round( 
-  max( mys$total_cases_per_million), 
-  digits = 0), 
-  scientific = F, big.mark = ',')
+                                     max( mys$total_cases_per_million, na.rm = T), 
+                                     digits = 0), 
+                              scientific = F, big.mark = ',')
 
 
 ########################### computations for 'Daily Deaths' ###########################
@@ -220,11 +280,17 @@ latest_cfr <- round( tail(cfr$cfr, 1),
 
 
 ########################### computations for 'Cumulative Deaths' ###########################
-cumul_death_col <- brewer.pal(9, 'Greys')[7]
+cumul_deaths_col <- brewer.pal(9, 'Greys')[7]
 
-cumul_deaths <- format ( max(
-  mys$total_deaths, na.rm=T), 
-  scientific=F, big.mark=',')
+# cumulative number of deaths
+cumul_deaths <- format ( max( mys$total_deaths, na.rm=T), 
+                       scientific=F, big.mark=',')
+
+# cumulative deaths per million population
+cumul_deaths_per_mil <- format( round( 
+                                     max( mys$total_deaths_per_million, na.rm = T), 
+                                     digits = 0), 
+                               scientific = F, big.mark = ',')
 
 
 ########################### computations for 'Testing' ###########################
@@ -379,6 +445,100 @@ dose1_required <- format( round ( dose1_required / dayleft,
 dose2_required <- format( round ( dose2_required / dayleft,
                                   digits = 0), 
                           scientific = F, big.mark = ',')
+
+####### plot "Vaccination Progress Tracker #######
+
+# configure data frame for highcharter
+data <- subset(d, select = c(date, people_vaccinated, people_fully_vaccinated) )
+
+data$people_vaccinated <- round( (data$people_vaccinated/32.7e6) * 100, digits = 2)
+data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6) * 100, digits = 2)
+
+# add future dates and '0' to each row
+names(data)[c(2,3)] <- c("1st dose", "2nd dose")
+future <- data.frame(date  = seq(max(data$date) + 1, as.Date('2022-05-31'), 1), 
+                     '1st' = 0, 
+                     '2nd' = 0 )
+
+names(future)[ c(2, 3) ] <- names(data)[ c(2, 3) ]
+data <- rbind(data, future)
+data$date <- as.Date(data$date)
+
+# convert data frame into xts format
+data <- xts(data[, 2:3], order.by = data$date)         
+
+# define colours
+col     <- brewer.pal(9, 'Greens')[ c(5, 9) ]
+phase   <- brewer.pal(9, 'Purples')[ c(2, 3, 4) ]
+lim     <- brewer.pal(9, 'PuRd')[ c(6, 7, 9) ]
+
+plot_progress_tracker <-
+  
+         config_hc(data$`1st dose`,
+                   'area',
+                   '1st dose',
+                   col[1],
+                   '%')                      %>%
+  
+          hc_add_series(data$`2nd dose`,
+                        type = 'area',
+                        name = '2nd dose',
+                        color = col[2])      %>%
+  
+          hc_yAxis(max = 100)                %>%
+  
+          hc_xAxis(plotBands = list(
+                                 list( from = datetime_to_timestamp(as.Date('2021-04-01') ), 
+                                       to = datetime_to_timestamp(as.Date('2021-04-30') ),
+                                       label = list( text = 'Phase 1' ,
+                                                     rotation = 45,
+                                                     style = list(fontWeight = 'bold') 
+                                                     ),
+                                        color = phase[1]
+                                        ),
+    
+                                 list( from = datetime_to_timestamp(as.Date('2021-08-01') ), 
+                                       to = datetime_to_timestamp(as.Date('2021-08-31') ),
+                                       label = list( text = 'Phase 2' ,
+                                                     rotation = 45,
+                                                     style = list(fontWeight = 'bold') 
+                                                     ),
+                                        color = phase[2]
+                                        ),
+    
+                                  list( from = datetime_to_timestamp(as.Date('2022-02-01') ), 
+                                        to = datetime_to_timestamp(as.Date('2022-02-28') ),
+                                        label = list( text = 'Phase 3' ,
+                                                      rotation = 45,
+                                                      style = list(fontWeight = 'bold') 
+                                                     ),
+                                        color = phase[3]
+                                        )
+                                 )
+  
+                      )                         %>%
+  
+        hc_yAxis(plotLines = list(
+                                list( color = lim[1],
+                                      width = 0.5,
+                                      value = 1.5,
+                                      label = list( text = '1.5%' )
+                                      ),
+    
+                                 list( color = lim[2],
+                                       width = 0.5,
+                                       value = 30.3,
+                                       label = list( text = '30.3% ' )
+                                       ),
+    
+                                 list( color = lim[3],
+                                       width = 0.5,
+                                       value = 72.2,
+                                       label = list( text = '72.2% ' )
+                                       )
+                                )
+  
+                  )            
 
 
 ########################### computations for 'Vaccinations (Square Plot)' ###########################
