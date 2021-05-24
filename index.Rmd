@@ -19,6 +19,7 @@ date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
 # install.packages('dplyr)
 library(RColorBrewer)
 library(highcharter)
+library(dplyr)
 library(waffle)
 library(xts)
 
@@ -50,12 +51,12 @@ Row {data-height=300}
 <span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span> 
 
 <span style="font-size:1em;"> 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2.5em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:2em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
 <span style="font-size:1.5em; color:`r vac_col[1]`;"> **`r cumul_dose1_formatted`** </span>
  
  
 <span style="font-size:1em;"> 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2.5em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
+<span style="font-size:2em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
 <span style="font-size:1.5em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
   
 
@@ -578,4 +579,46 @@ col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
 <span style="color: Grey;"> *[The government aims](https://www.vaksincovid.gov.my/pdf/Program_Imunisasi_COVID-19_Kebangsaan_Versi_Bahasa_Inggeris.pdf) to inoculate at least 23.6 million people (72.2% of population) against COVID-19 by February 2022. Phase 1, 2 & 3 involve 0.5m, 9.4m & at least 13.7m people, respectively. Each shaded region corresponds to the month within which each phase is targeted to be completed.* </span>
 
 
+
+Comparisons {.storyboard data-icon="fa-globe-asia"}
+=========================================
+
+### <span style="font-size:1.3em;"> **New cases per million | Choropleth map ** </span>
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+# Plot map (new cases per million)
+plot_map_cases_per_million(dataset = mapdata,
+                           mapsource = "custom/world-highres")
+```
+
+***
+How do we compare to other countries in terms of daily number of cases per million population? Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
+
+
+### <span style="font-size:1.3em;"> **New cases per million | Bubble plot ** </span>
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+plot_bubble_cases
+```
+
+***
+Certain countries (including Malaysia) are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country.
+
+
+### <span style="font-size:1.3em;"> **Fully vaccinated | Choropleth map ** </span>
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+# Plot map (new cases per million)
+plot_map_vac_per_hundred(dataset = vac,
+                           mapsource = "custom/world-highres")
+```
+
+***
+Where do we stand globally in terms of the percentage of population fully vaccinated against COVID-19? Vaccination data for each country shown are last provided either on the date shown at the bottom of the map or the day before it. Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
+
+
+### <span style="font-size:1.3em;"> **Fully vaccinated | Bubble plot ** </span>
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+plot_bubble_vac
+```
+
+***
+Certain countries (including Malaysia) and global average are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country. Vaccination data for each country shown are last provided either on the date shown at the top of the plot or the day before it.
 

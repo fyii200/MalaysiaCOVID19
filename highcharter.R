@@ -25,14 +25,49 @@
 
 
 
+# plot_map <- function(map_source, loc){
+# 
+# mapdata <- get_data_from_map( download_map_data(map_source) )
+# 
+# countries <- subset(world,
+#                     date == max(world$date, na.rm = T),
+#                     select = c(date, location, new_cases_per_million) )
+# 
+# countries$new_cases_per_million <- round(countries$new_cases_per_million, digits = 2)
+# 
+# names(countries)[2] <- 'name'
+# 
+# mapdata_countries <- subset(mapdata,
+#                             select = c(name, `country-abbrev`)
+#                            )
+# 
+# mapdata <- merge(countries, mapdata_countries)
+# 
+# min_cols <- brewer.pal(9, "Greens")
+# max_cols <- brewer.pal(9, "Reds")
+# 
+# 
+# plot_map <-
+# hcmap(map_source,  showInLegend = FALSE,
+#       data = mapdata,
+#       value = 'new_cases_per_million',
+#       joinBy = 'name',
+#       name = 'New cases per mil pop.',
+#       minSize = "5%",
+#       maxSize = "20%"
+#       ) %>%
+# 
+# hc_colorAxis(minColor = min_cols[2], maxColor = max_cols[9], min = 0, max = 500) %>%
+# 
+# hc_title(text = 'New cases per million population')  %>%
+# 
+# hc_subtitle(text = paste('How do we compare in', loc, '?') )
+# 
+# map_config(plot_map)
+# }
 
-  
 
-
-
-
-
-
+# plot_map("custom/world-highres", 'globally')
 
 
 

@@ -84,49 +84,44 @@ config_hc <- function(series, type, series_name, series_col, unit){
   
 }
 
-# function to plot dygraph interactive plot
-dygraph.plot <- function(data, col, lwd=2, 
-                         fill = TRUE, 
-                         fillalpha = 0.2, 
-                         legend.width = 250,
-                         vr,                                           # y axis range
-                         rightgap = 4,       
-                         display = 'always',
-                         dates = c(mys$date)                           # must provide a list of dates!
-                         ) {                                           
-  
-                gray <- brewer.pal(9 ,'Greys')
-                dygraph(data)                   %>%
-                dyOptions(colors=col, 
-                includeZero=T,
-                drawAxesAtZero=T, 
-                axisLabelFontSize = 12, 
-                labelsKMB='M',
-                gridLineColor = gray[2],
-                disableZoom = T,
-                fillGraph = fill,
-                fillAlpha = fillalpha,
-                strokeWidth = lwd,
-                rightGap = rightgap,
-                mobileDisableYTouch = F)        %>%
-                dyAxis('x', 
-                drawGrid = F, 
-                axisLabelColor = gray[5], 
-                axisLineColor = gray[1] )       %>%
-                dyAxis('y', 
-                axisLineColor = gray[1], 
-                axisLabelColor = gray[5],
-                valueRange = (vr))              %>%             
-                dyLegend(display, 
-                width = legend.width,
-                hideOnMouseOut = T,
-                labelsSeparateLines = T)        %>%
+# function to create a data frame called 'mapdata' for hcmap (plot map) #
+# data_column = give column from 'world' in which data of interest can be found
+create_mapdata <- function(map_source, data_column, decimal_place){
+                  
+                  # get info on chosen map (https://code.highcharts.com/mapdata/)
+                  mapdata <- get_data_from_map( download_map_data(map_source) )
+                  
+                  # 'countries' contains only latest covid 19
+                  countries <- subset(world,
+                               date == max(world$date, na.rm = T)
+                               )
+                  
+                  # round covid data to what decimal place?
+                  countries[, data_column] <- 
+                      round(countries[, data_column], digits = decimal_place)
+
+                  names(countries)[3] <- 'name'
+
+                  # subset mapdata so only country names and abbreviations are shown
+                  mapdata_countries <- subset(mapdata,
+                                       select = c(name, `country-abbrev`)
+                                        )
+                  # mapdata contains country names and covid data of interest
+                  mapdata <- merge(countries, mapdata_countries)
+                  return(mapdata)
+                  }
+
+# function to configure hcmap (add navigation, file export, etc. functionalities) #
+map_config <-   function (plot_map) {  
+                plot_map %>%
+                hc_mapNavigation(enabled = TRUE)           %>%
     
-                dyRangeSelector(dateWindow = 
-                   c(min(dates) , max(dates) ),
-                     height = 13 )                    %>%
-                dyCrosshair(direction = "vertical")        %>%           
-                dyUnzoom()
+                hc_caption(text = paste('Data as of', 
+                                           format( as.Date(mapdata$date[1]), '%d %b %Y')
+                                       ) 
+                           )                               %>%
+    
+                hc_exporting(enabled = TRUE)              
                 }
 
 # function to print label describing abs change between last two weeks & % change
@@ -572,6 +567,197 @@ p <- function(leg.position)
      theme(legend.position=leg.position)
 
 
+############# computations for 'Comparisons (new cases per million population)' #############
+
+# create mapdata data frame containing country names and only latest covid 19
+mapdata <- create_mapdata(map_source = 'custom/world-highres',
+                          data_column = which(names(world) == 'new_cases_per_million'),
+                          decimal_place = 2)
+  
+# Plot map function
+plot_map_cases_per_million <- function(dataset, mapsource){
+                              min_cols <- brewer.pal(9, "Greens")
+                              max_cols <- brewer.pal(9, "Reds")
+  
+                              plot_map <-
+                              hcmap(mapsource,  showInLegend = FALSE,
+                              data = dataset,
+                              value = 'new_cases_per_million',
+                              joinBy = 'name',
+                              name = 'New cases per mil pop.',
+                              minSize = "1%",
+                              maxSize = "100%"
+                              ) %>%
+    
+                              hc_colorAxis(minColor = min_cols[2], 
+                                           maxColor = max_cols[9], 
+                                           min = 0, max = 500)
+    
+                              map_config(plot_map)
+                              }
+
+## to plot bubble plot (new cases per million pop) ##
+
+# add a 'note' column to group all other countries collectively
+add_note <- function(d){
+            d$note                                       <- 'Other countries'
+            d[which(d$name == 'Malaysia'), ]$note        <- 'Malaysia'
+            d[which(d$name == 'India'), ]$note           <- 'India'
+            d[which(d$name == 'United Kingdom'), ]$note  <- 'UK'
+            d[which(d$name == 'Thailand'), ]$note        <- 'Thailand'
+            d[which(d$name == 'Qatar'), ]$note           <- 'Qatar'
+            d[which(d$name == 'Indonesia'), ]$note       <- 'Indonesia'
+            d[which(d$name == 'Singapore'), ]$note       <- 'Singapore'
+            return(d)
+            }
+mapdata <- add_note(mapdata)
+
+# colours for India, Indonesia, Mys, other countries, Qatar, Sg, Thai & UK
+bubble_cols <- brewer.pal(12, "Set3")[ c(1:2, 4, 9, 5:8) ]
+
+plot_bubble_cases <- hchart( mapdata,
+                     type = "point",
+                     hcaes(life_expectancy, 
+                     new_cases_per_million, 
+                     size = population, 
+                     group = note)
+                     )                                                 %>%
+  
+               hc_yAxis( title = list (
+                                   text = 'New cases per million'),
+                         type = 'logarithmic')                         %>%
+  
+               hc_xAxis( title = list( 
+                                   text = 'Life expectancy') )         %>%
+  
+               hc_tooltip( useHTML = TRUE,
+                           headerFormat = "<b>{point.key}</b><br>",
+                           pointFormat  = "{point.y}"
+                          )                                            %>%
+  
+               hc_colors(bubble_cols)                                  %>%
+  
+               hc_yAxis(gridLineWidth = 0.3,
+                        plotLines = list(
+                                       list( color = bubble_cols[3],
+                                             width = 1,
+                                             value = tail(mys$new_cases_per_million, 1) ,
+                                             label = list( text = 'Malaysia')
+                                             )
+                                        ) 
+                                               
+                         )                                             %>%
+  
+                 hc_subtitle( text = paste('Data as of', 
+                                        format( as.Date(mapdata$date[1]), '%d %b %Y')
+                                        )  
+                          )
+
+
+############# computations for 'Comparisons (vaccinations per million population)' #############
+
+mapdata <- create_mapdata(map_source = 'custom/world-highres',
+                          data_column = which(names(world) == 'new_cases_per_million'),
+                          decimal_place = 2)
+
+# extract country names
+unique_country <- unique(world$location)
+
+# create data.frame to store most recent vaccination data from different countries
+vac <- data.frame(name = unique_country,
+                  people_vaccinated_per_hundred = 0, 
+                  people_fully_vaccinated_per_hundred = 0)
+
+# loop to extract most recent data from every country
+for(i in 1:length(unique_country) ) {
+  
+        a <- subset(world, location == unique_country[i] )
+        
+  
+        vac[i, 2:3] <- c( max(a$people_vaccinated_per_hundred, na.rm = T),
+                          max(a$people_fully_vaccinated_per_hundred, na.rm = T)
+                         )
+        }
+
+vac <- vac[which(vac$people_fully_vaccinated_per_hundred >= 0),]
+
+# plot map
+plot_map_vac_per_hundred <- function(dataset, mapsource){
+                             cols <- brewer.pal(9, "Greens")
+  
+                             plot_map <-
+                             hcmap(mapsource,  showInLegend = FALSE,
+                             data = dataset,
+                             value = 'people_fully_vaccinated_per_hundred',
+                             joinBy = 'name',
+                             name = 'Fully vaccinated (%)',
+                             minSize = "1%",
+                             maxSize = "100%"
+                             ) %>%
+    
+                             hc_colorAxis(minColor = cols[2], 
+                                          maxColor = cols[9], 
+                                          min = 0, max = 100)
+  
+                             map_config(plot_map)
+                             }
+
+
+## to plot bubble plot (% fully vaccinated) ##
+
+a <- subset(world, select = c(
+                         location, life_expectancy, population) 
+            )
+
+names(a)[1] <- 'name'
+vac_data <- merge(vac, a, by='name')
+vac_data <- distinct(vac_data)
+
+vac_data <- add_note(vac_data)
+vac_data[which(vac_data$name == 'World'), ]$note <- 'Global average'
+
+# colours for world, India, Indonesia, mys, other countries, Qatar, Sg, Thai & UK
+bubble_cols <- brewer.pal(12, "Set3")[ c(1:4, 9, 5:8, 10) ]
+
+plot_bubble_vac <- hchart( vac_data,
+                           type = "point",
+                           hcaes(life_expectancy, 
+                                 people_fully_vaccinated_per_hundred, 
+                                 size = population,
+                                 group = note
+                                 )
+                          )                                    %>%
+  
+                    hc_yAxis( title = list (
+                    text = 'Fully vaccinated (%)'),
+                    type = 'logarithmic')                      %>%
+  
+                    hc_xAxis( title = list( 
+                    text = 'Life expectancy') )                %>%
+  
+                    hc_tooltip( useHTML = TRUE,
+                    headerFormat = "<b>{point.key}</b><br>",
+                    pointFormat  = "{point.y}%"
+                    )                                          %>%
+  
+                    hc_colors(bubble_cols)                     %>%
+  
+                    hc_yAxis(gridLineWidth = 0.3,
+                             max = 100,
+                             plotLines = list(
+                                           list( color = bubble_cols[3],
+                                                 width = 1,
+                                                 value = tail(mys$people_fully_vaccinated_per_hundred, 1) ,
+                                                 label = list( text = 'Malaysia')
+                                                )
+                                             ) 
+           
+                              )                                 %>%
+  
+                              hc_subtitle( text = paste('Data as of', 
+                                                         format( as.Date(max(world$date) ), '%d %b %Y')
+                                                       )  
+                                         ) 
 
 
 
