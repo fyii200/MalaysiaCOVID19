@@ -3,7 +3,7 @@ title: "COVID-19 in Malaysia"
 output: 
   flexdashboard::flex_dashboard:
     theme:
-      version: 4
+      version: 3
     orientation: rows
     navbar:
           - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
@@ -592,7 +592,7 @@ plot_map_cases_per_million(dataset = mapdata,
 ```
 
 ***
-How do we compare to other countries in terms of daily number of cases per million population? Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
+How do we compare to other countries in terms of daily number of cases per million population? Hover your cursor over or tap a country of interest to see the data corresponding to that country. You can zoom in and out of the map using the zoom buttons or pinch  on the touch screen with two fingers if you are using a touch device. Panning will be enabled when the map is zoomed in.
 
 
 ### <span style="font-size:1.3em;"> **New cases per million | Bubble plot ** </span>
@@ -601,7 +601,7 @@ plot_bubble_cases
 ```
 
 ***
-Certain countries (including Malaysia) are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country.
+All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent. To deselect a continent, click or tap on the legend text. (you can therefore zoom in on a continent of interest by deselecting all other continents). Note that the y-axis is log-scaled.
 
 
 ### <span style="font-size:1.3em;"> **Fully vaccinated | Choropleth map ** </span>
@@ -612,7 +612,7 @@ plot_map_vac_per_hundred(dataset = vac,
 ```
 
 ***
-Where do we stand globally in terms of the percentage of population fully vaccinated against COVID-19? Vaccination data for each country shown are last provided either on the date shown at the bottom of the map or the day before it. Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
+Where do we stand globally in terms of the percentage of population fully vaccinated against COVID-19? Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
 
 
 ### <span style="font-size:1.3em;"> **Fully vaccinated | Bubble plot ** </span>
@@ -621,5 +621,5 @@ plot_bubble_vac
 ```
 
 ***
-Certain countries (including Malaysia) are colour-coded, while others are grey. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. You can also highlight a country by hovering over or tapping the legend text (at the bottom of the plot) associated with that country. Vaccination data for each country shown are last provided either on the date shown at the bottom of the plot or the day before it.
+All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent To deselect a continent, click or tap on the legend text (you can therefore zoom in on a continent of interest by deselecting all other continents). Note that the y-axis is log-scaled.
 
