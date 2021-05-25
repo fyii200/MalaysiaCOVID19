@@ -74,7 +74,7 @@ Row {data-height=300}
 <span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
-### At least 1 dose — rounded percentage of population
+### At least 1 dose — rounded percentage of total population
 ```{r echo=FALSE}
 plot_square(dataset = target, 
             rows = c(1, 3, 5), 
@@ -519,17 +519,18 @@ hc_add_series(data$`2nd dose`,
 ```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
 plot_square(dataset = target, 
             rows = c(1, 3, 5), 
-            color = col[1] )   %>%
-hc_title( text = 'At least 1 dose')
+            color = col[1] )          %>%
+hc_title( text = 'At least 1 dose')   %>%
+hc_legend( enabled = FALSE)
 ```
 
 ***
 ```{r echo=FALSE}
 plot_square(dataset = target, 
             rows = c(2, 4, 5), 
-            color = col[2] )        %>%
+            color = col[2] )          %>%
   
-hc_title( text = 'Fully vaccinated') %>%
+hc_title( text = 'Fully vaccinated')  %>%
 hc_legend( enabled = FALSE)
 ```
 

@@ -551,8 +551,8 @@ dose2           <- round( unrounded_dose2, 0)
 
 # create a data frame to store all computations above
 target <- data.frame(
-                     dose = c("1st dose", "2nd dose", "Remaining target: 1st dose", 
-                              "Remaining target: 2nd dose" ,"Non-target population"
+                     dose = c("1st dose", "2nd dose", "Remaining target population: 1st dose", 
+                              "Remaining target population: 2nd dose" ,"Non-target population"
                               ),
                      percentage = c( dose1, dose2, target_pop - dose1,
                                      target_pop - dose2, non_target_pop
