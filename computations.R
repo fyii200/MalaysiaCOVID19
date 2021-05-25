@@ -45,8 +45,8 @@ config_hc <- function(series, type, series_name, series_col, unit){
                         backgroundColor = "transparent",
                         hideDelay       = 1000,
                         labels = list(format = paste("{value}", unit) ),
-                        headerFormat    = ' <b> <span style="font-size:1.1em;"> {point.x:%d %b %Y} <br>',
-                        pointFormat     = paste('<span style="font-size:1em; color:{series.color};"> {series.name}: </span> {point.y}', unit, '<br>'),
+                        headerFormat    = ' <b> <span style="font-size:1.1em; color:gray;"> {point.x:%d %b %Y} <b> <br> </span>',
+                        pointFormat     = paste('<span style="font-size:1em;"> {series.name}: </span> {point.y}', unit, '<br>'),
                         positioner      = JS(
                                              "function () {
                                               xp =  this.chart.chartWidth / 2 - this.label.width / 2
@@ -63,7 +63,8 @@ config_hc <- function(series, type, series_name, series_col, unit){
     
            hc_yAxis( opposite = FALSE,
                      gridLineWidth = 0.5,
-                     labels = list(format = paste('{value}', unit) )
+                     labels = list(format = paste('{value}', unit) ),
+                     showLastLabel = TRUE
                     )                                                 %>%
     
            hc_rangeSelector( enabled              = TRUE,
@@ -533,34 +534,59 @@ plot_progress_tracker <-
 
 
 ########################### computations for 'Vaccinations (Square Plot)' ###########################
-# what % of target population (23.6 mil) has received 1st dose?
-unrounded_target_dose1 <- (max(y1) / 23.6e6 ) * 100
-target_dose1           <- round( unrounded_target_dose1, 0)
+# what is the proportion of target pop (23.6 mil) to total pop (32.7 mil)?
+unrounded_target_pop <- (23.6e6 / 32.7e6) * 100
+target_pop           <- round( unrounded_target_pop, 0)
+
+# % of population not part of target population
+non_target_pop <- 100 - target_pop
+
+# what % of population (23.6 mil) has received 1st dose?
+unrounded_dose1 <- (max(y1) / 32.7e6 ) * 100
+dose1           <- round( unrounded_dose1, 0)
 
 # what % of total population (23.6 mil) has received 2nd dose?
-unrounded_target_dose2 <- (max(y2) / 23.6e6 ) * 100
-target_dose2           <- round( unrounded_target_dose2, 0)
-
-# what % has not received a dose yet?
-rem_target <- 100 - target_dose1
+unrounded_dose2 <- (max(y2) / 32.7e6 ) * 100
+dose2           <- round( unrounded_dose2, 0)
 
 # create a data frame to store all computations above
 target <- data.frame(
-                     dose = c("2nd dose", "1st dose", "Remaining target pop."),
-                     percentage = c( target_dose2, target_dose1 - target_dose2, rem_target ) 
+                     dose = c("1st dose", "2nd dose", "Remaining target: 1st dose", 
+                              "Remaining target: 2nd dose" ,"Non-target population"
+                              ),
+                     percentage = c( dose1, dose2, target_pop - dose1,
+                                     target_pop - dose2, non_target_pop
+                                     )
                      )
 
-# plot square chart (called 'p' so ggplot can be forced to be printed later)
-p <- function(leg.position)
-     ggplot(data = target, 
-         aes(fill = dose, values = percentage) ) +
-     geom_waffle(n_rows = 10, size = 0.5, colour = "#ffffff",  flip = TRUE) +
-     scale_fill_manual(values = c(vac_col, 'gray92') ) +
-     coord_equal() +
-     theme_minimal() +
-     theme_enhance_waffle() +
-     theme(legend.title=element_blank()) +
-     theme(legend.position=leg.position)
+
+# argument 'row' = give vector of rows related to 1st or 2nd dose
+plot_square <- function(dataset, rows, color){
+  
+               name   <- dataset$dose [ rows ]
+               y      <- dataset$percentage [ rows ]
+               label  <- dataset$dose [ rows ]
+               color  <- c(color, brewer.pal(9, 'Greys')[ c(2, 4) ])
+  
+               data   <- data.frame(name, y, label, color)
+  
+               highchart() %>%
+               hc_chart(type = "item") %>%
+               hc_add_series(
+               name = 'Percentage vaccinated',
+               data = data,
+               keys = c('name', 'y', 'label', 'color'),
+               size = '100%',
+               rows = 10,
+               dataLabels = list(enabled = FALSE),
+               layout = 'horizontal')                          %>%
+    
+    
+               hc_tooltip( useHTML = TRUE,
+                           headerFormat = "<b>{point.key}: </b>",
+                           pointFormat  = "<br> rounded percentage: {point.y}%"
+                           )     
+               }
 
 
 ############# computations for 'Comparisons (new cases per million population)' #############
@@ -592,14 +618,15 @@ plot_map_cases_per_million <- function(dataset, mapsource){
                                 
                               hc_colorAxis(minColor = min_cols[2], 
                                            maxColor = max_cols[9], 
-                                           min = 0, max = 500)
+                                           min = 0, max = 500,
+                                           type = 'log')
     
                               map_config(plot_map)
                               }
 
 ## to plot bubble plot (new cases per million pop) ##
 
-# colours for India, Indonesia, mys, other countries, Qatar, Sg, Thai & UK
+# colours for Africa, Asia, Europe, Mys, North Americ, Ocenia, South Americ
 bubble_cols <- brewer.pal(9, "Set1")
 
 # change 'continent' column for Malaysia to 'Malaysia' to highlight it on the plot later on
@@ -635,49 +662,11 @@ plot_bubble_cases <- hchart( mapdata,
                                              label = list( text = 'Malaysia')
                                              )
                                         ) 
-                         )
+                         )                                             %>%
+               hc_exporting(enabled = TRUE)
 
 
 ############# computations for 'Comparisons (vaccinations per million population)' #############
-
-mapdata <- create_mapdata(map_source = 'custom/world-highres',
-                          data_column = which(names(world) == 'new_cases_per_million'),
-                          decimal_place = 2)
-
-# extract country names
-unique_country <- unique(world$location)
-
-# create data.frame to store most recent vaccination data from different countries
-vac <- data.frame(name = unique_country,
-                  `iso-a3` = unique(world$iso_code),
-                  date = Sys.Date(),
-                  people_vaccinated_per_hundred = 0, 
-                  people_fully_vaccinated_per_hundred = 0)
-
-names(vac)[2] <- 'iso-a3'
-
-# loop to extract most recent data from every country
-for(i in 1:length(unique_country) ) {
-   
-        # dataset for a specific country
-        a <- subset(world, location == unique_country[i] )
-        
-        # remove NAs vaccination data
-        a <- a[ complete.cases(a$people_fully_vaccinated_per_hundred), ]
-        
-        # latest date when vaccination data are available
-        max_date <- as.Date( max(a$date) )
-        
-        # store latest date & vaccination data in 'vac'
-        vac[i, 3]   <- max_date
-        vac[i, 4:5] <- c( max(a$people_vaccinated_per_hundred, na.rm = T),
-                          max(a$people_fully_vaccinated_per_hundred, na.rm = T)
-                         )
-        }
-
-# remove countries where date = NA (i.e., vaccination data not available)
-vac <- vac[ complete.cases(vac$date), ]
-
   
 # plot map
 plot_map_vac_per_hundred <- function(dataset, mapsource){
@@ -698,19 +687,58 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
                                         pointFormat  = "{point.date} <br> Fully vaccinated: {point.value}%"
                                        )                                        %>%
                                
-                             hc_colorAxis(minColor = cols[2], 
-                                          maxColor = cols[9], 
-                                          min = 0, max = 100)   
+                             hc_colorAxis(minColor = cols[2],
+                                          maxColor = cols[9],
+                                          min = 0, max = 100,
+                                          type = 'log'
+                                          )
   
                              map_config(plot_map)
-                             }
+                             }  
 
 
 ## to plot bubble plot (% fully vaccinated) ##
 
+mapdata <- create_mapdata(map_source = 'custom/world-highres',
+                          data_column = which(names(world) == 'new_cases_per_million'),
+                          decimal_place = 2)
+
+# extract country names
+unique_country <- unique(world$location)
+
+# create data.frame to store most recent vaccination data from different countries
+vac <- data.frame(name = unique_country,
+                  `iso-a3` = unique(world$iso_code),
+                  date = Sys.Date(),
+                  people_vaccinated_per_hundred = 0, 
+                  people_fully_vaccinated_per_hundred = 0)
+
+names(vac)[2] <- 'iso-a3'
+
+# loop to extract most recent data from every country
+for(i in 1:length(unique_country) ) {
+                                     # dataset for a specific country
+                                     a <- subset(world, location == unique_country[i] )
+  
+                                     # remove NAs vaccination data
+                                     a <- a[ complete.cases(a$people_fully_vaccinated_per_hundred), ]
+  
+                                     # latest date when vaccination data are available
+                                     max_date <- as.Date( max(a$date) )
+  
+                                     # store latest date & vaccination data in 'vac'
+                                     vac[i, 3]   <- max_date
+                                     vac[i, 4:5] <- c( max(a$people_vaccinated_per_hundred, na.rm = T),
+                                                       max(a$people_fully_vaccinated_per_hundred, na.rm = T)
+                                                       )  
+                                     }
+
+# remove countries where date = NA (i.e., vaccination data not available)
+vac <- vac[ complete.cases(vac$date), ]
+
 a <- subset(world, select = c(
-                         date, location, life_expectancy, population, continent) 
-            )
+                              date, location, life_expectancy, population, continent) 
+                              )
 
 names(a)[2] <- 'name'
 vac_data <- merge(vac, a, by = c('name', 'date') )
@@ -733,7 +761,7 @@ vac_data[ which(vac_data$name == 'Malaysia'), 4:5] <- c( round( (cumul_dose1 / 3
                                                                  digits = 2) 
 )
 
-# colours for India, Indonesia, mys, other countries, Qatar, Sg, Thai & UK
+# colours for Africa, Asia, Europe, Mys, North Americ, Ocenia, South Americ
 bubble_cols <- brewer.pal(9, "Set1")
 
 plot_bubble_vac <- hchart( vac_data,
@@ -769,11 +797,40 @@ plot_bubble_vac <- hchart( vac_data,
                                                  )
                                               ) 
            
-                              )                               
+                              )                                 %>% 
+                     hc_exporting(enabled = TRUE)
   
 
-                                          
+                     
 
+
+
+
+
+
+                     
+# hc <- hchart(mapdata, "packedbubble", hcaes(name = location, 
+#                                             value = new_cases_per_million, 
+#                                             group = continent, 
+#                                             size = new_cases_per_million
+#                                             )
+#             )
+# 
+# hc %>%
+#   hc_plotOptions(
+#              packedbubble = list(
+#                                maxSize = '300%',
+#                                zmin = 0
+#                                 )
+#                 )         %>%
+#   hc_tooltip( useHTML = TRUE,
+#               headerFormat = "<b>{point.key}</b><br>",
+#               pointFormat  = "{point.date} <br> {point.y}"
+#   )                        %>%
+#   
+#   hc_colors(bubble_cols)
+  
+  
 
 
 

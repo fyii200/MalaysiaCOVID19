@@ -7,7 +7,6 @@ output:
     orientation: rows
     navbar:
           - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
-          - {title: "Source code", icon: "fa-file-code", href: "https://github.com/fyii200/www.malaysiacovid.com/blob/main/index.Rmd", align: right}
     social: menu
     fig_mobile: FALSE
 date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
@@ -59,18 +58,6 @@ Row {data-height=300}
 <span style="font-size:1em;"> 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
 <span style="font-size:2em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
 <span style="font-size:1.5em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
-  
-
-### Percentage of minimum target population (23.2m) vaccinated {.no-mobile}
-```{r echo=FALSE}
-p(leg.position='')
-```
-
-<span style="font-size:1em;"> 1st dose </span>  
-<span style="font-size:1.5em; color:`r vac_col[1]`; text-decoration:underline"> **`r round( unrounded_target_dose1, 1)`%** </span>
-
-<span style="font-size:1em;"> 2nd dose </span>  
-<span style="font-size:1.5em; color:`r vac_col[2]`; text-decoration:underline"> **`r round( unrounded_target_dose2, 1)`%** </span>
 
 
 ### Vaccinations - Daily Total & Cumulative Total {.mobile}
@@ -87,15 +74,13 @@ p(leg.position='')
 <span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
-### Percentage of minimum target population (23.2m) vaccinated {.mobile}
+### At least 1 dose — rounded percentage of population
 ```{r echo=FALSE}
-p(leg.position='bottom')
+plot_square(dataset = target, 
+            rows = c(1, 3, 5), 
+            color = col[1] ) %>%
+hc_legend(enabled = FALSE)
 ```
-
-<span style="font-size:1em;"> &nbsp; 1st </span> &nbsp; | &nbsp; <span style="font-size:1em;"> 2nd dose </span>
-
-<span style="font-size:1.3em; color:`r vac_col[1]`; text-decoration:underline"> &nbsp; **`r round( unrounded_target_dose1, 1)`%** </span> &nbsp; | &nbsp;
-<span style="font-size:1.3em; color:`r vac_col[2]`; text-decoration:underline"> **`r round( unrounded_target_dose2, 1)`%** </span>
 
 
 
@@ -160,7 +145,7 @@ plot_line(mys$date, mys$new_deaths_smoothed, death_col)
 
 
 
-How-to {data-icon="fa-question-circle"}
+Guide {data-icon="fa-question-circle"}
 =========================================
 
 Row {data-height=100}
@@ -437,39 +422,51 @@ Vaccinations {.storyboard data-icon="fa-syringe"}
 
 ### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
 ```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
-# configure data frame for highcharter
-data <- subset(daily_dose, select = c(date, dose1, dose2) 
+# compute total daily doses
+for(i in 1:nrow(daily_dose) ) {
+                              daily_dose$total[i] <- 
+                              daily_dose$dose1[i] + daily_dose$dose2[i]
+                              }
+
+# configure data frame for highcharter  
+data <- subset(daily_dose, select = c(date, dose1, dose2, total) 
                )
-names(data)[ c(2, 3) ] <- c("1st dose", "2nd dose")
+
+names(data)[ 2:4 ] <- c("1st dose", "2nd dose", 'total')
 
 # convert data frame into xts format
-data <- xts(data[, 2:3], order.by = data$date)         
+data <- xts(data[, 2:4], order.by = data$date)         
 
-# col [1] for 2 doses [2] for 1 dose
-col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
+# col [1] for total; col[2] for 1st dose; col[3] for 2nd dose
+col <- brewer.pal(9, 'Greens')[ c(2, 6, 8) ]
 
 # Plot!
-config_hc(data$`1st dose`, 
-          'column', 
-          '1st dose', 
+config_hc(data$total, 
+          'area', 
+          'Total', 
           col[1], 
           '')                            %>%
-
-hc_add_series(data$`2nd dose`, 
-              type = "column", 
-              name = '2nd dose', 
-              color = col[2])
+  
+hc_add_series(data$`1st dose`, 
+              type = 'column', 
+              color = col[2], 
+              name = '1st dose')         %>%
+  
+  hc_add_series(data$`2nd dose`, 
+                type = "column", 
+                name = '2nd dose', 
+                color = col[3])  
 ```
 
 *** 
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
-<span style="font-size:1.5em; color:`r col[1]`;"> **+`r latest_dose1_formatted`** </span> &nbsp; | &nbsp;
-<span style="font-size:1em; color:`r col[1]`;"> **+`r dose1_7day_avg_formatted`**</span>  
+<span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose1_formatted`** </span> &nbsp; | &nbsp;
+<span style="font-size:1em; color:`r col[2]`;"> **+`r dose1_7day_avg_formatted`**</span>  
 <span style="color:grey;"> *new 1st doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
 
-<span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose2_formatted`** </span> &nbsp; | &nbsp;
-<span style="font-size:1em; color:`r col[2]`;"> **+`r dose2_7day_avg_formatted`**</span>  
+<span style="font-size:1.5em; color:`r col[3]`;"> **+`r latest_dose2_formatted`** </span> &nbsp; | &nbsp;
+<span style="font-size:1em; color:`r col[3]`;"> **+`r dose2_7day_avg_formatted`**</span>  
 <span style="color:grey;"> *new 2nd doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
 
 
@@ -488,7 +485,7 @@ names(data)[c(2, 3)] <- c("1st dose", "2nd dose")
 data <- xts(data[, 2:3], order.by = data$date)         
 
 # col [1] for 2 doses [2] for 1 dose
-col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
+col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
 
 # Plot!
 config_hc(data$`1st dose`,  
@@ -515,6 +512,26 @@ hc_add_series(data$`2nd dose`,
 <span style="font-size:0.9em; color:`r col[2]`;"> **+`r perc_daily_dose2`%** </span>
 <span style="font-size:0.8em; color:grey;"> *from `r format( tail(d$date, 1) - 1, '%d %b')`* </span>  
 <span style="color:grey;"> *have received at least 2 doses of a vaccine.* </span> 
+
+
+
+### <span style="font-size:1.3em;"> **Percentage (rounded) Vaccinated |** </span> <br> <span style="font-size:0.9em;"> Square plots </span>
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+plot_square(dataset = target, 
+            rows = c(1, 3, 5), 
+            color = col[1] )   %>%
+hc_title( text = 'At least 1 dose')
+```
+
+***
+```{r echo=FALSE}
+plot_square(dataset = target, 
+            rows = c(2, 4, 5), 
+            color = col[2] )        %>%
+  
+hc_title( text = 'Fully vaccinated') %>%
+hc_legend( enabled = FALSE)
+```
 
 
 
@@ -565,7 +582,7 @@ hc_add_series(data$`2nd dose`,
 plot_progress_tracker
 
 # col[1] for 1st dose; col[2] for 2nd dose
-col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
+col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
 ```
 
 *** 
@@ -607,7 +624,7 @@ All countries are grouped (colour-coded) by continents, except Malaysia where it
 ### <span style="font-size:1.3em;"> **Fully vaccinated | Choropleth map ** </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)
-plot_map_vac_per_hundred(dataset = vac,
+plot_map_vac_per_hundred(dataset = vac_data,
                            mapsource = "custom/world-highres")
 ```
 
