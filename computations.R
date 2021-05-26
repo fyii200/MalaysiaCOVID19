@@ -25,12 +25,12 @@ plot_line <- function(x, y, col){
              }
 
 # function to plot Highcharter #
-config_hc <- function(series, type, series_name, series_col, unit){
+config_hc <- function(series, type, series_name, series_col, unit, ...){
   
              highchart(type = "stock") %>%
     
-             hc_add_series(series, type = type, name = series_name, color = series_col) %>%
-    
+             hc_add_series(series, type = type, name = series_name, color = series_col, ...) %>%
+  
              hc_exporting(enabled = TRUE) %>%
     
              hc_tooltip(
@@ -40,7 +40,7 @@ config_hc <- function(series, type, series_name, series_col, unit){
                         outside         = FALSE,
                         crosshairs      = TRUE,
                         shadow          = FALSE,
-                        borderWidth     = 0,
+                        borderWidth = 0,
                         nullFormat      = 'Null',
                         backgroundColor = "transparent",
                         hideDelay       = 1000,
@@ -61,15 +61,15 @@ config_hc <- function(series, type, series_name, series_col, unit){
                     showLastLabel  = TRUE
                    )                                                  %>%
     
-           hc_yAxis( opposite = FALSE,
-                     gridLineWidth = 0.5,
-                     labels = list(format = paste('{value}', unit) ),
-                     showLastLabel = TRUE
+          hc_yAxis( opposite = FALSE,
+                    gridLineWidth = 0.5,
+                    labels = list(format = paste('{value}', unit) ),
+                    showLastLabel = TRUE
                     )                                                 %>%
     
-           hc_rangeSelector( enabled              = TRUE,
-                             inputEnabled         = FALSE,
-                             buttons = list(
+          hc_rangeSelector( enabled              = TRUE,
+                            inputEnabled         = FALSE,
+                            buttons = list(
                                          list(type = 'week', count = 2, text = '2w'),
                                          list(type = 'month', count = 1, text = '1m'),
                                          list(type = 'month', count = 6, text = '6m'),
@@ -78,10 +78,10 @@ config_hc <- function(series, type, series_name, series_col, unit){
                                          )
                             )                                         %>%
     
-            hc_scrollbar(enabled = FALSE)                             %>%
+          hc_scrollbar(enabled = FALSE)                               %>%
     
-            hc_legend(enabled = TRUE, 
-                      verticalAlign = 'bottom')
+          hc_legend(enabled = TRUE, 
+                    verticalAlign = 'bottom')
   
 }
 
@@ -398,7 +398,7 @@ latest_dose2_7day_avg <- tail( daily_dose$dose2_7day_avg, 1)
 dose2_7day_avg_formatted <- format(latest_dose2_7day_avg, scientific = F, big.mark = ',')
 
 
-########################### computations for 'Vaccinations (Cumulative Total)' ###########################
+########################### computations for 'Vaccinations (Cumulative Total & percentage vaccinated)' ###########################
 # compute cumulative total of 1st & 2nd doses
 cumul_dose1 <- tail(d$people_vaccinated, 1)
 cumul_dose1_formatted <- format(cumul_dose1, scientific = F, big.mark = ',')
@@ -407,9 +407,7 @@ cumul_dose2 <- tail(d$people_fully_vaccinated, 1)
 cumul_dose2_formatted <- format(cumul_dose2, scientific = F, big.mark = ',')
 
 
-########################### computations for 'Vaccinations (Percentage Vaccinated)' ###########################
 # % of total population (32.6 mil) inoculated
-
 perc_cumul_dose1 <- round( (cumul_dose1 / 32.6e6) * 100,             # % of pop receiving 1st dose
                           digits = 1)
 
@@ -421,6 +419,86 @@ perc_daily_dose1 <- round( (latest_dose1 / 32.6e6) * 100,            # daily new
 
 perc_daily_dose2 <- round( (latest_dose2 / 32.6e6) * 100,            # daily new 2nd doses in terms of % of pop
                            digits = 2)
+
+
+# plot cumulative total (& percentage vaccinated wrap within tooltip text)
+# create a subset of data containing all relevant data; then, compute % vaccinated
+data                  <- subset(d, select = c(date, people_vaccinated, people_fully_vaccinated) 
+                                )
+data$percent_1st_dose <- round( (data$people_vaccinated/32.7e6) * 100, 
+                                digits = 2)
+data$percent_2nd_dose <- round( (data$people_fully_vaccinated/32.7e6) * 100, 
+                                digits = 2)
+
+# round cumulative doses to nearest million
+data$people_vaccinated <- round(data$people_vaccinated / 1e6, 
+                                digits = 2)
+data$people_fully_vaccinated <- round(data$people_fully_vaccinated / 1e6, 
+                                      digits = 2)
+
+# col [1] for 2 doses [2] for 1 dose
+col<-brewer.pal(9, 'Greens')[ c(5, 9) ]
+
+# configure the appearance of tooltip (using HTML)
+tt_html <-   
+"<table> \n
+
+<tr>
+<th> Dose &emsp; </th>
+<th> Total &emsp; </th>
+<th> % of Pop. </th>
+</tr>
+
+<tr> \n    
+<td> 1st </th> \n
+<td> {point.people_vaccinated}M </td> \n
+<td> &emsp; {point.percent_1st_dose}% </td> \n  
+</tr> \n 
+
+<tr> \n   
+<td> 2nd </th> \n    
+<td> {point.people_fully_vaccinated}M </td> \n
+<td> &emsp; {point.percent_2nd_dose}% </td> \n  
+</tr> \n
+
+</table>"
+
+plot_vac_percentage <-
+  
+  config_hc(data        = data,
+            type        = 'area',
+            series_name = '1st dose total',
+            series_col  = col[1],
+            unit        = 'M',
+            hcaes(x = date, 
+                  y = people_vaccinated)
+            )                                             %>%
+  
+  hc_add_series(data,
+                type  = "area",
+                name  = '2nd dose total',
+                color = col[2],
+                hcaes(x  = date,
+                       y = people_fully_vaccinated),
+                enableMouseTracking = FALSE
+                )                                         %>%                          
+  
+  hc_tooltip( useHTML     = TRUE,
+              split       = FALSE,
+              shared      = TRUE,
+              outside     = FALSE,
+              crosshairs  = TRUE,
+              borderWidth = 0,
+              pointFormat = tt_html
+              )                                           %>%
+  
+  hc_plotOptions( series = 
+                    list( states = 
+                            list( inactive = 
+                                    list( opacity = 1)
+                                  )
+                        )
+                )
 
 
 ########################### computations for 'Vaccinations (Progress Tracker)' ###########################
@@ -534,30 +612,20 @@ plot_progress_tracker <-
 
 
 ########################### computations for 'Vaccinations (Square Plot)' ###########################
-# what is the proportion of target pop (23.6 mil) to total pop (32.7 mil)?
-unrounded_target_pop <- (23.6e6 / 32.7e6) * 100
-target_pop           <- round( unrounded_target_pop, 0)
 
-# % of population not part of target population
-non_target_pop <- 100 - target_pop
-
-# what % of population (23.6 mil) has received 1st dose?
+# what % of population (32.7 mil) has received 1st dose?
 unrounded_dose1 <- (max(y1) / 32.7e6 ) * 100
-dose1           <- round( unrounded_dose1, 0)
+dose1           <- round( unrounded_dose1, 2)
 
-# what % of total population (23.6 mil) has received 2nd dose?
+# what % of total population (32.7 mil) has received 2nd dose?
 unrounded_dose2 <- (max(y2) / 32.7e6 ) * 100
-dose2           <- round( unrounded_dose2, 0)
+dose2           <- round( unrounded_dose2, 2)
 
 # create a data frame to store all computations above
-target <- data.frame(
-                     dose = c("1st dose", "2nd dose", "Remaining target population: 1st dose", 
-                              "Remaining target population: 2nd dose" ,"Non-target population"
-                              ),
-                     percentage = c( dose1, dose2, target_pop - dose1,
-                                     target_pop - dose2, non_target_pop
-                                     )
-                     )
+pie <- data.frame(
+                 dose = c("At least 1st dose", "Fully vaccinated", "Remaining population"), 
+                 percentage = c( dose1 - dose2, dose2, 100 - dose1 )
+                 )
 
 
 # argument 'row' = give vector of rows related to 1st or 2nd dose
@@ -566,7 +634,7 @@ plot_square <- function(dataset, rows, color){
                name   <- dataset$dose [ rows ]
                y      <- dataset$percentage [ rows ]
                label  <- dataset$dose [ rows ]
-               color  <- c(color, brewer.pal(9, 'Greys')[ c(2, 4) ])
+               color  <- c(color, brewer.pal(9, 'Greys')[3] )
   
                data   <- data.frame(name, y, label, color)
   
@@ -807,31 +875,73 @@ plot_bubble_vac <- hchart( vac_data,
 
 
 
-
-                     
-# hc <- hchart(mapdata, "packedbubble", hcaes(name = location, 
-#                                             value = new_cases_per_million, 
-#                                             group = continent, 
-#                                             size = new_cases_per_million
-#                                             )
-#             )
 # 
-# hc %>%
-#   hc_plotOptions(
-#              packedbubble = list(
-#                                maxSize = '300%',
-#                                zmin = 0
-#                                 )
-#                 )         %>%
-#   hc_tooltip( useHTML = TRUE,
-#               headerFormat = "<b>{point.key}</b><br>",
-#               pointFormat  = "{point.date} <br> {point.y}"
-#   )                        %>%
+#                      
+# # hc <- hchart(mapdata, "packedbubble", hcaes(name = location, 
+# #                                             value = new_cases_per_million, 
+# #                                             group = continent, 
+# #                                             size = new_cases_per_million
+# #                                             )
+# #             )
+# # 
+# # hc %>%
+# #   hc_plotOptions(
+# #              packedbubble = list(
+# #                                maxSize = '300%',
+# #                                zmin = 0
+# #                                 )
+# #                 )         %>%
+# #   hc_tooltip( useHTML = TRUE,
+# #               headerFormat = "<b>{point.key}</b><br>",
+# #               pointFormat  = "{point.date} <br> {point.y}"
+# #   )                        %>%
+# #   
+# #   hc_colors(bubble_cols)
 #   
-#   hc_colors(bubble_cols)
-  
-  
-
-
-
-
+# name   <- pie$dose
+# y      <- c(dose1,  dose1 / dose2, 100 - dose1)
+# col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
+# col  <- c(col, brewer.pal(9, 'Greys')[3] )
+# 
+# data   <- data.frame(name, y, col) 
+# data$group <- 'group'
+# 
+# 
+# 
+# 
+# 
+# # highchart() %>% 
+# #   hc_series(
+# #     list(
+# #       type = "venn",
+# #       name = "Venn Diagram",
+# #       data = list(
+# #         list(sets = list("Total population"), value = 100),
+# #         list(sets = list("At least 1 dose"), value = dose1),
+# #         list(sets = list("Fully vaccinated"), value = dose2 / dose1)
+# #       )
+# #     )
+# #   )
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# # highchart() %>% 
+# #   hc_chart(type = "pie") %>% 
+# #   hc_add_series(data,
+# #                 name = 'At least 1 dose')    %>%
+# #   hc_add_series(dose2,
+# #                 type = 'bubble',
+# #                 color = color[2],
+# #                 name = 'Fully vaccinated',
+# #                 endAngle = (360 * dose2) / 100) %>%
+# #   hc_colors(color[c(1,3)])      %>%
+# #   hc_tooltip( pointFormat=paste('<b> {point.y}% </b>')
+# #               )
+# 
+# 
+# 
+# 
