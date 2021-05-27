@@ -62,7 +62,7 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
                    )                                                  %>%
     
           hc_yAxis( opposite = FALSE,
-                    gridLineWidth = 0.5,
+                    gridLineWidth = 0.2,
                     labels = list(format = paste('{value}', unit) ),
                     showLastLabel = TRUE
                     )                                                 %>%
@@ -437,7 +437,7 @@ data$people_fully_vaccinated <- round(data$people_fully_vaccinated / 1e6,
                                       digits = 2)
 
 # col [1] for 2 doses [2] for 1 dose
-col<-brewer.pal(9, 'Greens')[ c(5, 9) ]
+col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
 
 # configure the appearance of tooltip (using HTML)
 tt_html <-   
@@ -623,38 +623,88 @@ dose2           <- round( unrounded_dose2, 2)
 
 # create a data frame to store all computations above
 pie <- data.frame(
-                 dose = c("At least 1st dose", "Fully vaccinated", "Remaining population"), 
-                 percentage = c( dose1 - dose2, dose2, 100 - dose1 )
+                 dose = c("At least 1st dose", "Fully vaccinated"), 
+                 percentage = c( dose1, dose2)
                  )
 
+pie$percentage <- round(pie$percentage, 1)
+pie$group <- c('At least 1 dose', 'Fully vaccinated')
 
-# argument 'row' = give vector of rows related to 1st or 2nd dose
-plot_square <- function(dataset, rows, color){
-  
-               name   <- dataset$dose [ rows ]
-               y      <- dataset$percentage [ rows ]
-               label  <- dataset$dose [ rows ]
-               color  <- c(color, brewer.pal(9, 'Greys')[3] )
-  
-               data   <- data.frame(name, y, label, color)
-  
-               highchart() %>%
-               hc_chart(type = "item") %>%
-               hc_add_series(
-               name = 'Percentage vaccinated',
-               data = data,
-               keys = c('name', 'y', 'label', 'color'),
-               size = '100%',
-               rows = 10,
-               dataLabels = list(enabled = FALSE),
-               layout = 'horizontal')                          %>%
-    
-    
-               hc_tooltip( useHTML = TRUE,
-                           headerFormat = "<b>{point.key}: </b>",
-                           pointFormat  = "<br> rounded percentage: {point.y}%"
-                           )     
-               }
+# # make gauge plot!
+# vac_gauge <- highchart(width = 50, height = 50)                   %>% 
+#              hc_chart(type = "solidgauge", 
+#                       marginTop = 50)                             %>% 
+#            
+#              hc_subtitle(text = "Tap or hover over the gauge!" )  %>%
+#   
+#              hc_tooltip(borderWidth = 0,
+#              backgroundColor = 'none',
+#              shadow = FALSE,
+#              style = list(fontSize = '16px'),
+#              pointFormat = '{series.name}: <br> <span style="font-size:3em; color: {point.color}; font-weight: bold"> {point.y}% </span>',
+#              positioner = JS( "function () {
+#                                             xp =  this.chart.chartWidth/2 - this.label.width/2
+#                                             yp =  this.chart.chartHeight/2 - this.label.height/2
+#                                             return { x: xp, y: yp }; }"
+#              )  )                                       %>%
+#   
+#              hc_pane(startAngle = 0,
+#              endAngle = 360,
+#              background = list(
+#                             list( outerRadius = '112%', 
+#                                   innerRadius = '88%', 
+#                                   backgroundColor = 'lightgray', 
+#                                   borderWidth =  0),
+#                             list( outerRadius = '87%', 
+#                                   innerRadius = '63%', 
+#                                   backgroundColor = 'lightgray', 
+#                                   borderWidth = 0) )  ) %>%
+#   
+#              hc_yAxis(min = 0, 
+#                       max = 100, 
+#                       lineWidth = 0, 
+#                       tickPositions = list() ) %>%
+#   
+#              hc_plotOptions(solidgauge = list( borderWidth = '25px',
+#                             dataLabels = list(enabled = FALSE), 
+#                             linecap = 'round', 
+#                             stickyTracking = FALSE) )        %>% 
+#   
+#               hc_add_series(name = "At least 1 dose", 
+#                             borderColor = col[1], 
+#                             data = list( 
+#                             list( color = col[1], 
+#                                   radius = "100%", 
+#                                   innerRadius = "100%", 
+#                                   y = dose1)
+#                                         ) )                  %>% 
+#   
+#               hc_add_series(name = "Fully vaccinated",
+#                             borderColor = col[2], 
+#                             data = list( 
+#                                       list( color = col[2], 
+#                                             radius = "75%", 
+#                                             innerRadius = "75%", 
+#                                             y = dose2) ) ) 
+
+vac_packed_bubble <- hchart(pie, 
+                            "packedbubble", 
+                            hcaes(name = dose, 
+                                  value = percentage, 
+                                  group = group), 
+                            color = col 
+                            )                                  %>%
+                        hc_tooltip(enabled = FALSE) %>%
+                        hc_plotOptions( packedbubble = list(
+                                                          dataLabels = list( enabled = TRUE,
+                                                                             format = '{point.y}%',
+                                                                             style = list( fontSize = '20px', 
+                                                                                           color = 'black')
+                                                                              ),
+                                                           maxSize = "140%",
+                                                           minSize = "70%"
+                                                           ) 
+                                      )
 
 
 ############# computations for 'Comparisons (new cases per million population)' #############
@@ -877,12 +927,12 @@ plot_bubble_vac <- hchart( vac_data,
 
 # 
 #                      
-# # hc <- hchart(mapdata, "packedbubble", hcaes(name = location, 
-# #                                             value = new_cases_per_million, 
-# #                                             group = continent, 
-# #                                             size = new_cases_per_million
-# #                                             )
-# #             )
+# hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
+#                                             value = new_cases_per_million,
+#                                             group = continent,
+#                                             size = new_cases_per_million
+#                                             )
+#             )
 # # 
 # # hc %>%
 # #   hc_plotOptions(
@@ -898,50 +948,27 @@ plot_bubble_vac <- hchart( vac_data,
 # #   
 # #   hc_colors(bubble_cols)
 #   
-# name   <- pie$dose
-# y      <- c(dose1,  dose1 / dose2, 100 - dose1)
-# col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
-# col  <- c(col, brewer.pal(9, 'Greys')[3] )
-# 
-# data   <- data.frame(name, y, col) 
-# data$group <- 'group'
+
+
+
+# hchart(pie, "packedbubble", hcaes(name = dose, value = percentage) )%>%
+# hc_colorAxis(3,c(col, 'gray'))
 # 
 # 
 # 
+# pie$percentage <- round(pie$percentage, 1)
+# pie$group <- c('At least 1 dose', 'Fully vaccinated', 'Remaining population')
 # 
-# 
-# # highchart() %>% 
-# #   hc_series(
-# #     list(
-# #       type = "venn",
-# #       name = "Venn Diagram",
-# #       data = list(
-# #         list(sets = list("Total population"), value = 100),
-# #         list(sets = list("At least 1 dose"), value = dose1),
-# #         list(sets = list("Fully vaccinated"), value = dose2 / dose1)
-# #       )
-# #     )
-# #   )
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# # highchart() %>% 
-# #   hc_chart(type = "pie") %>% 
-# #   hc_add_series(data,
-# #                 name = 'At least 1 dose')    %>%
-# #   hc_add_series(dose2,
-# #                 type = 'bubble',
-# #                 color = color[2],
-# #                 name = 'Fully vaccinated',
-# #                 endAngle = (360 * dose2) / 100) %>%
-# #   hc_colors(color[c(1,3)])      %>%
-# #   hc_tooltip( pointFormat=paste('<b> {point.y}% </b>')
-# #               )
-# 
-# 
-# 
-# 
+# hchart(pie, "packedbubble", hcaes(name = dose, value = percentage, group = group), color = c(col, 'gray') ) %>%
+# hc_tooltip(pointFormat = '{point.y}%') %>%
+# hc_plotOptions( packedbubble = list(
+#   dataLabels = list(enabled = TRUE,
+#                     format = '{point.y}%',
+#                     style = list(fontSize = '10px', 
+#                                  color = 'black')
+#                     ),
+#   maxSize = "130%"
+# ) )
+
+
+

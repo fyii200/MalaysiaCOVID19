@@ -74,14 +74,20 @@ Row {data-height=300}
 <span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
-### At least 1 dose — rounded percentage of total population
+### Percentage of total population vaccinated {.no-mobile}
 ```{r echo=FALSE}
-# plot_square(dataset = target, 
-#             rows = c(1, 3, 5), 
-#             color = col[1] ) %>%
-# hc_legend(enabled = FALSE)
+vac_packed_bubble
 ```
 
+### Percentage of total population vaccinated {.mobile}
+```{r echo=FALSE}
+vac_packed_bubble %>%
+  hc_plotOptions( packedbubble = list(
+                                    maxSize = "90%",
+                                    minSize = "40%"
+                                    ) 
+                  )
+```
 
 
 Row {data-height=450}
@@ -438,7 +444,7 @@ names(data)[ 2:4 ] <- c("1st dose", "2nd dose", 'total')
 data <- xts(data[, 2:4], order.by = data$date)         
 
 # col [1] for total; col[2] for 1st dose; col[3] for 2nd dose
-col <- brewer.pal(9, 'Greens')[ c(2, 6, 8) ]
+col <- brewer.pal(9, 'Greens')[ c(2, 6, 9) ]
 
 # Plot!
 config_hc(data$total, 
@@ -479,12 +485,11 @@ plot_vac_percentage
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **`r cumul_dose1_formatted`** </span>  
-<span style="color:grey;"> *1st doses have been administered.* </span>
+<span style="color:grey;"> *1st doses have been administered.* </span>  
 
 <span style="font-size:1.5em; color:`r col[3]`;"> **`r cumul_dose2_formatted`** </span>  
-<span style="color:grey;"> *2nd doses have been administered.* </span>
+<span style="color:grey;"> *2nd doses have been administered.* </span>  
 
-&nbsp;
 <span style="font-size:1.5em; color:`r col[2]`;"> **`r perc_cumul_dose1`%** </span> &nbsp;
 <span style="font-size:0.9em; color:`r col[2]`;"> **+`r perc_daily_dose1`%** </span>
 <span style="font-size:0.8em; color:grey;"> *from `r format( tail(d$date, 1) - 1, '%d %b')`* </span>  
@@ -506,7 +511,7 @@ plot_vac_percentage
 plot_progress_tracker
 
 # col[1] for 1st dose; col[2] for 2nd dose
-col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
+col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
 ```
 
 *** 
