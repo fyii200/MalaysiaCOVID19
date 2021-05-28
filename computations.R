@@ -694,7 +694,7 @@ vac_packed_bubble <- hchart(pie,
                                   group = group), 
                             color = col 
                             )                                  %>%
-                        hc_tooltip(enabled = FALSE) %>%
+                        hc_tooltip( pointFormat = '{point.y}%') %>%
                         hc_plotOptions( packedbubble = list(
                                                           dataLabels = list( enabled = TRUE,
                                                                              format = '{point.y}%',
@@ -969,6 +969,7 @@ plot_bubble_vac <- hchart( vac_data,
 #                     ),
 #   maxSize = "130%"
 # ) )
+
 
 
 
