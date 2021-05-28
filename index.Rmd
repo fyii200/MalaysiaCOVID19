@@ -552,6 +552,9 @@ All countries are grouped (colour-coded) by continents, except Malaysia where it
 
 ### <span style="font-size:1.3em;"> **New cases per million | Split Bubble plot ** </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+# change 'continent' column for Malaysia to 'Malaysia' to highlight it on the plot later on
+mapdata[ which(mapdata$name == 'Malaysia'), ]$continent <- 'Malaysia'
+
 hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
                                             value = new_cases_per_million,
                                             group = continent,
