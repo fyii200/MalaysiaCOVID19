@@ -6,7 +6,7 @@ output:
       version: 3
     orientation: rows
     navbar:
-          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
+          - {title: "Fabian SL Yii", icon: "fa-github", href: "https://github.com/fyii200", align: right}
     social: menu
     fig_mobile: FALSE
 date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
@@ -163,7 +163,7 @@ Data are updated daily whenever they become available (date printed on the navig
 
 <span style="color:Navy; font-size:1em;"> **Second**,</span> you'll notice a <span style="color:Navy; font-size:1em;"> **horizontal scrollbar** </span> just underneath the x-axis of each graph. Use it to specify the <span style="color:Navy; font-size:1em;"> **date range** </span> to zoom in and out of the graph. Alternatively, you can click or tap on the range selector buttons to select some pre-configured ranges. More functions and graphs may be added in the near future so keep checking back. 
 
-If you're interested in my work and wish to connect with me, or if you have any queries or suggestions, you can contact me through several means (click [here](https://github.com/fyii200) or 'About me' to go to my GitHub page; contact details are listed there). Happy exploring!  
+If you're interested in my work and wish to connect with me, or if you have any queries or suggestions, you can contact me through several means (click [here](https://github.com/fyii200); contact details are listed on my GitHub page). Happy exploring!  
 
 ________________________
 
@@ -530,97 +530,59 @@ col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
 Comparisons {.storyboard data-icon="fa-globe-asia"}
 =========================================
 
-### <span style="font-size:1.3em;"> **New cases per million | Choropleth map ** </span>
+### <span style="font-size:1.3em;"> **New cases per million** </span> <br> <span style="font-size:0.9em;"> Choropleth map | How do we compare to other countries in terms of daily new cases adjusted for population? </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)
-plot_map_cases_per_million(dataset = mapdata,
-                           mapsource = "custom/world-highres")
+plot_map_cases_per_million( dataset = mapdata,
+                            mapsource = "custom/world-highres") %>%
+  
+hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. You can zoom in and out of the map using the zoom buttons or pinch on the touch screen with two fingers if you are using a touch device. Panning will be enabled when the map is zoomed in.')
 ```
 
 ***
-How do we compare to other countries in terms of daily number of cases per million population? Hover your cursor over or tap a country of interest to see the data corresponding to that country. You can zoom in and out of the map using the zoom buttons or pinch  on the touch screen with two fingers if you are using a touch device. Panning will be enabled when the map is zoomed in.
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+plot_packed_bubble_cases
+```
 
 
-### <span style="font-size:1.3em;"> **New cases per million | Bubble plot ** </span>
+### <span style="font-size:1.3em;"> **New cases per million** </span> <br> <span style="font-size:0.9em;"> Bubble plot | New cases per million vs GDP per capita (log scale) </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 plot_bubble_cases
 ```
 
 ***
-All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent. To deselect a continent, click or tap on the legend text. (you can therefore zoom in on a continent of interest by deselecting all other continents). Note that the y-axis is log-scaled.
+* All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. 
+* Each bubble represents a country, with its **size corresponding to the total number of daily new cases**. 
+* Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries.
+* If you are using a computer, you can **highlight a continent by hovering your cursor over the legend text** (at the bottom of the plot) associated with that continent. 
+* To deselect a continent, click or tap on the legend text. You can therefore zoom in on a continent of interest by deselecting all other continents.
 
 
-### <span style="font-size:1.3em;"> **New cases per million | Split Bubble plot ** </span>
-```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
-# change 'continent' column for Malaysia to 'Malaysia' to highlight it on the plot later on
-mapdata[ which(mapdata$name == 'Malaysia'), ]$continent <- 'Malaysia'
-
-hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
-                                            value = new_cases_per_million,
-                                            group = continent,
-                                            size = new_cases_per_million
-                                            ),
-             dataLabels = list(enabled = T,
-                               format = '{point.name}',
-                               color = 'black',
-                               filter = list( property = 'y',
-                                              operator = '>',
-                                              value = 200)
-                                 
-                               )
-                               )
-            
-
-hc %>%
-  hc_plotOptions(
-             packedbubble = list(
-                               maxSize = '300%',
-                               zmin = 0
-                                )
-                )         %>%
-  hc_tooltip( useHTML = TRUE,
-              headerFormat = "<b>{point.key}</b><br>",
-              pointFormat  = "{point.date} <br> {point.y}"
-  )                        %>%
-
-  hc_colors(bubble_cols)    %>%
-  
-  hc_plotOptions(
-    packedbubble = list(
-      minSize = '20%',
-      maxSize = "300%",
-      zMin = 0,
-      layoutAlgorithm = list(
-        gravitationalConstant =  0.05,
-        splitSeries =  TRUE, # TRUE to group points
-        seriesInteraction = FALSE,
-        dragBetweenSeries = TRUE,
-        parentNodeLimit = TRUE
-      )
-    )
-  )
-```
-
-***
-All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the number of new cases per million population. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent. To deselect a continent, click or tap on the legend text. (you can therefore zoom in on a continent of interest by deselecting all other continents).
-
-
-### <span style="font-size:1.3em;"> **Fully vaccinated | Choropleth map ** </span>
+### <span style="font-size:1.3em;"> **Percentage fully vaccinated** </span> <br> <span style="font-size:0.9em;"> Choropleth map | How do we compare to other countries in terms of the percentage of fully-vaccinated people? </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)
-plot_map_vac_per_hundred(dataset = vac_data,
-                           mapsource = "custom/world-highres")
+plot_map_vac_per_hundred( dataset = vac_data,
+                          mapsource = "custom/world-highres")  %>%
+
+hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.')
 ```
 
 ***
-Where do we stand globally in terms of the percentage of population fully vaccinated against COVID-19? Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.
+```{r}
+plot_packed_bubble_vac
+```
 
 
-### <span style="font-size:1.3em;"> **Fully vaccinated | Bubble plot ** </span>
+
+### <span style="font-size:1.3em;"> **Fully vaccinated** </span> <br> <span style="font-size:0.9em;"> Bubble plot | Percentage fully vaccinated vs GDP Per Capita (log scale) </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 plot_bubble_vac
 ```
 
 ***
-All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the percentage of population fully vaccinated in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent To deselect a continent, click or tap on the legend text (you can therefore zoom in on a continent of interest by deselecting all other continents). Note that the y-axis is log-scaled.
+* All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. 
+* Each bubble represents a country, with its **size corresponding to the size of the population**. 
+* Hover your cursor over or tap the bubbles to explore the vaccination rates in different countries. 
+* If you are using a computer, you can **highlight a continent by hovering your cursor over the legend text** (at the bottom of the plot) associated with that continent. 
+* To deselect a continent, click or tap on the legend text. You can therefore zoom in on a continent of interest by deselecting all other continents.
 

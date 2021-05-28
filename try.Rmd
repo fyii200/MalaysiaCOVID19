@@ -76,8 +76,8 @@ Row {data-height=300}
 
 ### % of total population (32.7m) that received at least 1 dose of a vaccine
 ```{r echo=FALSE}
-plot_square(dataset = target, rows = c(1, 3, 5), color = col[1] ) %>%
-  hc_legend(enabled = FALSE)
+# plot_square(dataset = target, rows = c(1, 3, 5), color = col[1] ) %>%
+#   hc_legend(enabled = FALSE)
 ```
 
 
@@ -224,37 +224,53 @@ hc_add_series(data$`1st dose`,
 
 ### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
 ```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
-# configure data frame for highcharter
-data <- subset(d, select = c(date, people_vaccinated, people_fully_vaccinated) )
-
-data$people_vaccinated <- round( (data$people_vaccinated/32.7e6) * 100, digits = 2)
-
-data$people_fully_vaccinated <- round( (data$people_fully_vaccinated/32.7e6) * 100, digits = 2)
-
-names(data)[c(2, 3)] <- c("1st dose", "2nd dose")
-
-# convert data frame into xts format
-data <- xts(data[, 2:3], order.by = data$date)         
-
-# col [1] for 2 doses [2] for 1 dose
-col <- brewer.pal(9, 'Greens')[ c(5, 8) ]
-
-# Plot!
-config_hc(data$`1st dose`,  
-          'area',
-          '1st dose', 
-          col[1], 
-          '%')                    %>%
-
-hc_add_series(data$`2nd dose`, 
-              type = "area", 
-              name = '2nd dose', 
-              color = col[2])
+plot_map_cases_per_million(dataset = mapdata,
+                           mapsource = "custom/world-highres")
 ```
 
 *** 
 ```{r echo=FALSE}
-plot_square(dataset = target, rows = c(2, 4, 5), color = col[2] )
+mapdata_asia <- mapdata[which(mapdata$continent == 'Asia'),]
+mapdata_asia$include <- ifelse(mapdata_asia$new_cases_per_million > 200 | mapdata_asia$name == 'Malaysia', 'T', 'F' )
+
+hc <- hchart(mapdata_asia, "packedbubble", hcaes(name = location,
+                                                                                                                 value = new_cases_per_million,
+                                                                                                                 group = name,
+                                                                                                                 size = new_cases_per_million
+),
+dataLabels = list(enabled = T,
+                  format = '{point.name}',
+                  color = 'black',
+                  filter = list( property = 'include',
+                                 operator = '==',
+                                 value = 'T' )
+
+)
+)
+
+
+hc %>%
+  hc_title( text = 'Asia') %>%
+  hc_subtitle( text = 'Larger bubbles correspond to higher number of new cases per million population') %>%
+
+  hc_tooltip( useHTML = TRUE,
+              headerFormat = "<b>{point.key}</b><br>",
+              pointFormat  = "{point.date} <br> {point.y} M"
+  )                        %>%
+
+  hc_colors(bubble_cols)    %>%
+
+  hc_plotOptions(
+    packedbubble = list(
+      minSize = '25%',
+      maxSize = "250%",
+      layoutAlgorithm = list(
+        bubblePadding = 15
+      )
+    )
+  )  %>%
+  
+  hc_legend(enabled = FALSE)
 ```
 
 

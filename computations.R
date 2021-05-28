@@ -39,7 +39,7 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
                         shared          = TRUE,
                         outside         = FALSE,
                         crosshairs      = TRUE,
-                        shadow          = FALSE,
+                        shadow          = TRUE,
                         borderWidth = 0,
                         nullFormat      = 'Null',
                         backgroundColor = "transparent",
@@ -689,16 +689,16 @@ vac_gauge <- highchart(width = 250, height = 250)                   %>%
 
 vac_packed_bubble <- hchart(pie, 
                             "packedbubble", 
-                            hcaes(name = dose, 
-                                  value = percentage, 
-                                  group = group), 
-                            color = col 
-                            )                                  %>%
-                        hc_tooltip( pointFormat = '{point.y}%') %>%
+                             hcaes(name = dose, 
+                                   value = percentage, 
+                                   group = group), 
+                             color = col 
+                            )                                          %>%
+                        hc_tooltip( pointFormat = '{point.y}%')        %>%
                         hc_plotOptions( packedbubble = list(
                                                           dataLabels = list( enabled = TRUE,
                                                                              format = '{point.y}%',
-                                                                             style = list( fontSize = '10px', 
+                                                                             style = list( fontSize = '25px', 
                                                                                            color = 'black')
                                                                               ),
                                                            maxSize = "140%",
@@ -712,7 +712,7 @@ vac_packed_bubble <- hchart(pie,
 # create mapdata data frame containing country names and only latest covid 19
 mapdata <- create_mapdata(map_source = 'custom/world-highres',
                           data_column = which(names(world) == 'new_cases_per_million'),
-                          decimal_place = 2)
+                          decimal_place = 0)
   
 # Plot map function
 plot_map_cases_per_million <- function(dataset, mapsource){
@@ -726,7 +726,16 @@ plot_map_cases_per_million <- function(dataset, mapsource){
                               joinBy = 'iso-a3',
                               name = 'New cases per mil pop.',
                               minSize = "1%",
-                              maxSize = "100%"
+                              maxSize = "100%",
+                              dataLabels = list(enabled = TRUE,
+                                                format = '{point.iso-a3}',
+                                                color = 'black',
+                                                fontSize = 1,
+                                                filter = list( property = 'iso-a3',
+                                                               operator = '==',
+                                                               value = 'MYS')
+                                                
+                              )
                               )                                           %>%
     
                               hc_tooltip( useHTML = TRUE,
@@ -736,7 +745,7 @@ plot_map_cases_per_million <- function(dataset, mapsource){
                                 
                               hc_colorAxis(minColor = min_cols[2], 
                                            maxColor = max_cols[9], 
-                                           min = 0, max = 500,
+                                           min = 0, max = 700,
                                            type = 'log')
     
                               map_config(plot_map)
@@ -745,21 +754,22 @@ plot_map_cases_per_million <- function(dataset, mapsource){
 ## to plot bubble plot (new cases per million pop) ##
 
 # colours for Africa, Asia, Europe, Mys, North Americ, Ocenia, South Americ
-bubble_cols <- brewer.pal(9, "Set1")
+bubble_cols <- brewer.pal(8, "Dark2")
 
 # change 'continent' column for Malaysia to 'Malaysia' to highlight it on the plot later on
 mapdata[ which(mapdata$name == 'Malaysia'), ]$continent <- 'Malaysia'
 
 plot_bubble_cases <- hchart( mapdata,
                      type = "point",
-                     hcaes(life_expectancy, 
+                     hcaes(gdp_per_capita, 
                      new_cases_per_million, 
-                     size = population, 
+                     size = new_cases, 
                      group = continent)
                      )                                                 %>%
   
                hc_xAxis( title = list( 
-                                   text = 'Life expectancy') )         %>%
+                                   text = 'GDP Per Capita'),
+                         type = 'logarithmic')         %>%
   
                hc_tooltip( useHTML = TRUE,
                            headerFormat = "<b>{point.key}</b><br>",
@@ -784,6 +794,60 @@ plot_bubble_cases <- hchart( mapdata,
                hc_exporting(enabled = TRUE)
 
 
+## plot packed bubble plot (new cases per million pop in Asia) ##
+  
+mapdata_asia         <- mapdata[ which(mapdata$continent == 'Asia' | mapdata$name == 'Malaysia'), ]
+
+# countries with 'include' = T will have their names displayed
+mapdata_asia$include <- ifelse(mapdata_asia$new_cases_per_million > 200 | mapdata_asia$name == 'Malaysia', 'T', 'F' )
+
+
+plot_packed_bubble_cases <-
+hchart(mapdata_asia, 
+       'packedbubble', 
+       hcaes( name = location,
+              value = new_cases_per_million,
+              group = name,
+              size = new_cases_per_million
+             ),
+        dataLabels = list( enabled = T,
+                           format = '{point.name}',
+                           color = 'black',
+                           filter = list( property = 'include',
+                                          operator = '==',
+                                          value = 'T' 
+                                          )
+                  
+                         )
+        )                             %>%
+
+hc_title( text = 'Asia')              %>%
+  
+hc_caption( text = 'Larger bubbles correspond to higher number of new cases per million population')   %>%
+  
+hc_tooltip( useHTML = TRUE,
+            headerFormat = "<b>{point.key}</b><br>",
+            pointFormat  = "{point.date} <br> new cases per million <br> {point.y}"
+            )                                                                                          %>%
+  
+hc_colors( c(brewer.pal(12, 'Set3'), 
+             brewer.pal(9, 'Set1'), 
+             brewer.pal(8, 'Dark2'), 
+             brewer.pal(8, 'Accent'), 
+             brewer.pal(12, 'Paired') 
+             ) 
+           )                                                                                           %>%
+  
+hc_plotOptions( packedbubble = list(
+                                     minSize = '25%',
+                                     maxSize = "250%",
+                                     layoutAlgorithm = list( bubblePadding = 15 )
+                                    )
+                )                                                                                      %>%
+  
+hc_legend(enabled = FALSE)
+
+
 ############# computations for 'Comparisons (vaccinations per million population)' #############
   
 # plot map
@@ -797,7 +861,16 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
                              joinBy = 'iso-a3',
                              name = 'Fully vaccinated (%)',
                              minSize = "1%",
-                             maxSize = "100%"
+                             maxSize = "100%",
+                             dataLabels = list(enabled = TRUE,
+                                               format = '{point.iso-a3}',
+                                               color = 'black',
+                                               fontSize = 1,
+                                               filter = list( property = 'iso-a3',
+                                                              operator = '==',
+                                                              value = 'MYS')
+                                               
+                             )
                              )                                                  %>%
     
                             hc_tooltip( useHTML = TRUE,
@@ -855,7 +928,7 @@ for(i in 1:length(unique_country) ) {
 vac <- vac[ complete.cases(vac$date), ]
 
 a <- subset(world, select = c(
-                              date, location, life_expectancy, population, continent) 
+                              date, location, gdp_per_capita, population, continent) 
                               )
 
 names(a)[2] <- 'name'
@@ -884,7 +957,7 @@ bubble_cols <- brewer.pal(9, "Set1")
 
 plot_bubble_vac <- hchart( vac_data,
                            type = "point",
-                           hcaes(life_expectancy, 
+                           hcaes(gdp_per_capita, 
                                  people_fully_vaccinated_per_hundred, 
                                  size = population,
                                  group = continent
@@ -893,14 +966,15 @@ plot_bubble_vac <- hchart( vac_data,
   
   
                     hc_xAxis( title = list( 
-                    text = 'Life expectancy') )                %>%
+                                         text = 'GDP Per Capita'),
+                               type = 'logarithmic')                %>%
   
                     hc_tooltip( useHTML = TRUE,
                     headerFormat = "<b>{point.key}: </b><br>",
                     pointFormat  = "{point.date} <br> Fully vaccinated: {point.y}%"
-                    )                                          %>%
+                    )                                               %>%
   
-                    hc_colors(bubble_cols)                     %>%
+                    hc_colors(bubble_cols)                          %>%
   
                     hc_yAxis( title = list ( text = 'Fully vaccinated (%)'),
                               type = 'logarithmic',
@@ -919,77 +993,62 @@ plot_bubble_vac <- hchart( vac_data,
                      hc_exporting(enabled = TRUE)
   
 
-                     
+## plot packed bubble plot (percentage vaccinated in Asia) ##
+vac_data_asia         <- vac_data[ which(vac_data$continent == 'Asia' | vac_data$name == 'Malaysia'), ]
+
+# countries with 'include' = T will have their names displayed
+vac_data_asia$include <- ifelse(vac_data_asia$people_fully_vaccinated_per_hundred >= 
+                                quantile(vac_data_asia$people_fully_vaccinated_per_hundred)[4] | 
+                                vac_data_asia$name == 'Malaysia', 'T', 'F' )
+
+# remove 'Northern Cyprus' from data frame
+vac_data_asia <- vac_data_asia[ - which(vac_data_asia$name == 'Northern Cyprus'), ]
+
+plot_packed_bubble_vac <-
+hchart( vac_data_asia, 
+        'packedbubble', 
+         hcaes( name = name,
+                value = people_fully_vaccinated_per_hundred,
+                group = name,
+                size = people_fully_vaccinated_per_hundred
+               ),
+         dataLabels = list( enabled = T,
+                            format = '{point.name}',
+                            color = 'black',
+                            filter = list( property = 'include',
+                                           operator = '==',
+                                           value = 'T' 
+                                           )
+                           )
+      )                                            %>%
+  
+hc_title( text = 'Asia')                           %>%
+  
+hc_caption( text = 'Larger bubbles correspond to higher vaccination rates')   %>%
+  
+hc_tooltip( useHTML = TRUE,
+            headerFormat = "<b>{point.key}</b><br>",
+            pointFormat  = "{point.date} <br> Fully vaccinated <br> {point.y}%"
+           )                                                                                          %>%
+  
+hc_colors( c(brewer.pal(12, 'Set3'), 
+             brewer.pal(9, 'Set1'), 
+             brewer.pal(8, 'Dark2'), 
+             brewer.pal(8, 'Accent'), 
+             brewer.pal(12, 'Paired') 
+             ) 
+          )                                                                                           %>%
+  
+hc_plotOptions( packedbubble = list(
+                                     minSize = '20%',
+                                     maxSize = "200%",
+                layoutAlgorithm = list( bubblePadding = 15 )
+                                    )
+                )                                                                                     %>%
+  
+hc_legend(enabled = FALSE)
 
 
 
 
 
-
-
-# hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
-#                                             value = new_cases_per_million,
-#                                             group = continent,
-#                                             size = new_cases_per_million
-#                                             ),
-#              dataLabels = list(enabled = T,
-#                                format = '{point.name}',
-#                                color = 'black',
-#                                filter = list( property = 'y',
-#                                               operator = '>',
-#                                               value = 200)
-#                                  
-#                                )
-#                                )
-#             
-# 
-# hc %>%
-#   hc_plotOptions(
-#              packedbubble = list(
-#                                maxSize = '300%',
-#                                zmin = 0
-#                                 )
-#                 )         %>%
-#   hc_tooltip( useHTML = TRUE,
-#               headerFormat = "<b>{point.key}</b><br>",
-#               pointFormat  = "{point.date} <br> {point.y}"
-#   )                        %>%
-# 
-#   hc_colors(bubble_cols)    %>%
-#   
-#   hc_plotOptions(
-#     packedbubble = list(
-#       minSize = '20%',
-#       maxSize = "300%",
-#       zMin = 0,
-#       layoutAlgorithm = list(
-#         gravitationalConstant =  0.05,
-#         splitSeries =  TRUE, # TRUE to group points
-#         seriesInteraction = FALSE,
-#         dragBetweenSeries = TRUE,
-#         parentNodeLimit = TRUE
-#       )
-#     )
-#   )
-
-
-
-
-# hchart(pie, "packedbubble", hcaes(name = dose, value = percentage) )%>%
-# hc_colorAxis(3,c(col, 'gray'))
-# 
-# 
-# 
-# pie$percentage <- round(pie$percentage, 1)
-# pie$group <- c('At least 1 dose', 'Fully vaccinated', 'Remaining population')
-# 
-# hchart(pie, "packedbubble", hcaes(name = dose, value = percentage, group = group), color = c(col, 'gray') ) %>%
-# hc_tooltip(pointFormat = '{point.y}%') %>%
-# hc_plotOptions( packedbubble = list(
-#   dataLabels = list(enabled = TRUE,
-#                     format = '{point.y}%',
-#                     style = list(fontSize = '10px', 
-#                                  color = 'black')
-#                     ),
-#   maxSize = "130%"
-# ) )
