@@ -550,6 +550,58 @@ plot_bubble_cases
 All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the size of that country. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent. To deselect a continent, click or tap on the legend text. (you can therefore zoom in on a continent of interest by deselecting all other continents). Note that the y-axis is log-scaled.
 
 
+### <span style="font-size:1.3em;"> **New cases per million | Split Bubble plot ** </span>
+```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
+hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
+                                            value = new_cases_per_million,
+                                            group = continent,
+                                            size = new_cases_per_million
+                                            ),
+             dataLabels = list(enabled = T,
+                               format = '{point.name}',
+                               color = 'black',
+                               filter = list( property = 'y',
+                                              operator = '>',
+                                              value = 200)
+                                 
+                               )
+                               )
+            
+
+hc %>%
+  hc_plotOptions(
+             packedbubble = list(
+                               maxSize = '300%',
+                               zmin = 0
+                                )
+                )         %>%
+  hc_tooltip( useHTML = TRUE,
+              headerFormat = "<b>{point.key}</b><br>",
+              pointFormat  = "{point.date} <br> {point.y}"
+  )                        %>%
+
+  hc_colors(bubble_cols)    %>%
+  
+  hc_plotOptions(
+    packedbubble = list(
+      minSize = '20%',
+      maxSize = "300%",
+      zMin = 0,
+      layoutAlgorithm = list(
+        gravitationalConstant =  0.05,
+        splitSeries =  TRUE, # TRUE to group points
+        seriesInteraction = FALSE,
+        dragBetweenSeries = TRUE,
+        parentNodeLimit = TRUE
+      )
+    )
+  )
+```
+
+***
+All countries are grouped (colour-coded) by continents, except Malaysia where it is represented by a unique colour. Each bubble represents a country, with its radius corresponding to the number of new cases per million population. Hover your cursor over or tap the bubbles to explore the number of daily cases per million population in different countries. If you are using a computer, you can highlight a continent by hovering your cursor over the legend text (at the bottom of the plot) associated with that continent. To deselect a continent, click or tap on the legend text. (you can therefore zoom in on a continent of interest by deselecting all other continents).
+
+
 ### <span style="font-size:1.3em;"> **Fully vaccinated | Choropleth map ** </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)

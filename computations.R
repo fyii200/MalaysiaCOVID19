@@ -630,62 +630,62 @@ pie <- data.frame(
 pie$percentage <- round(pie$percentage, 1)
 pie$group <- c('At least 1 dose', 'Fully vaccinated')
 
-# # make gauge plot!
-# vac_gauge <- highchart(width = 50, height = 50)                   %>% 
-#              hc_chart(type = "solidgauge", 
-#                       marginTop = 50)                             %>% 
-#            
-#              hc_subtitle(text = "Tap or hover over the gauge!" )  %>%
-#   
-#              hc_tooltip(borderWidth = 0,
-#              backgroundColor = 'none',
-#              shadow = FALSE,
-#              style = list(fontSize = '16px'),
-#              pointFormat = '{series.name}: <br> <span style="font-size:3em; color: {point.color}; font-weight: bold"> {point.y}% </span>',
-#              positioner = JS( "function () {
-#                                             xp =  this.chart.chartWidth/2 - this.label.width/2
-#                                             yp =  this.chart.chartHeight/2 - this.label.height/2
-#                                             return { x: xp, y: yp }; }"
-#              )  )                                       %>%
-#   
-#              hc_pane(startAngle = 0,
-#              endAngle = 360,
-#              background = list(
-#                             list( outerRadius = '112%', 
-#                                   innerRadius = '88%', 
-#                                   backgroundColor = 'lightgray', 
-#                                   borderWidth =  0),
-#                             list( outerRadius = '87%', 
-#                                   innerRadius = '63%', 
-#                                   backgroundColor = 'lightgray', 
-#                                   borderWidth = 0) )  ) %>%
-#   
-#              hc_yAxis(min = 0, 
-#                       max = 100, 
-#                       lineWidth = 0, 
-#                       tickPositions = list() ) %>%
-#   
-#              hc_plotOptions(solidgauge = list( borderWidth = '25px',
-#                             dataLabels = list(enabled = FALSE), 
-#                             linecap = 'round', 
-#                             stickyTracking = FALSE) )        %>% 
-#   
-#               hc_add_series(name = "At least 1 dose", 
-#                             borderColor = col[1], 
-#                             data = list( 
-#                             list( color = col[1], 
-#                                   radius = "100%", 
-#                                   innerRadius = "100%", 
-#                                   y = dose1)
-#                                         ) )                  %>% 
-#   
-#               hc_add_series(name = "Fully vaccinated",
-#                             borderColor = col[2], 
-#                             data = list( 
-#                                       list( color = col[2], 
-#                                             radius = "75%", 
-#                                             innerRadius = "75%", 
-#                                             y = dose2) ) ) 
+# make gauge plot!
+vac_gauge <- highchart(width = 250, height = 250)                   %>%
+             hc_chart(type = "solidgauge",
+                      marginTop = 50)                             %>%
+
+             hc_subtitle(text = "Tap or hover over the gauge!" )  %>%
+
+             hc_tooltip(borderWidth = 0,
+             backgroundColor = 'none',
+             shadow = FALSE,
+             style = list(fontSize = '16px'),
+             pointFormat = '{series.name}: <br> <span style="font-size:3em; color: {point.color}; font-weight: bold"> {point.y}% </span>',
+             positioner = JS( "function () {
+                                            xp =  this.chart.chartWidth/2 - this.label.width/2
+                                            yp =  this.chart.chartHeight/2 - this.label.height/2
+                                            return { x: xp, y: yp }; }"
+             )  )                                       %>%
+
+             hc_pane(startAngle = 0,
+             endAngle = 360,
+             background = list(
+                            list( outerRadius = '112%',
+                                  innerRadius = '88%',
+                                  backgroundColor = 'lightgray',
+                                  borderWidth =  0),
+                            list( outerRadius = '87%',
+                                  innerRadius = '63%',
+                                  backgroundColor = 'lightgray',
+                                  borderWidth = 0) )  ) %>%
+
+             hc_yAxis(min = 0,
+                      max = 100,
+                      lineWidth = 0,
+                      tickPositions = list() ) %>%
+
+             hc_plotOptions(solidgauge = list( borderWidth = '20px',
+                            dataLabels = list(enabled = FALSE),
+                            linecap = 'round',
+                            stickyTracking = FALSE) )        %>%
+
+              hc_add_series(name = "At least 1 dose",
+                            borderColor = col[1],
+                            data = list(
+                            list( color = col[1],
+                                  radius = "100%",
+                                  innerRadius = "100%",
+                                  y = dose1)
+                                        ) )                  %>%
+
+              hc_add_series(name = "Fully vaccinated",
+                            borderColor = col[2],
+                            data = list(
+                                      list( color = col[2],
+                                            radius = "75%",
+                                            innerRadius = "75%",
+                                            y = dose2) ) )
 
 vac_packed_bubble <- hchart(pie, 
                             "packedbubble", 
@@ -698,7 +698,7 @@ vac_packed_bubble <- hchart(pie,
                         hc_plotOptions( packedbubble = list(
                                                           dataLabels = list( enabled = TRUE,
                                                                              format = '{point.y}%',
-                                                                             style = list( fontSize = '20px', 
+                                                                             style = list( fontSize = '10px', 
                                                                                            color = 'black')
                                                                               ),
                                                            maxSize = "140%",
@@ -925,29 +925,53 @@ plot_bubble_vac <- hchart( vac_data,
 
 
 
-# 
-#                      
+
+
 # hc <- hchart(mapdata, "packedbubble", hcaes(name = location,
 #                                             value = new_cases_per_million,
 #                                             group = continent,
 #                                             size = new_cases_per_million
-#                                             )
-#             )
-# # 
-# # hc %>%
-# #   hc_plotOptions(
-# #              packedbubble = list(
-# #                                maxSize = '300%',
-# #                                zmin = 0
-# #                                 )
-# #                 )         %>%
-# #   hc_tooltip( useHTML = TRUE,
-# #               headerFormat = "<b>{point.key}</b><br>",
-# #               pointFormat  = "{point.date} <br> {point.y}"
-# #   )                        %>%
-# #   
-# #   hc_colors(bubble_cols)
+#                                             ),
+#              dataLabels = list(enabled = T,
+#                                format = '{point.name}',
+#                                color = 'black',
+#                                filter = list( property = 'y',
+#                                               operator = '>',
+#                                               value = 200)
+#                                  
+#                                )
+#                                )
+#             
+# 
+# hc %>%
+#   hc_plotOptions(
+#              packedbubble = list(
+#                                maxSize = '300%',
+#                                zmin = 0
+#                                 )
+#                 )         %>%
+#   hc_tooltip( useHTML = TRUE,
+#               headerFormat = "<b>{point.key}</b><br>",
+#               pointFormat  = "{point.date} <br> {point.y}"
+#   )                        %>%
+# 
+#   hc_colors(bubble_cols)    %>%
 #   
+#   hc_plotOptions(
+#     packedbubble = list(
+#       minSize = '20%',
+#       maxSize = "300%",
+#       zMin = 0,
+#       layoutAlgorithm = list(
+#         gravitationalConstant =  0.05,
+#         splitSeries =  TRUE, # TRUE to group points
+#         seriesInteraction = FALSE,
+#         dragBetweenSeries = TRUE,
+#         parentNodeLimit = TRUE
+#       )
+#     )
+#   )
+
 
 
 
@@ -969,7 +993,3 @@ plot_bubble_vac <- hchart( vac_data,
 #                     ),
 #   maxSize = "130%"
 # ) )
-
-
-
-
