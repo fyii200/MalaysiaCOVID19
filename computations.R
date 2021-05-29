@@ -62,7 +62,8 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
                    )                                                  %>%
     
           hc_yAxis( opposite = FALSE,
-                    gridLineWidth = 0.2,
+                    gridLineWidth = 0.1,
+                    minorGridLineWidth = 0.1,
                     labels = list(format = paste('{value}', unit) ),
                     showLastLabel = TRUE
                     )                                                 %>%
@@ -1047,6 +1048,9 @@ hc_plotOptions( packedbubble = list(
                 )                                                                                     %>%
   
 hc_legend(enabled = FALSE)
+
+
+
 
 
 

@@ -444,24 +444,28 @@ names(data)[ 2:4 ] <- c("1st dose", "2nd dose", 'total')
 data <- xts(data[, 2:4], order.by = data$date)         
 
 # col [1] for total; col[2] for 1st dose; col[3] for 2nd dose
-col <- brewer.pal(9, 'Greens')[ c(2, 6, 9) ]
+col <- brewer.pal(9, 'Greens')[ c(4, 6, 9) ]
 
 # Plot!
 config_hc(data$total, 
-          'area', 
+          'areaspline', 
           'Total', 
           col[1], 
-          '')                            %>%
+          '')                             %>%
   
-hc_add_series(data$`1st dose`, 
-              type = 'column', 
-              color = col[2], 
-              name = '1st dose')         %>%
+hc_add_series( data$`1st dose`, 
+               type = 'column', 
+               color = col[2], 
+               name = '1st dose')         %>%
   
-  hc_add_series(data$`2nd dose`, 
-                type = "column", 
-                name = '2nd dose', 
-                color = col[3])  
+hc_add_series( data$`2nd dose`, 
+               type = "column", 
+               name = '2nd dose', 
+               color = col[3])            %>%
+  
+hc_plotOptions( column = list( stacking = list('normal') 
+                               )
+                )
 ```
 
 *** 
