@@ -736,11 +736,11 @@ plot_map_cases_per_million <- function(dataset, mapsource){
                                                                operator = '==',
                                                                value = 'MYS')
                                                 
-                              )
+                                                )
                               )                                           %>%
     
                               hc_tooltip( useHTML = TRUE,
-                                          headerFormat = "<b>{point.key}: </b><br>",
+                                          headerFormat = "<b>{point.key}: </b> <br>",
                                           pointFormat  = "{point.date} <br> {point.value}"
                                           )                               %>%
                                 
@@ -1051,6 +1051,74 @@ hc_legend(enabled = FALSE)
 
 
 
+
+
+# row <- c(which(world$location == 'Malaysia'), which(world$location == 'United States')  )
+# data <- world
+# 
+# names(data)[1] <- 'iso-a3'
+# data$new_cases_per_million <- round(data$new_cases_per_million, 0)
+# 
+# try <-
+# data %>%
+# group_by(`iso-a3`) %>%
+#   do(item = list(
+#     `iso-a3` = first(.$`iso-a3`),
+#     sequence = .$new_cases_per_million,
+#     new_cases_per_million = first(.$new_cases_per_million)),
+#     ) %>%
+#   .$item
+# 
+# 
+#   min_cols <- brewer.pal(9, "Blues")
+#   max_cols <- brewer.pal(9, "Reds")
+# 
+#   plot_map <-
+#   highchart(type = "map") %>%
+#     hc_add_series(data = try,
+#                   mapData = map,
+#                   joinBy = "iso-a3",
+#                   borderWidth = 0.01
+#                                      ) %>%
+# 
+#     hc_tooltip( useHTML = TRUE,
+#                 headerFormat = "<b>{point.key}: </b> <br>",
+#                 pointFormat  = "New cases per million <br> {point.value}"
+#     )                               %>%
+# 
+#     hc_colorAxis(minColor = min_cols[1],
+#                  maxColor = max_cols[9],
+#                  min = 0, max = 700,
+#                  type = 'log')  %>%
+# 
+#     hc_legend(floating = TRUE, verticalAlign = "top") %>%
+# 
+# 
+#   hc_motion(
+#     enabled = TRUE,
+#     axisLabel = "day",
+#     labels = sort(unique(data$date)),
+#     series = 0,
+#     updateIterval = 50,
+#     magnet = list(
+#       round = "floor",
+#       step = 1
+#     ),
+#     autoPlay = TRUE) %>%
+#     
+#     hc_plotOptions( map = list(
+#       dataLabels = list(enabled = TRUE,
+#                         format = '{point.iso-a3}',
+#                         color = 'black',
+#                         fontSize = 1,
+#                         filter = list( property = 'iso-a3',
+#                                        operator = '==',
+#                                        value = 'MYS')
+#                         
+#       )
+#     ))
+# 
+# map_config(plot_map)
 
 
 

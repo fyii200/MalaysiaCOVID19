@@ -23,254 +23,56 @@ library(dplyr)
 library(waffle)
 library(xts)
 
-### DAILY CASES, TESTS, DEATHS, etc. ###
-## read raw data (worldwide) and configure data frame named 'mys'
-world     <- read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
-mys       <- world[which(world$iso_code == 'MYS'), ]
-mys$date  <- as.Date(mys$date)
-
-### VACCINATION DATA ###
-# data    <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
-data      <- 'data/vaccine.csv'
-d         <- read.csv(data); d<-d[,-1]
-d$date    <- as.Date(d$date, '%d/%m/%Y')
-
-## source all functions & computations ##
-source('computations.R')
+# ### DAILY CASES, TESTS, DEATHS, etc. ###
+# ## read raw data (worldwide) and configure data frame named 'mys'
+# world     <- read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
+# mys       <- world[which(world$iso_code == 'MYS'), ]
+# mys$date  <- as.Date(mys$date)
+# 
+# ### VACCINATION DATA ###
+# # data    <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
+# data      <- 'data/vaccine.csv'
+# d         <- read.csv(data); d<-d[,-1]
+# d$date    <- as.Date(d$date, '%d/%m/%Y')
+# 
+# ## source all functions & computations ##
+# source('computations.R')
 ```
 
 
-Daily summary {data-icon="fa-table"}
-=========================================
 
-Row {data-height=300}
------------------------------------------
-
-### Vaccinations - Daily Total & Cumulative Total {.no-mobile}
-<span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span> 
-
-<span style="font-size:1em;"> 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.5em; color:`r vac_col[1]`;"> **`r cumul_dose1_formatted`** </span>
- 
- 
-<span style="font-size:1em;"> 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.5em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
-
-
-### Vaccinations - Daily Total & Cumulative Total {.mobile}
-<span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="font-size:0.9em; color:grey;"> *up to `r latest_dose_date`*</span> 
-
-<span style="font-size:1em;"> 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.2em; color:`r vac_col[1]`;"> **`r cumul_dose1_formatted`** </span>
- 
- 
-<span style="font-size:1em;"> 2nd dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
-<span style="font-size:2em; color:`r vac_col[2]`;"> **+`r latest_dose2_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
-<span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
-
-
-### % of total population (32.7m) that received at least 1 dose of a vaccine
 ```{r echo=FALSE}
-# plot_square(dataset = target, rows = c(1, 3, 5), color = col[1] ) %>%
-#   hc_legend(enabled = FALSE)
-```
+ds <- data %>% 
+  group_by(fips) %>% 
+  do(item = list(
+    fips = first(.$fips),
+    sequence = .$value,
+    value = first(.$value))) %>% 
+  .$item
 
-
-
-Row {data-height=450}
------------------------------------------
-
-### Cases
-<span style="font-size:1.5em;"> **People tested positive** </span>
-
-Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>  
-<span style="font-size:1.5em"> **+`r new_cases`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r cases_last_7day_date_formatted` )*</span>  
-<span style="font-size:1.3em"> **`r cases_last_7day_avg_formatted`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r latest_date` )*</span>  
-<span style="font-size:1.3em"> **`r cases_7day_avg_formatted`** </span> &nbsp;
-<span style="font-size:1em; color:`r cases_arrowcol`;"> **`r ifelse( cases_week_change >= 0, print('▲'), print('▲'))`  `r cases_label`**</span>
-
-#### 
-```{r echo=FALSE, fig.width=3.5, fig.height=1}
-plot_line(mys$date, mys$new_cases_smoothed, case_col)
-```
-
-
-### Testing
-<span style="font-size:1.5em;"> **COVID-19 tests conducted** </span>
-
-Daily <span style="font-size:0.9em; color:grey;"> *`r tests_7day_date_formatted`*</span>  
-<span style="font-size:1.5em"> **`r latest_tests`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r tests_last_7day_date_formatted`)*</span>  
-<span style="font-size:1.3em"> **`r tests_last_7day_avg_formatted`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r tests_7day_date_formatted`)*</span>  
-<span style="font-size:1.3em"> **`r tests_7day_avg_formatted`** </span>
-<span style="font-size:1em; color:`r tests_arrowcol`;"> **`r ifelse(tests_week_change >= 0, print('▲'), print('▼'))`  `r tests_label`**</span>
-
-#### 
-```{r echo=FALSE, fig.width=3.5, fig.height=1}
-plot_line(mys$date, mys$new_tests_smoothed, test_col[1])
-```
-
-
-### Deaths
-<span style="font-size:1.5em;"> **Reported deaths** </span>
-
-Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>  
-<span style="font-size:1.5em"> **`r new_deaths`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r deaths_last_7day_date_formatted`)*</span>  
-<span style="font-size:1.3em"> **`r deaths_last_7day_avg`** </span>
-
-7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r latest_date`)* </span>  
-<span style="font-size:1.3em"> **`r deaths_7day_avg`** </span> <span style="font-size:1em; color:`r deaths_arrowcol`;"> **`r ifelse(deaths_week_change >= 0, print('▲'), print('▼'))`  `r deaths_label`**</span>
-
-#### 
-```{r echo=FALSE, fig.width=3.5, fig.height=1}
-# make empty plot then add smoothed line
-plot_line(mys$date, mys$new_deaths_smoothed, death_col)
-```
-
-
-
-Guide {data-icon="fa-question-circle"}
-=========================================
-
-Row {data-height=100}
------------------------------------------
-### <span style="font-size:1.8em;"> Interact with the graphs! </span>
-Data are updated daily whenever they become available (date printed on the navigation bar shows when the data were last updated). All graphs (except the few trend lines on the 'Daily summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of these graphs.
-
-<span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph (mouseover)** </span> to display the tooltip text containing the y-value (e.g., number of vaccinations each day) corresponding to a specific date. On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip text will be displayed and updated when the **finger moves across the graph**. </span>
-
-<span style="color:Navy; font-size:1em;"> **Second**,</span> you'll notice a <span style="color:Navy; font-size:1em;"> **horizontal scrollbar** </span> just underneath the x-axis of each graph. Use it to specify the <span style="color:Navy; font-size:1em;"> **date range** </span> to zoom in and out of the graph. Alternatively, you can click or tap on the range selector buttons to select some pre-configured ranges. More functions and graphs may be added in the near future so keep checking back. 
-
-If you're interested in my work and wish to connect with me, or if you have any queries or suggestions, you can contact me through several means (click [here](https://github.com/fyii200) or 'About me' to go to my GitHub page; contact details are listed there). Happy exploring!  
-
-________________________
-
-#### <span style="font-size:1em;"> Data sources </span>
-All data pertinent to vaccinations: *The Special Committee for Ensuring Access to COVID-19 Vaccine Supply [(JKJAV)](https://www.vaksincovid.gov.my/en/about-jkjav/)* 
-
-Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
-
-________________________
-
-
-
-
-Vaccinations {.storyboard data-icon="fa-syringe"}
-=========================================
-
-### <span style="font-size:1.3em;"> **Daily New Doses |** </span> <br> <span style="font-size:0.9em;"> How many doses are administered each day? </span>
-```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
-# compute total daily doses
-for(i in 1:nrow(daily_dose) ) {
-                              daily_dose$total[i] <- 
-                              daily_dose$dose1[i] + daily_dose$dose2[i]
-                              }
-
-# configure data frame for highcharter  
-data <- subset(daily_dose, select = c(date, dose1, dose2, total) 
-               )
-
-names(data)[ 2:4 ] <- c("1st dose", "2nd dose", 'total')
-
-# convert data frame into xts format
-data <- xts(data[, 2:4], order.by = data$date)         
-
-# col [1] for total; col[2] for 1st dose; col[3] for 2nd dose
-col <- brewer.pal(9, 'Greens')[ c(2, 6, 9) ]
-
-# Plot!
-config_hc(data$total, 
-          'area', 
-          'Total', 
-          col[1], 
-          '')                            %>%
-  
-hc_add_series(data$`1st dose`, 
-              type = 'column', 
-              color = col[2], 
-              name = '1st dose')         %>%
-  
-  hc_add_series(data$`2nd dose`, 
-                type = "column", 
-                name = '2nd dose', 
-                color = col[3])  
-```
-
-*** 
-<span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_dose_date`* </span>   
-
-<span style="font-size:1.5em; color:`r col[2]`;"> **+`r latest_dose1_formatted`** </span> &nbsp; | &nbsp;
-<span style="font-size:1em; color:`r col[2]`;"> **+`r dose1_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 1st doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
-
-<span style="font-size:1.5em; color:`r col[3]`;"> **+`r latest_dose2_formatted`** </span> &nbsp; | &nbsp;
-<span style="font-size:1em; color:`r col[3]`;"> **+`r dose2_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 2nd doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
-
-
-### <span style="font-size:1.3em;"> **Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
-```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
-plot_map_cases_per_million(dataset = mapdata,
-                           mapsource = "custom/world-highres")
-```
-
-*** 
-```{r echo=FALSE}
-mapdata_asia <- mapdata[which(mapdata$continent == 'Asia'),]
-mapdata_asia$include <- ifelse(mapdata_asia$new_cases_per_million > 200 | mapdata_asia$name == 'Malaysia', 'T', 'F' )
-
-hc <- hchart(mapdata_asia, "packedbubble", hcaes(name = location,
-                                                                                                                 value = new_cases_per_million,
-                                                                                                                 group = name,
-                                                                                                                 size = new_cases_per_million
-),
-dataLabels = list(enabled = T,
-                  format = '{point.name}',
-                  color = 'black',
-                  filter = list( property = 'include',
-                                 operator = '==',
-                                 value = 'T' )
-
-)
-)
-
-
-hc %>%
-  hc_title( text = 'Asia') %>%
-  hc_subtitle( text = 'Larger bubbles correspond to higher number of new cases per million population') %>%
-
-  hc_tooltip( useHTML = TRUE,
-              headerFormat = "<b>{point.key}</b><br>",
-              pointFormat  = "{point.date} <br> {point.y} M"
-  )                        %>%
-
-  hc_colors(bubble_cols)    %>%
-
-  hc_plotOptions(
-    packedbubble = list(
-      minSize = '25%',
-      maxSize = "250%",
-      layoutAlgorithm = list(
-        bubblePadding = 15
-      )
+hc <- highchart(type = "map") %>% 
+  hc_add_series(data = ds,
+                name = "drug deaths per 100,000",
+                mapData = uscountygeojson,
+                joinBy = "fips",
+                borderWidth = 0.01) %>% 
+  hc_colorAxis(stops = color_stops()) %>%  
+  hc_title(text = "How the Epidemic of Drug Overdose Deaths Ripples") %>% 
+  hc_legend(layout = "vertical", reversed = TRUE,
+            floating = TRUE, align = "right") %>% 
+  hc_add_theme(hc_theme_smpl()) %>% 
+  hc_motion(
+    enabled = TRUE,
+    axisLabel = "year",
+    labels = sort(unique(data$year)),
+    series = 0,
+    updateIterval = 50,
+    magnet = list(
+      round = "floor",
+      step = 0.1
     )
-  )  %>%
-  
-  hc_legend(enabled = FALSE)
+  )
+hc
 ```
 
 
