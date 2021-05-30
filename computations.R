@@ -1053,7 +1053,7 @@ hc_legend(enabled = FALSE)
 
 
 
-# row <- c(which(world$location == 'Malaysia'), which(world$location == 'United States')  )
+
 # data <- world
 # 
 # names(data)[1] <- 'iso-a3'
@@ -1105,7 +1105,7 @@ hc_legend(enabled = FALSE)
 #       step = 1
 #     ),
 #     autoPlay = TRUE) %>%
-#     
+# 
 #     hc_plotOptions( map = list(
 #       dataLabels = list(enabled = TRUE,
 #                         format = '{point.iso-a3}',
@@ -1114,11 +1114,14 @@ hc_legend(enabled = FALSE)
 #                         filter = list( property = 'iso-a3',
 #                                        operator = '==',
 #                                        value = 'MYS')
-#                         
+# 
 #       )
 #     ))
 # 
 # map_config(plot_map)
+
+
+
 
 
 

@@ -35,6 +35,9 @@ data      <- 'data/vaccine.csv'
 d         <- read.csv(data); d<-d[,-1]
 d$date    <- as.Date(d$date, '%d/%m/%Y')
 
+### BREAKDOWN OF NEW CASES, VACCINATIONS IN ALL STATES ###
+states    <- read.csv('data/states.csv')
+
 ## source all functions & computations ##
 source('computations.R')
 ```
@@ -534,7 +537,7 @@ col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
 Comparisons {.storyboard data-icon="fa-globe-asia"}
 =========================================
 
-### <span style="font-size:1.3em;"> **New cases per million** </span> <br> <span style="font-size:0.9em;"> Choropleth map | How do we compare to other countries in terms of daily new cases adjusted for population? </span>
+### <span style="font-size:1.3em;"> **New cases per million** </span> <br> <span style="font-size:0.9em;"> Choropleth map | Comparing number of daily new cases per million population among different countries. </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)
 plot_map_cases_per_million( dataset = mapdata,
@@ -562,7 +565,7 @@ plot_bubble_cases
 * To deselect a continent, click or tap on the legend text. You can therefore zoom in on a continent of interest by deselecting all other continents.
 
 
-### <span style="font-size:1.3em;"> **Percentage fully vaccinated** </span> <br> <span style="font-size:0.9em;"> Choropleth map | How do we compare to other countries in terms of the percentage of fully-vaccinated people? </span>
+### <span style="font-size:1.3em;"> **Percentage fully vaccinated** </span> <br> <span style="font-size:0.9em;"> Choropleth map | Comparing percentage of population fully vaccinated among different countries. </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot map (new cases per million)
 plot_map_vac_per_hundred( dataset = vac_data,
