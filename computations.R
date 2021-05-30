@@ -62,8 +62,8 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
                    )                                                  %>%
     
           hc_yAxis( opposite = FALSE,
-                    gridLineWidth = 0.1,
-                    minorGridLineWidth = 0.1,
+                    gridLineWidth = 0,
+                    minorGridLineWidth = 0,
                     labels = list(format = paste('{value}', unit) ),
                     showLastLabel = TRUE
                     )                                                 %>%
@@ -82,7 +82,9 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
           hc_scrollbar(enabled = FALSE)                               %>%
     
           hc_legend(enabled = TRUE, 
-                    verticalAlign = 'bottom')
+                    verticalAlign = 'bottom')                         %>%
+    
+          hc_add_theme(hc_theme_ffx() )
   
 }
 
@@ -118,7 +120,8 @@ create_mapdata <- function(map_source, data_column, decimal_place){
 map_config <-   function (plot_map) {  
                 plot_map %>%
                 hc_mapNavigation(enabled = TRUE)           %>%
-                hc_exporting(enabled = TRUE)              
+                hc_exporting(enabled = TRUE)               %>%
+                hc_add_theme(hc_theme_ft())
                 }
 
 # function to print label describing abs change between last two weeks & % change
@@ -498,7 +501,9 @@ plot_vac_percentage <-
                                     list( opacity = 1)
                                   )
                         )
-                )
+                )                                         %>%
+  
+  hc_add_theme(hc_theme_ffx())
 
 
 ########################### computations for 'Vaccinations (Progress Tracker)' ###########################
@@ -592,19 +597,22 @@ plot_progress_tracker <-
                                 list( color = lim[1],
                                       width = 0.5,
                                       value = 1.5,
-                                      label = list( text = '1.5%' )
+                                      label = list( text = '1.5%', 
+                                                    align = 'right')
                                       ),
     
                                  list( color = lim[2],
                                        width = 0.5,
                                        value = 30.3,
-                                       label = list( text = '30.3% ' )
+                                       label = list( text = '30.3% ',
+                                                     align = 'right')
                                        ),
     
                                  list( color = lim[3],
                                        width = 0.5,
                                        value = 72.2,
-                                       label = list( text = '72.2% ' )
+                                       label = list( text = '72.2% ',
+                                                     align = 'right')
                                        )
                                 )
   
@@ -704,7 +712,9 @@ vac_packed_bubble <- hchart(pie,
                                                            maxSize = "140%",
                                                            minSize = "70%"
                                                            ) 
-                                      )
+                                      )                                %>%
+  
+                         hc_add_theme(hc_theme_ffx())
 
 
 ############# computations for 'Comparisons (new cases per million population)' #############
@@ -740,13 +750,15 @@ plot_map_cases_per_million <- function(dataset, mapsource){
     
                               hc_tooltip( useHTML = TRUE,
                                           headerFormat = "<b>{point.key}: </b> <br>",
-                                          pointFormat  = "{point.date} <br> {point.value}"
+                                          pointFormat  = "New cases per million <br> {point.value}"
                                           )                               %>%
                                 
                               hc_colorAxis(minColor = min_cols[2], 
                                            maxColor = max_cols[9], 
                                            min = 0, max = 700,
-                                           type = 'log')
+                                           type = 'log')                  %>%
+                              
+                              hc_title( text = format( max(as.Date(mapdata$date) ), '%d %b %Y') )
     
                               map_config(plot_map)
                               }
@@ -773,10 +785,13 @@ plot_bubble_cases <- hchart( mapdata,
   
                      hc_tooltip( useHTML = TRUE,
                                  headerFormat = "<b>{point.key}</b><br>",
-                                 pointFormat  = "{point.date} <br> {point.y}"
+                                 pointFormat  = "New cases per million <br> {point.y}"
                                  )                                              %>%
   
                      hc_colors(bubble_cols)                                     %>%
+       
+                     hc_title( text = format( max(as.Date(mapdata$date) ), 
+                                              '%d %b %Y') )                     %>%
   
                      hc_yAxis( title = list (text = 'New cases per million'),
                                type = 'logarithmic',
@@ -791,7 +806,8 @@ plot_bubble_cases <- hchart( mapdata,
                                                     )
                                                ) 
                                )                                                %>%
-                     hc_exporting(enabled = TRUE)
+                     hc_exporting(enabled = TRUE)                               %>%
+                     hc_add_theme(hc_theme_ft())
 
 
 ## plot packed bubble plot (new cases per million pop in Asia) ##
@@ -823,11 +839,15 @@ hchart(mapdata_asia,
 
 hc_title( text = 'Asia')              %>%
   
+hc_subtitle( text = format( max( as.Date(mapdata_asia$date) ), 
+                            '%d %b %Y') 
+             )                                                                                         %>%
+  
 hc_caption( text = 'Larger bubbles correspond to higher number of new cases per million population')   %>%
   
 hc_tooltip( useHTML = TRUE,
             headerFormat = "<b>{point.key}</b><br>",
-            pointFormat  = "{point.date} <br> new cases per million <br> {point.y}"
+            pointFormat  = "New cases per million <br> {point.y}"
             )                                                                                          %>%
   
 hc_colors( c(brewer.pal(12, 'Set3'), 
@@ -845,7 +865,9 @@ hc_plotOptions( packedbubble = list(
                                     )
                 )                                                                                      %>%
   
-hc_legend(enabled = FALSE)
+hc_legend(enabled = FALSE)           %>%
+  
+hc_add_theme(hc_theme_ffx())
 
 
 ############# computations for 'Comparisons (vaccinations per million population)' #############
@@ -856,35 +878,41 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
   
                              plot_map <-
                              hcmap(mapsource,  showInLegend = FALSE,
-                             data = dataset,
-                             value = 'people_fully_vaccinated_per_hundred',
-                             joinBy = 'iso-a3',
-                             name = 'Fully vaccinated (%)',
-                             minSize = "1%",
-                             maxSize = "100%",
-                             dataLabels = list(enabled = TRUE,
-                                               format = '{point.iso-a3}',
-                                               color = 'black',
-                                               fontSize = 1,
-                                               filter = list( property = 'iso-a3',
-                                                              operator = '==',
-                                                              value = 'MYS')
+                                   data = dataset,
+                                   value = 'people_fully_vaccinated_per_hundred',
+                                   joinBy = 'iso-a3',
+                                   name = 'Fully vaccinated (%)',
+                                   minSize = "1%",
+                                   maxSize = "100%",
+                                   dataLabels = list( enabled = TRUE,
+                                                      format = '{point.iso-a3}',
+                                                      color = 'black',
+                                                      fontSize = 1,
+                                                       filter = list( property = 'iso-a3',
+                                                                      operator = '==',
+                                                                      value = 'MYS')
                                                
-                             )
-                             )                                                  %>%
+                                                       )
+                                  )                                                  %>%
     
                             hc_tooltip( useHTML = TRUE,
                                         headerFormat = "<b>{point.key}: </b><br>",
                                         pointFormat  = "{point.date} <br> Fully vaccinated: {point.value}%"
-                                       )                                        %>%
-                               
-                             hc_colorAxis(minColor = cols[2],
+                                        )                                            %>%
+                            
+                                  
+                            hc_colorAxis( minColor = cols[2],
                                           maxColor = cols[9],
                                           min = 0, max = 100,
                                           type = 'log'
-                                          )
+                                          )                                     %>%
+                              
+                            hc_title( text = format( max(as.Date(dataset$date) ), 
+                                                     '%d %b %Y') )              %>%  
+                               
+                            hc_subtitle( text = 'Most countries up to & including this date')
   
-                             map_config(plot_map)
+                            map_config(plot_map)
                              }  
 
 
@@ -970,8 +998,8 @@ plot_bubble_vac <- hchart( vac_data,
                                type = 'logarithmic')                %>%
   
                     hc_tooltip( useHTML = TRUE,
-                    headerFormat = "<b>{point.key}: </b><br>",
-                    pointFormat  = "{point.date} <br> Fully vaccinated: {point.y}%"
+                    headerFormat = "<b>{point.key}: </b>",
+                    pointFormat  = "<br> {point.date} <br> Fully vaccinated: {point.y}%"
                     )                                               %>%
   
                     hc_colors(bubble_cols)                          %>%
@@ -990,7 +1018,14 @@ plot_bubble_vac <- hchart( vac_data,
                                               ) 
            
                               )                                 %>% 
-                     hc_exporting(enabled = TRUE)
+                     hc_exporting(enabled = TRUE)               %>%
+                      
+                     hc_title( text = format( max(as.Date(vac_data$date) ), 
+                                              '%d %b %Y') )                             %>%  
+                      
+                     hc_subtitle( text = 'Most countries up to & including this date')  %>%
+                    
+                     hc_add_theme(hc_theme_ft())
   
 
 ## plot packed bubble plot (percentage vaccinated in Asia) ##
@@ -1024,11 +1059,17 @@ hchart( vac_data_asia,
   
 hc_title( text = 'Asia')                           %>%
   
+hc_subtitle( text = paste( 'Most countries up to & including', 
+                            format( max( as.Date(vac_data_asia$date) ), 
+                                    '%d %b %Y') 
+                            )
+            )                                                                 %>%
+  
 hc_caption( text = 'Larger bubbles correspond to higher vaccination rates')   %>%
   
 hc_tooltip( useHTML = TRUE,
             headerFormat = "<b>{point.key}</b><br>",
-            pointFormat  = "{point.date} <br> Fully vaccinated <br> {point.y}%"
+            pointFormat  = "{point.date} <br> Fully vaccinated: {point.y}%"
            )                                                                                          %>%
   
 hc_colors( c(brewer.pal(12, 'Set3'), 
@@ -1046,7 +1087,9 @@ hc_plotOptions( packedbubble = list(
                                     )
                 )                                                                                     %>%
   
-hc_legend(enabled = FALSE)
+hc_legend(enabled = FALSE)  %>%
+  
+hc_add_theme(hc_theme_ffx())
 
 
 ########################## computations for 'By State' ##########################

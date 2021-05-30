@@ -98,13 +98,16 @@ Row {data-height=300}
 
 ### Percentage of total population vaccinated {.no-mobile}
 ```{r echo=FALSE}
-vac_packed_bubble
+vac_packed_bubble %>%
+hc_add_theme(hc_theme_null())
 ```
 
 ### Percentage of total population vaccinated {.mobile}
 ```{r echo=FALSE}
 vac_packed_bubble %>%
-  hc_plotOptions( packedbubble = list(
+hc_add_theme(hc_theme_null()) %>%
+  
+hc_plotOptions( packedbubble = list(
                                     maxSize = "90%",
                                     minSize = "40%"
                                     ) 
@@ -181,9 +184,9 @@ Row {data-height=100}
 ### <span style="font-size:1.8em;"> Interact with the graphs! </span>
 Data are updated daily whenever they become available (date printed on the navigation bar shows when the data were last updated). All graphs (except the few trend lines on the 'Daily summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of these graphs.
 
-<span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph (mouseover)** </span> to display the tooltip text containing the y-value (e.g., number of vaccinations each day) corresponding to a specific date. On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip text will be displayed and updated when the **finger moves across the graph**. </span>
+<span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph / map / bubble plot** </span> to display the tooltip containing information about the data of interest (such as the number of vaccinations each day). On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip text will be displayed and updated when the **finger moves across the graph**. </span>
 
-<span style="color:Navy; font-size:1em;"> **Second**,</span> you'll notice a <span style="color:Navy; font-size:1em;"> **horizontal scrollbar** </span> just underneath the x-axis of each graph. Use it to specify the <span style="color:Navy; font-size:1em;"> **date range** </span> to zoom in and out of the graph. Alternatively, you can click or tap on the range selector buttons to select some pre-configured ranges. More functions and graphs may be added in the near future so keep checking back. 
+<span style="color:Navy; font-size:1em;"> **Second**,</span> you'll notice a <span style="color:Navy; font-size:1em;"> **horizontal scrollbar** </span> just underneath the x-axis of each time series graph. Use it to specify the <span style="color:Navy; font-size:1em;"> **date range** </span>. Alternatively, you can click or tap on the range selector buttons to select some pre-configured ranges. More functions and graphs may be added in the near future so keep checking back. 
 
 If you're interested in my work and wish to connect with me, or if you have any queries or suggestions, you can contact me through several means (click [here](https://github.com/fyii200); contact details are listed on my GitHub page). Happy exploring!  
 
@@ -219,7 +222,9 @@ plot_map_state(max_col = 'Reds',
                plot_map, 
                lab = 'New cases', 
                max_value = max(data$new_cases, na.rm = TRUE), 
-               latest_date = date_cases )
+               latest_date = date_cases )  %>%
+  
+hc_add_theme(hc_theme_ft())
 ```
 
 ***
@@ -236,13 +241,15 @@ hc_caption( text = 'Bubble size corresponds to the number of new cases.' )      
   
 hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", pointFormat  = "New cases <br> + {point.y}" ) %>%
   
-hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                                                   %>%
+hc_colors( c( brewer.pal(8, 'Dark2'), brewer.pal(8, 'Set1') )  )                                                   %>%
   
 hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "200%", 
                                      layoutAlgorithm = list( bubblePadding = 15 ) )
               )                                                                                                    %>%
   
-hc_legend(enabled = FALSE)
+hc_legend(enabled = FALSE)  %>%
+  
+hc_add_theme(hc_theme_ffx())
 ```
 
 
@@ -265,7 +272,9 @@ plot_map_state(max_col = 'Reds',
                plot_map, 
                lab = 'New cases per 100,000', 
                max_value = max(data$new_cases_per_ten_thousand, na.rm = TRUE), 
-               latest_date = date_cases )
+               latest_date = date_cases )  %>%
+  
+hc_add_theme(hc_theme_ft())
 ```
 
 ***
@@ -284,13 +293,15 @@ hc_caption( text = 'Bubble size corresponds to the number of new cases per 100,0
 hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", 
             pointFormat  = "New cases per 100,000 <br> + {point.y}" )                         %>%
   
-hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                              %>%
+hc_colors( c( brewer.pal(8, 'Dark2'), brewer.pal(9, 'Set1') )  )                              %>%
   
 hc_plotOptions( packedbubble = list( minSize = '15%', maxSize = "150%", 
                                      layoutAlgorithm = list( bubblePadding = 15 ) )
               )                                                                               %>%
   
-hc_legend(enabled = FALSE)
+hc_legend(enabled = FALSE)   %>%
+
+hc_add_theme(hc_theme_ffx())
 ```
 
 
@@ -300,7 +311,7 @@ data <- subset(states, date == date_vac)
 
 # plot new cases in each state!
 plot_map <- hcmap('countries/my/my-all',  
-                  showInLegend = TRUE,
+                  showInLegend = FALSE,
                   data = data,
                   name = 'Percentage fully vaccinated',
                   value = 'percent_fully_vaccinated',
@@ -319,7 +330,9 @@ plot_map_state(max_col = 'Greens',
 hc_tooltip( useHTML = TRUE,
             headerFormat = "<b> <span style='font-size:15px'> {point.key} </span> </b> <br>",
             pointFormat  = plot_map_state_tt
-            )   
+            )  %>%
+  
+hc_add_theme(hc_theme_ft())
 ```
 
 ***
@@ -338,13 +351,15 @@ hc_caption( text = ' Bubble size corresponds to vaccination rate.' )    %>%
 hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", 
             pointFormat  = plot_map_state_tt )                                                %>%
   
-hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                              %>%
+hc_colors( c( brewer.pal(8, 'Dark2'), brewer.pal(9, 'Set1') )  )                              %>%
   
-hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "200%", 
+hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "150%", 
                                      layoutAlgorithm = list( bubblePadding = 15 ) )
               )                                                                               %>%
   
-hc_legend(enabled = FALSE)
+hc_legend(enabled = FALSE)    %>%
+  
+hc_add_theme(hc_theme_ffx())
 ```
 
 
@@ -417,7 +432,7 @@ hc_add_series(data$Positive,
               name = 'Positive tests', 
               color = col[2])            %>%
   
-hc_subtitle(text = 'Based on 7-day average')
+hc_caption(text = 'Based on 7-day average')
 ```
 
 *** 
@@ -685,7 +700,8 @@ plot_vac_percentage
 ### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
 ```{r echo=FALSE, fig.height=6, fig.width=7, warning=FALSE}
 # Plot!
-plot_progress_tracker
+plot_progress_tracker %>%
+hc_add_theme(hc_theme_ft())
 
 # col[1] for 1st dose; col[2] for 2nd dose
 col <- brewer.pal(9, 'Greens')[ c(5, 9) ]
