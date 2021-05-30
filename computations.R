@@ -42,7 +42,7 @@ config_hc <- function(series, type, series_name, series_col, unit, ...){
                         shadow          = TRUE,
                         borderWidth = 0,
                         nullFormat      = 'Null',
-                        backgroundColor = "transparent",
+                        backgroundColor = "white",
                         hideDelay       = 1000,
                         labels = list(format = paste("{value}", unit) ),
                         headerFormat    = ' <b> <span style="font-size:1.1em; color:gray;"> {point.x:%d %b %Y} <b> <br> </span>',
@@ -94,9 +94,8 @@ create_mapdata <- function(map_source, data_column, decimal_place){
                   mapdata <- get_data_from_map( download_map_data(map_source) )
                   
                   # 'countries' contains only latest covid 19
-                  countries <- subset(world,
-                               date == max(mys$date, na.rm = T)
-                               )
+                  countries <- read.csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/latest/owid-covid-latest.csv')
+                  names(countries)[4] <- 'date'
                   
                   # round covid data to what decimal place?
                   countries[, data_column] <- 
@@ -766,33 +765,33 @@ plot_bubble_cases <- hchart( mapdata,
                      new_cases_per_million, 
                      size = new_cases, 
                      group = continent)
-                     )                                                 %>%
+                     )                                                          %>%
   
-               hc_xAxis( title = list( 
-                                   text = 'GDP Per Capita'),
-                         type = 'logarithmic')         %>%
+                     hc_xAxis( title = list( 
+                                           text = 'GDP Per Capita'),
+                               type = 'logarithmic')                            %>%
   
-               hc_tooltip( useHTML = TRUE,
-                           headerFormat = "<b>{point.key}</b><br>",
-                           pointFormat  = "{point.date} <br> {point.y}"
-                          )                                            %>%
+                     hc_tooltip( useHTML = TRUE,
+                                 headerFormat = "<b>{point.key}</b><br>",
+                                 pointFormat  = "{point.date} <br> {point.y}"
+                                 )                                              %>%
   
-               hc_colors(bubble_cols)                                  %>%
+                     hc_colors(bubble_cols)                                     %>%
   
-               hc_yAxis( title = list (text = 'New cases per million'),
-                         type = 'logarithmic',
-                         showLastLabel = FALSE,
-                         gridLineWidth = 0,
-                         minorGridLineWidth = 0,
-                         plotLines = list(
-                                       list( color = bubble_cols[3],
-                                             width = 1,
-                                             value = tail(mys$new_cases_per_million, 1) ,
-                                             label = list( text = 'Malaysia')
-                                             )
-                                        ) 
-                         )                                             %>%
-               hc_exporting(enabled = TRUE)
+                     hc_yAxis( title = list (text = 'New cases per million'),
+                               type = 'logarithmic',
+                               showLastLabel = FALSE,
+                               gridLineWidth = 0,
+                               minorGridLineWidth = 0,
+                               plotLines = list(
+                                              list( color = bubble_cols[3],
+                                                    width = 1,
+                                                    value = mys$new_cases_per_million[ which(mys$date == max(mapdata$date) ) ],
+                                                    label = list( text = 'Malaysia')
+                                                    )
+                                               ) 
+                               )                                                %>%
+                     hc_exporting(enabled = TRUE)
 
 
 ## plot packed bubble plot (new cases per million pop in Asia) ##
@@ -893,7 +892,7 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
 
 mapdata <- create_mapdata(map_source = 'custom/world-highres',
                           data_column = which(names(world) == 'new_cases_per_million'),
-                          decimal_place = 2)
+                          decimal_place = 0)
 
 # extract country names
 unique_country <- unique(world$location)
@@ -1050,80 +1049,64 @@ hc_plotOptions( packedbubble = list(
 hc_legend(enabled = FALSE)
 
 
+########################## computations for 'By State' ##########################
+# Function to plot state-breakdown map for Malaysia
+plot_map_state <- function(max_col, plot_map, lab, max_value, latest_date){
+                           min_cols <- brewer.pal(9, "Greens")
+                           max_cols <- brewer.pal(9, max_col)
+    
+                           plot_map %>%
+                             
+                           hc_tooltip( useHTML = TRUE,
+                                       headerFormat = "<b> <span style='font-size:15px'> {point.key} </span> </b> <br>",
+                                       pointFormat  = paste(lab, "<br> <span style='font-size:15px'> + {point.value}", "</span>"),
+                                       paddng = 0,
+                                       shadow = TRUE,
+                                       borderWidth = 0
+                                      )                            %>%
+    
+                           hc_colorAxis(minColor = min_cols[2], 
+                           maxColor = max_cols[9], 
+                           min = 0, max = max_value,
+                           type = 'log')                                                   %>%
+    
+                           hc_title( text = format(latest_date, '%d %b %Y')  
+                                     )                                                              %>%
+    
+                           hc_subtitle( text = paste(lab, 'by state') )                             %>%
+    
+                           hc_add_theme(hc_theme_tufte2())                                          %>%
+                             
+                           hc_mapNavigation(enabled = TRUE)                                         %>%
+                             
+                           hc_exporting(enabled = TRUE)
+                           }
+
+# date when latest data on cases & vaccinations are available
+date_cases <- states$date[ max( which( complete.cases(states$new_cases) == TRUE) ) ]
+
+date_vac <- states$date[ max( which( complete.cases(states$first_dose) == TRUE) ) ]
 
 
+# configure the appearance of tooltip for state breakdown vaccination map
+plot_map_state_tt <-   
+"<table> \n
 
+<tr>
+<th> Dose &emsp; </th>
+<th> % of population </th>
+</tr>
 
-# data <- world
-# 
-# names(data)[1] <- 'iso-a3'
-# data$new_cases_per_million <- round(data$new_cases_per_million, 0)
-# 
-# try <-
-# data %>%
-# group_by(`iso-a3`) %>%
-#   do(item = list(
-#     `iso-a3` = first(.$`iso-a3`),
-#     sequence = .$new_cases_per_million,
-#     new_cases_per_million = first(.$new_cases_per_million)),
-#     ) %>%
-#   .$item
-# 
-# 
-#   min_cols <- brewer.pal(9, "Blues")
-#   max_cols <- brewer.pal(9, "Reds")
-# 
-#   plot_map <-
-#   highchart(type = "map") %>%
-#     hc_add_series(data = try,
-#                   mapData = map,
-#                   joinBy = "iso-a3",
-#                   borderWidth = 0.01
-#                                      ) %>%
-# 
-#     hc_tooltip( useHTML = TRUE,
-#                 headerFormat = "<b>{point.key}: </b> <br>",
-#                 pointFormat  = "New cases per million <br> {point.value}"
-#     )                               %>%
-# 
-#     hc_colorAxis(minColor = min_cols[1],
-#                  maxColor = max_cols[9],
-#                  min = 0, max = 700,
-#                  type = 'log')  %>%
-# 
-#     hc_legend(floating = TRUE, verticalAlign = "top") %>%
-# 
-# 
-#   hc_motion(
-#     enabled = TRUE,
-#     axisLabel = "day",
-#     labels = sort(unique(data$date)),
-#     series = 0,
-#     updateIterval = 50,
-#     magnet = list(
-#       round = "floor",
-#       step = 1
-#     ),
-#     autoPlay = TRUE) %>%
-# 
-#     hc_plotOptions( map = list(
-#       dataLabels = list(enabled = TRUE,
-#                         format = '{point.iso-a3}',
-#                         color = 'black',
-#                         fontSize = 1,
-#                         filter = list( property = 'iso-a3',
-#                                        operator = '==',
-#                                        value = 'MYS')
-# 
-#       )
-#     ))
-# 
-# map_config(plot_map)
+<tr> \n    
+<td> 1st </th> \n
+<td> <span style='font-size:15px'> &emsp; {point.percent_first_dose}% </td> </span> \n  
+</tr> \n 
 
+<tr> \n   
+<td> 2nd </th> \n    
+<td> <span style='font-size:15px'> &emsp; {point.value}% </td> </span> \n  
+</tr> \n
 
-
-
-
-
+</table>"
 
 

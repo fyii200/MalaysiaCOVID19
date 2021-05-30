@@ -29,6 +29,17 @@ world     <- read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv
 mys       <- world[which(world$iso_code == 'MYS'), ]
 mys$date  <- as.Date(mys$date)
 
+# update dataset with latest figures
+update      <- read.csv('data/mys.csv')
+update$date <- as.Date(update$date)
+mys         <- rbind(mys, update )
+
+# compute 7-day avg (cases & deaths)
+mys$new_cases_smoothed [ length(mys$new_cases_smoothed) ] <- mean(tail(mys$new_cases, 7) )
+
+mys$new_deaths_smoothed [ length(mys$new_deaths_smoothed) ] <- mean(tail(mys$new_deaths, 7) )
+
+
 ### VACCINATION DATA ###
 # data    <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
 data      <- 'data/vaccine.csv'
@@ -36,7 +47,15 @@ d         <- read.csv(data); d<-d[,-1]
 d$date    <- as.Date(d$date, '%d/%m/%Y')
 
 ### BREAKDOWN OF NEW CASES, VACCINATIONS IN ALL STATES ###
-states    <- read.csv('data/states.csv')
+states      <- read.csv('data/states.csv')
+states$date <- as.Date(states$date, '%d/%m/%y')
+# compute new cases per 100,000 inhabitants
+state_population <- c( 6.48e6, 3.9e6, 1.79e6, 3.75e6, 2.79e6, 1.76e6, 1.86e6, 1.12e6, 2.5e6, 2.16e6,                                                0.92e6, 1.66e6, 1.23e6, 0.1e6, 0.1e6, 0.25e6)
+states$new_cases_per_ten_thousand <- round( (states$new_cases / state_population) * 1e5, digits = 0)
+# compute percentage vaccinated (1st & 2nd dose)
+states$percent_first_dose       <- round( (states$first_dose / state_population) * 100, digits = 1)
+  
+states$percent_fully_vaccinated <- round( (states$fully_vaccinated / state_population) * 100, digits = 1)
 
 ## source all functions & computations ##
 source('computations.R')
@@ -51,7 +70,7 @@ Row {data-height=300}
 
 ### Vaccinations - Daily Total & Cumulative Total {.no-mobile}
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
-<span style="font-size:0.9em; color:grey;"> *up to & including `r format(max(x), '%d %b %Y')`*</span> 
+<span style="font-size:0.9em; color:grey;"> *up to & including `r latest_dose_date`*</span> 
 
 <span style="font-size:1em;"> 1st dose | </span> <span style="font-size:0.9em; color:grey;"> &nbsp; cumulative total </span>  
 <span style="font-size:2em; color:`r vac_col[1]`;"> **+`r latest_dose1_formatted`** </span> <span style="font-size:2.5em;"> | </span> &nbsp;
@@ -176,6 +195,157 @@ All data pertinent to vaccinations: *The Special Committee for Ensuring Access t
 Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
 
 ________________________
+
+
+
+By state {.storyboard data-icon="fa-search-plus"}
+=========================================
+### <span style="font-size:1.3em;"> **New Cases |** </span> <br> <span style="font-size:0.9em;"> How many new cases are being confirmed in each state? </span>
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+data <- subset(states, date == date_cases)
+
+# plot new cases in each state!
+plot_map <- hcmap('countries/my/my-all',  
+                  showInLegend = FALSE,
+                  data = data,
+                  value = 'new_cases',
+                  joinBy = 'name',
+                  minSize = "1%",
+                  maxSize = "100%",
+                  dataLabels = list(enabled = FALSE)
+                  ) 
+
+plot_map_state(max_col = 'Reds',
+               plot_map, 
+               lab = 'New cases', 
+               max_value = max(data$new_cases, na.rm = TRUE), 
+               latest_date = date_cases )
+```
+
+***
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+hchart( data, 'packedbubble', hcaes( name = name, group = name, value = new_cases, size = new_cases),
+        dataLabels = list( enabled = T, format = '{point.name}', color = 'black') 
+        )                                                       %>%
+  
+hc_title( text = format(date_cases, '%d %b %Y' ) )              %>%
+  
+hc_subtitle( text = 'New cases by state' )                     %>%
+  
+hc_caption( text = 'Bubble size corresponds to the number of new cases.' )                                         %>%
+  
+hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", pointFormat  = "New cases <br> + {point.y}" ) %>%
+  
+hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                                                   %>%
+  
+hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "200%", 
+                                     layoutAlgorithm = list( bubblePadding = 15 ) )
+              )                                                                                                    %>%
+  
+hc_legend(enabled = FALSE)
+```
+
+
+### <span style="font-size:1.3em;"> **New Cases Per 100,000 |** </span> <br> <span style="font-size:0.9em;"> How many new cases per 100,000 inhabitants in each state? </span>
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+data <- subset(states, date == date_cases)
+
+# plot new cases in each state!
+plot_map <- hcmap('countries/my/my-all',  
+                  showInLegend = FALSE,
+                  data = data,
+                  value = 'new_cases_per_ten_thousand',
+                  joinBy = 'name',
+                  minSize = "1%",
+                  maxSize = "100%",
+                  dataLabels = list(enabled = FALSE)
+                  ) 
+
+plot_map_state(max_col = 'Reds',
+               plot_map, 
+               lab = 'New cases per 100,000', 
+               max_value = max(data$new_cases_per_ten_thousand, na.rm = TRUE), 
+               latest_date = date_cases )
+```
+
+***
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+hchart( data, 'packedbubble', 
+        hcaes( name = name, group = name, value = new_cases_per_ten_thousand, size = new_cases_per_ten_thousand),
+        dataLabels = list( enabled = T, format = '{point.name}', color = 'black') 
+        )                                                       %>%
+  
+hc_title( text = format(date_cases, '%d %b %Y' ) )              %>%
+  
+hc_subtitle( text = 'New cases per 100,000 inhabitants by state' )                     %>%
+  
+hc_caption( text = 'Bubble size corresponds to the number of new cases per 100,000 inhabitants.' )  %>%
+    
+hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", 
+            pointFormat  = "New cases per 100,000 <br> + {point.y}" )                         %>%
+  
+hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                              %>%
+  
+hc_plotOptions( packedbubble = list( minSize = '15%', maxSize = "150%", 
+                                     layoutAlgorithm = list( bubblePadding = 15 ) )
+              )                                                                               %>%
+  
+hc_legend(enabled = FALSE)
+```
+
+
+### <span style="font-size:1.3em;"> **Percentage vaccinated |** </span> <br> <span style="font-size:0.9em;"> What percentage of population has been vaccinated in each state? </span>
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+data <- subset(states, date == date_vac)
+
+# plot new cases in each state!
+plot_map <- hcmap('countries/my/my-all',  
+                  showInLegend = TRUE,
+                  data = data,
+                  name = 'Percentage fully vaccinated',
+                  value = 'percent_fully_vaccinated',
+                  joinBy = 'name',
+                  minSize = "1%",
+                  maxSize = "100%",
+                  dataLabels = list(enabled = FALSE)
+                  ) 
+
+plot_map_state(max_col = 'Greens',
+               plot_map, 
+               lab = 'Percentage fully vaccinated', 
+               max_value = max(data$percent_fully_vaccinated, na.rm = TRUE), 
+               latest_date = date_vac )                         %>%
+  
+hc_tooltip( useHTML = TRUE,
+            headerFormat = "<b> <span style='font-size:15px'> {point.key} </span> </b> <br>",
+            pointFormat  = plot_map_state_tt
+            )   
+```
+
+***
+```{r echo=FALSE, fig.height=5.5, fig.width=7, warning=FALSE}
+hchart( data, 'packedbubble', 
+        hcaes( name = name, group = name, value = percent_fully_vaccinated, size = percent_fully_vaccinated),
+        dataLabels = list( enabled = T, format = '{point.name}', color = 'black') 
+        )                                                               %>%
+  
+hc_title( text = format(date_cases, '%d %b %Y' ) )                      %>%
+  
+hc_subtitle( text = 'Percentage fully vaccinated by state' )           %>%
+  
+hc_caption( text = ' Bubble size corresponds to vaccination rate.' )    %>%
+  
+hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", 
+            pointFormat  = plot_map_state_tt )                                                %>%
+  
+hc_colors( c( brewer.pal(12, 'Set3'), brewer.pal(9, 'Set1') )  )                              %>%
+  
+hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "200%", 
+                                     layoutAlgorithm = list( bubblePadding = 15 ) )
+              )                                                                               %>%
+  
+hc_legend(enabled = FALSE)
+```
 
 
 
