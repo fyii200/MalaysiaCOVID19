@@ -594,21 +594,21 @@ plot_progress_tracker <-
                                 list( color = lim[1],
                                       width = 0.5,
                                       value = 1.5,
-                                      label = list( text = 'Phase 1 —— 1.5%', 
+                                      label = list( text = 'Phase 1 — 1.5%', 
                                                     align = 'right')
                                       ),
     
                                  list( color = lim[2],
                                        width = 0.5,
                                        value = 30.3,
-                                       label = list( text = 'Phase 2 —— 30.3% ',
+                                       label = list( text = 'Phase 2 — 30.3% ',
                                                      align = 'right')
                                        ),
     
                                  list( color = lim[3],
                                        width = 0.5,
                                        value = 72.2,
-                                       label = list( text = 'Phase 3 —— 72.2% ',
+                                       label = list( text = 'Phase 3 — 72.2% ',
                                                      align = 'right')
                                        )
                                 )
