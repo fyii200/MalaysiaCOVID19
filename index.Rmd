@@ -29,15 +29,15 @@ world     <- read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv
 mys       <- world[which(world$iso_code == 'MYS'), ]
 mys$date  <- as.Date(mys$date)
 
-# # update dataset with latest figures
-# update      <- read.csv('data/mys.csv')
-# update$date <- as.Date(update$date)
-# mys         <- rbind(mys, update )
-# 
-# # compute 7-day avg (cases & deaths)
-# mys$new_cases_smoothed [ length(mys$new_cases_smoothed) ]   <- mean(tail(mys$new_cases, 7) )
-# 
-# mys$new_deaths_smoothed [ length(mys$new_deaths_smoothed) ] <- mean(tail(mys$new_deaths, 7) )
+# update dataset with latest figures
+update      <- read.csv('data/mys.csv')
+update$date <- as.Date(update$date)
+mys         <- rbind(mys, update )
+
+# compute 7-day avg (cases & deaths)
+mys$new_cases_smoothed [ length(mys$new_cases_smoothed) ]   <- mean(tail(mys$new_cases, 7) )
+
+mys$new_deaths_smoothed [ length(mys$new_deaths_smoothed) ] <- mean(tail(mys$new_deaths, 7) )
 
 
 ### VACCINATION DATA ###
