@@ -168,6 +168,14 @@ compute_daily_dose <- function(start_date, end_date){
                       return(daily_vac) 
                       }
 
+# funtion to get mode
+getmode <- function(v) {
+           uniqv <- unique(v)
+           uniqv[ which.max( tabulate( match (v, uniqv)
+                                      ) 
+                            ) ]
+           }
+
 ########################### latest date for cases & deaths ########################### 
 x <- mys$date
 
@@ -889,9 +897,9 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
                                                       format = '{point.iso-a3}',
                                                       color = 'black',
                                                       fontSize = 1,
-                                                       filter = list( property = 'iso-a3',
-                                                                      operator = '==',
-                                                                      value = 'MYS')
+                                                      filter = list( property = 'iso-a3',
+                                                                     operator = '==',
+                                                                     value = 'MYS')
                                                
                                                        )
                                   )                                                  %>%
@@ -908,8 +916,9 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
                                           type = 'log'
                                           )                                     %>%
                               
-                            hc_title( text = format( max(as.Date(dataset$date) ), 
-                                                     '%d %b %Y') )              %>%  
+                            hc_title( text = format( getmode( dataset$date), 
+                                                    '%d %b %Y') 
+                                      )                                         %>%  
                                
                             hc_subtitle( text = 'Most countries up to & including this date')
   
@@ -1021,8 +1030,9 @@ plot_bubble_vac <- hchart( vac_data,
                               )                                 %>% 
                      hc_exporting(enabled = TRUE)               %>%
                       
-                     hc_title( text = format( max(as.Date(vac_data$date) ), 
-                                              '%d %b %Y') )                             %>%  
+                     hc_title( text = format( getmode( vac_data$date), 
+                                            '%d %b %Y') 
+                              )                                 %>%  
                       
                      hc_subtitle( text = 'Most countries up to & including this date')  %>%
                     
@@ -1061,8 +1071,8 @@ hchart( vac_data_asia,
 hc_title( text = 'Asia')                           %>%
   
 hc_subtitle( text = paste( 'Most countries up to & including', 
-                            format( max( as.Date(vac_data_asia$date) ), 
-                                    '%d %b %Y') 
+                           format( as.Date( names( tail( table( vac_data_asia$date), 1) ) ), 
+                                  '%d %b %Y') 
                             )
             )                                                                 %>%
   
