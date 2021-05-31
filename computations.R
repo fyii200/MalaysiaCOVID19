@@ -920,7 +920,7 @@ plot_map_vac_per_hundred <- function(dataset, mapsource){
                                                     '%d %b %Y') 
                                       )                                         %>%  
                                
-                            hc_subtitle( text = 'Most economies up to & including this date')
+                            hc_subtitle( text = 'Most countries/ economies up to & including this date')
   
                             map_config(plot_map)
                              }  
@@ -1034,7 +1034,7 @@ plot_bubble_vac <- hchart( vac_data,
                                             '%d %b %Y') 
                               )                                 %>%  
                       
-                     hc_subtitle( text = 'Most economies up to & including this date')  %>%
+                     hc_subtitle( text = 'Most countries/ economies up to & including this date')  %>%
                     
                      hc_add_theme(hc_theme_ft())
   
@@ -1070,7 +1070,7 @@ hchart( vac_data_asia,
   
 hc_title( text = 'Asia')                           %>%
   
-hc_subtitle( text = paste( 'Most countries up to & including', 
+hc_subtitle( text = paste( 'Most countries/ economies up to & including', 
                            format( as.Date( names( tail( table( vac_data_asia$date), 1) ) ), 
                                   '%d %b %Y') 
                             )
