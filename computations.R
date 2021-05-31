@@ -566,7 +566,6 @@ plot_progress_tracker <-
                                  list( from = datetime_to_timestamp(as.Date('2021-04-01') ), 
                                        to = datetime_to_timestamp(as.Date('2021-04-30') ),
                                        label = list( text = 'Phase 1' ,
-                                                     rotation = 45,
                                                      style = list(fontWeight = 'bold') 
                                                      ),
                                         color = phase[1]
@@ -575,7 +574,6 @@ plot_progress_tracker <-
                                  list( from = datetime_to_timestamp(as.Date('2021-08-01') ), 
                                        to = datetime_to_timestamp(as.Date('2021-08-31') ),
                                        label = list( text = 'Phase 2' ,
-                                                     rotation = 45,
                                                      style = list(fontWeight = 'bold') 
                                                      ),
                                         color = phase[2]
@@ -584,7 +582,6 @@ plot_progress_tracker <-
                                   list( from = datetime_to_timestamp(as.Date('2022-02-01') ), 
                                         to = datetime_to_timestamp(as.Date('2022-02-28') ),
                                         label = list( text = 'Phase 3' ,
-                                                      rotation = 45,
                                                       style = list(fontWeight = 'bold') 
                                                      ),
                                         color = phase[3]
@@ -597,21 +594,21 @@ plot_progress_tracker <-
                                 list( color = lim[1],
                                       width = 0.5,
                                       value = 1.5,
-                                      label = list( text = '1.5%', 
+                                      label = list( text = 'Phase 1 —— 1.5%', 
                                                     align = 'right')
                                       ),
     
                                  list( color = lim[2],
                                        width = 0.5,
                                        value = 30.3,
-                                       label = list( text = '30.3% ',
+                                       label = list( text = 'Phase 2 —— 30.3% ',
                                                      align = 'right')
                                        ),
     
                                  list( color = lim[3],
                                        width = 0.5,
                                        value = 72.2,
-                                       label = list( text = '72.2% ',
+                                       label = list( text = 'Phase 3 —— 72.2% ',
                                                      align = 'right')
                                        )
                                 )
@@ -722,7 +719,7 @@ vac_packed_bubble <- hchart(pie,
 # create mapdata data frame containing country names and only latest covid 19
 mapdata <- create_mapdata(map_source = 'custom/world-highres',
                           data_column = which(names(world) == 'new_cases_per_million'),
-                          decimal_place = 0)
+                          decimal_place = 1)
   
 # Plot map function
 plot_map_cases_per_million <- function(dataset, mapsource){
@@ -758,7 +755,9 @@ plot_map_cases_per_million <- function(dataset, mapsource){
                                            min = 0, max = 700,
                                            type = 'log')                  %>%
                               
-                              hc_title( text = format( max(as.Date(mapdata$date) ), '%d %b %Y') )
+                              hc_title( text = format( max(as.Date(mapdata$date) ), '%d %b %Y') ) %>%
+                                
+                              hc_subtitle( text = 'New cases per million on this date')  
     
                               map_config(plot_map)
                               }
@@ -792,6 +791,8 @@ plot_bubble_cases <- hchart( mapdata,
        
                      hc_title( text = format( max(as.Date(mapdata$date) ), 
                                               '%d %b %Y') )                     %>%
+  
+                     hc_subtitle( text = 'New cases per million on this date')  %>%
   
                      hc_yAxis( title = list (text = 'New cases per million'),
                                type = 'logarithmic',
@@ -1122,7 +1123,9 @@ plot_map_state <- function(max_col, plot_map, lab, max_value, latest_date){
                              
                            hc_mapNavigation(enabled = TRUE)                                         %>%
                              
-                           hc_exporting(enabled = TRUE)
+                           hc_exporting(enabled = TRUE)                                             %>%
+                             
+                           hc_legend( verticalAlign = 'top')
                            }
 
 # date when latest data on cases & vaccinations are available

@@ -1,79 +1,20 @@
 ---
-title: "COVID-19 in Malaysia"
-output: 
-  flexdashboard::flex_dashboard:
-    theme:
-      version: 3
-    orientation: rows
-    navbar:
-          - {title: "About me", icon: "fa-github", href: "https://github.com/fyii200", align: right}
-    social: menu
-    fig_mobile: FALSE
-date: <span style="font-size:0.8em;">`r format(Sys.Date(), '%d %b %Y')` </span>
+title: "Hiding Pages"
+output: flexdashboard::flex_dashboard
 ---
 
-```{r setup, include=FALSE}
-## load relevant functions, packages ##
-# install.packages("waffle", repos = "https://cinc.rud.is")
-# install.packages('dygraph')
-# install.packages('dplyr)
-library(RColorBrewer)
-library(highcharter)
-library(dplyr)
-library(waffle)
-library(xts)
+Sidebar {.sidebar}
+=====================================
 
-# ### DAILY CASES, TESTS, DEATHS, etc. ###
-# ## read raw data (worldwide) and configure data frame named 'mys'
-# world     <- read.csv('https://covid.ourworldindata.org/data/owid-covid-data.csv')
-# mys       <- world[which(world$iso_code == 'MYS'), ]
-# mys$date  <- as.Date(mys$date)
-# 
-# ### VACCINATION DATA ###
-# # data    <- 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Malaysia.csv'
-# data      <- 'data/vaccine.csv'
-# d         <- read.csv(data); d<-d[,-1]
-# d$date    <- as.Date(d$date, '%d/%m/%Y')
-# 
-# ## source all functions & computations ##
-# source('computations.R')
-```
+Link to [Page 3](#page-3)
 
 
+Page 2 
+=====================================  
 
-```{r echo=FALSE}
-ds <- data %>% 
-  group_by(fips) %>% 
-  do(item = list(
-    fips = first(.$fips),
-    sequence = .$value,
-    value = first(.$value))) %>% 
-  .$item
 
-hc <- highchart(type = "map") %>% 
-  hc_add_series(data = ds,
-                name = "drug deaths per 100,000",
-                mapData = uscountygeojson,
-                joinBy = "fips",
-                borderWidth = 0.01) %>% 
-  hc_colorAxis(stops = color_stops()) %>%  
-  hc_title(text = "How the Epidemic of Drug Overdose Deaths Ripples") %>% 
-  hc_legend(layout = "vertical", reversed = TRUE,
-            floating = TRUE, align = "right") %>% 
-  hc_add_theme(hc_theme_smpl()) %>% 
-  hc_motion(
-    enabled = TRUE,
-    axisLabel = "year",
-    labels = sort(unique(data$year)),
-    series = 0,
-    updateIterval = 50,
-    magnet = list(
-      round = "floor",
-      step = 0.1
-    )
-  )
-hc
-```
+Page 3 {.hidden}
+=====================================
 
 
 

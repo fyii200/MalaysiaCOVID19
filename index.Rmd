@@ -68,7 +68,7 @@ Daily summary {data-icon="fa-table"}
 Row {data-height=300}
 -----------------------------------------
 
-### Vaccinations - Daily Total & Cumulative Total {.no-mobile}
+### Vaccinations - Daily Total & Cumulative Total [ | click here to interact](#vaccinations) {.no-mobile}
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
 <span style="font-size:0.9em; color:grey;"> *up to & including `r latest_dose_date`*</span> 
 
@@ -82,7 +82,7 @@ Row {data-height=300}
 <span style="font-size:1.5em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
-### Vaccinations - Daily Total & Cumulative Total {.mobile}
+### Vaccinations - Daily Total & Cumulative Total [ | click here to interact](#vaccinations) {.mobile}
 <span style="font-size:1.5em;"> **People vaccinated ** </span>
 <span style="font-size:0.9em; color:grey;"> *up to `r latest_dose_date`*</span> 
 
@@ -96,20 +96,20 @@ Row {data-height=300}
 <span style="font-size:1.2em; color:`r vac_col[2]`;"> **`r cumul_dose2_formatted`** </span>
 
 
-### Percentage of total population vaccinated {.no-mobile}
+### Percentage of total population vaccinated [ | state-by-state breakdown](#by-state) {.no-mobile}
 ```{r echo=FALSE}
 vac_packed_bubble %>%
 hc_add_theme(hc_theme_null())
 ```
 
-### Percentage of total population vaccinated {.mobile}
+### Percentage of total population vaccinated [ | state-by-state breakdown](#by-state) {.mobile}
 ```{r echo=FALSE}
 vac_packed_bubble %>%
 hc_add_theme(hc_theme_null()) %>%
   
 hc_plotOptions( packedbubble = list(
                                     maxSize = "90%",
-                                    minSize = "40%"
+                                    minSize = "50%"
                                     ) 
                   )
 ```
@@ -118,7 +118,7 @@ hc_plotOptions( packedbubble = list(
 Row {data-height=450}
 -----------------------------------------
 
-### Cases
+### Cases [ | click here to interact](#cases)
 <span style="font-size:1.5em;"> **People tested positive** </span>
 
 Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>  
@@ -137,7 +137,7 @@ plot_line(mys$date, mys$new_cases_smoothed, case_col)
 ```
 
 
-### Testing
+### Testing [ | click here to interact](#cases)
 <span style="font-size:1.5em;"> **COVID-19 tests conducted** </span>
 
 Daily <span style="font-size:0.9em; color:grey;"> *`r tests_7day_date_formatted`*</span>  
@@ -156,7 +156,7 @@ plot_line(mys$date, mys$new_tests_smoothed, test_col[1])
 ```
 
 
-### Deaths
+### Deaths [ | click here to interact](#deaths)
 <span style="font-size:1.5em;"> **Reported deaths** </span>
 
 Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>  
@@ -184,7 +184,7 @@ Row {data-height=100}
 ### <span style="font-size:1.8em;"> Interact with the graphs! </span>
 Data are updated daily whenever they become available (date printed on the navigation bar shows when the data were last updated). All graphs (except the few trend lines on the 'Daily summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of these graphs.
 
-<span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph / map / bubble plot** </span> to display the tooltip containing information about the data of interest (such as the number of vaccinations each day). On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip text will be displayed and updated when the **finger moves across the graph**. </span>
+<span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph / map / bubble plot** </span> to display the tooltip containing information about the data (such as the number of vaccinations each day). On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip will be displayed and updated when the **finger moves across the graph**. </span>
 
 <span style="color:Navy; font-size:1em;"> **Second**,</span> you'll notice a <span style="color:Navy; font-size:1em;"> **horizontal scrollbar** </span> just underneath the x-axis of each time series graph. Use it to specify the <span style="color:Navy; font-size:1em;"> **date range** </span>. Alternatively, you can click or tap on the range selector buttons to select some pre-configured ranges. More functions and graphs may be added in the near future so keep checking back. 
 
@@ -222,9 +222,11 @@ plot_map_state(max_col = 'Reds',
                plot_map, 
                lab = 'New cases', 
                max_value = max(data$new_cases, na.rm = TRUE), 
-               latest_date = date_cases )  %>%
+               latest_date = date_cases )                           %>%
   
-hc_add_theme(hc_theme_ft())
+hc_caption( text = 'Hover over or tap on the map to display data. Double tap or double click to zoom in. Alernatively, you can use                       the zoom buttons. Panning will be enabled when map is zoomed in.') %>%
+  
+hc_add_theme(hc_theme_ft()) 
 ```
 
 ***
@@ -272,7 +274,9 @@ plot_map_state(max_col = 'Reds',
                plot_map, 
                lab = 'New cases per 100,000', 
                max_value = max(data$new_cases_per_ten_thousand, na.rm = TRUE), 
-               latest_date = date_cases )  %>%
+               latest_date = date_cases )                           %>%
+  
+hc_caption( text = 'Hover over or tap on the map to display data. Double tap or double click to zoom in. Alernatively, you can use                       the zoom buttons. Panning will be enabled when map is zoomed in.') %>%
   
 hc_add_theme(hc_theme_ft())
 ```
@@ -330,7 +334,9 @@ plot_map_state(max_col = 'Greens',
 hc_tooltip( useHTML = TRUE,
             headerFormat = "<b> <span style='font-size:15px'> {point.key} </span> </b> <br>",
             pointFormat  = plot_map_state_tt
-            )  %>%
+            )                                                       %>%
+  
+hc_caption( text = 'Hover over or tap on the map to display data. Double tap or double click to zoom in. Alernatively, you can use                       the zoom buttons. Panning will be enabled when map is zoomed in.') %>%
   
 hc_add_theme(hc_theme_ft())
 ```
@@ -344,16 +350,16 @@ hchart( data, 'packedbubble',
   
 hc_title( text = format(date_cases, '%d %b %Y' ) )                      %>%
   
-hc_subtitle( text = 'Percentage fully vaccinated by state' )           %>%
+hc_subtitle( text = 'Percentage fully vaccinated by state' )            %>%
   
-hc_caption( text = ' Bubble size corresponds to vaccination rate.' )    %>%
+hc_caption( text = ' Bubble size corresponds to percentage of inhabitants fully vaccinated against COVID-19.' )    %>%
   
 hc_tooltip( useHTML = TRUE, headerFormat = "<b>{point.key}</b><br>", 
             pointFormat  = plot_map_state_tt )                                                %>%
   
 hc_colors( c( brewer.pal(8, 'Dark2'), brewer.pal(9, 'Set1') )  )                              %>%
   
-hc_plotOptions( packedbubble = list( minSize = '20%', maxSize = "150%", 
+hc_plotOptions( packedbubble = list( minSize = '50%', maxSize = "150%", 
                                      layoutAlgorithm = list( bubblePadding = 15 ) )
               )                                                                               %>%
   
@@ -399,7 +405,9 @@ hc_add_series(data$`7-day avg`,
 <span style="text-decoration:underline; font-size:0.9em;"> *Latest data provided on `r latest_date`* </span>
 
 <span style="font-size:1.5em; color:`r col[2]`;"> **+`r new_cases`** </span>  
-<span style="color:grey;"> *new cases in the past 24 hours.* </span>
+<span style="color:grey;"> *new cases in the past 24 hours.* </span>  
+
+[ click here for state-by-state breakdown](#by-state)
 
 
 ### <span style="font-size:1.3em;"> **Daily Tests |** </span> <br> <span style="font-size:0.9em;"> Are we doing enough of COVID-19 testing? </span>
@@ -665,7 +673,9 @@ hc_plotOptions( column = list( stacking = list('normal')
 
 <span style="font-size:1.5em; color:`r col[3]`;"> **+`r latest_dose2_formatted`** </span> &nbsp; | &nbsp;
 <span style="font-size:1em; color:`r col[3]`;"> **+`r dose2_7day_avg_formatted`**</span>  
-<span style="color:grey;"> *new 2nd doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>
+<span style="color:grey;"> *new 2nd doses were administered in the past 24 hours.* &nbsp; | &nbsp; *7-day average.* </span>  
+
+[ click here for state-by-state breakdown](#by-state)
 
 
 ### <span style="font-size:1.3em;"> **Total & Percentage Vaccinated |** </span> <br> <span style="font-size:0.9em;"> What share of the 32.7 million [population](https://www.dosm.gov.my/v1/index.php?r=column/cthemeByCat&cat=155&bul_id=OVByWjg5YkQ3MWFZRTN5bDJiaEVhZz09&menu_id=L0pheU43NWJwRWVSZklWdzQ4TlhUUT09) has been vaccinated? </span>
@@ -694,7 +704,6 @@ plot_vac_percentage
 
 &nbsp;  
 <span style="color: grey;"> Vaccine portfolio: Pfizer-BioNTech, Sinovac, Oxford-AstraZeneca </span>
-
 
 
 ### <span style="font-size:1.3em;"> **Progress Tracker |** </span> <br> <span style="font-size:0.9em;"> Is the vaccination programme on track? </span>
@@ -729,7 +738,7 @@ Comparisons {.storyboard data-icon="fa-globe-asia"}
 plot_map_cases_per_million( dataset = mapdata,
                             mapsource = "custom/world-highres") %>%
   
-hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. You can zoom in and out of the map using the zoom buttons or pinch on the touch screen with two fingers if you are using a touch device. Panning will be enabled when the map is zoomed in.')
+hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. To zoom in, double tap or double click on the map. You can also use the zoom buttons to zoom in and out of the map. Panning will be enabled when the map is zoomed in.')
 ```
 
 ***
@@ -757,7 +766,7 @@ plot_bubble_cases
 plot_map_vac_per_hundred( dataset = vac_data,
                           mapsource = "custom/world-highres")  %>%
 
-hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. Remember you can zoom in and out of the map. Panning will be enabled when the map is zoomed in.')
+hc_caption( text = 'Hover your cursor over or tap a country of interest to see the data corresponding to that country. To zoom in, double tap or double click on the map. You can also use the zoom buttons to zoom in and out of the map. Panning will be enabled when the map is zoomed in.')
 ```
 
 ***
