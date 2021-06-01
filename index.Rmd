@@ -182,7 +182,7 @@ Guide {data-icon="fa-question-circle"}
 Row {data-height=100}
 -----------------------------------------
 ### <span style="font-size:1.8em;"> Interact with the graphs! </span>
-Data are updated daily whenever they become available (date printed on the navigation bar shows when the data were last updated). All graphs (except the few trend lines on the 'Daily summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of these graphs.
+Data are updated daily usually by 7PM UTC+08:00. The date printed on the navigation bar shows when the data were last updated. All graphs (except the few trend lines on the 'Daily summary' homepage ) on this site are **interactive**. Here are a few tips to help you make the most of these graphs.
 
 <span style="color:Navy; font-size:1em;"> **First** </span>, view the graphs on a **computer screen** whenever possible. You will be able to <span style="color:Navy; font-size:1em;"> **hover your cursor over each graph / map / bubble plot** </span> to display the tooltip containing information about the data (such as the number of vaccinations each day). On a **touch device**, <span style="color:Navy; font-size:1em;"> </span> the tooltip will be displayed and updated when the **finger moves across the graph**. </span>
 
@@ -193,7 +193,9 @@ If you're interested in my work and wish to connect with me, or if you have any 
 ________________________
 
 #### <span style="font-size:1em;"> Data sources </span>
-All data pertinent to vaccinations: *The Special Committee for Ensuring Access to COVID-19 Vaccine Supply [(JKJAV)](https://www.vaksincovid.gov.my/en/about-jkjav/)* 
+All data pertinent to vaccinations in Malaysia: *The Special Committee for Ensuring Access to COVID-19 Vaccine Supply [(JKJAV)](https://www.vaksincovid.gov.my/en/about-jkjav/)*
+
+State-by-state breakdown of daily new cases in Malaysia: *[From the Desk of the Director-General of Health Malaysia](https://kpkesihatan.com)*
 
 Other data: *Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). https://doi.org/10.1038/s41597-020-00688-8*
 
