@@ -350,7 +350,7 @@ hchart( data, 'packedbubble',
         dataLabels = list( enabled = T, format = '{point.name}', color = 'black') 
         )                                                               %>%
   
-hc_title( text = format(date_cases, '%d %b %Y' ) )                      %>%
+hc_title( text = format(date_vac, '%d %b %Y' ) )                      %>%
   
 hc_subtitle( text = 'Percentage fully vaccinated by state' )            %>%
   
