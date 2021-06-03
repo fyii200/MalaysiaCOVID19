@@ -5,6 +5,8 @@ output:
     theme:
       version: 3
     orientation: rows
+    includes: 
+      in_header: google_analytics.html
     navbar:
           - {title: "Fabian SL Yii", icon: "fa-github", href: "https://github.com/fyii200", align: right}
     social: menu
