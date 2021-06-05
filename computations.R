@@ -324,7 +324,7 @@ tests_7day_avg <- tail(all_tests$weekly_avg, 1)
 tests_7day_avg_formatted <- format(tests_7day_avg, scientific = F, big.mark = ',')
                           
 # date: 1 week prior to most recent date when testing data are available
-tests_last_7day_date <- tests_7day_date - 7
+tests_last_7day_date <- tests_7day_date - 6
 
 tests_last_7day_date_formatted <- format(tests_last_7day_date, '%d %b %Y')
 
