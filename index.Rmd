@@ -131,7 +131,7 @@ Daily <span style="font-size:0.9em; color:grey;"> *`r latest_date`*</span>
 
 7-day average <span style="font-size:0.8em; color:grey;"> *(week ending `r latest_date` )*</span>  
 <span style="font-size:1.3em"> **`r cases_7day_avg_formatted`** </span> &nbsp;
-<span style="font-size:1em; color:`r cases_arrowcol`;"> **`r ifelse( cases_week_change >= 0, print('▲'), print('▲'))`  `r cases_label`**</span>
+<span style="font-size:1em; color:`r cases_arrowcol`;"> **`r ifelse( cases_week_change >= 0, print('▲'), print('▼'))`  `r cases_label`**</span>
 
 #### 
 ```{r echo=FALSE, fig.width=3.5, fig.height=1}
