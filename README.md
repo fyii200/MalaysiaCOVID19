@@ -1,4 +1,6 @@
 # MalaysiaCovid19
 Website: visualising COVID-19 in Malaysia
 
-Project status: **inactive**
+https://www.malaysiacovid.com
+
+Project status: **inactive** since end of 2021.
